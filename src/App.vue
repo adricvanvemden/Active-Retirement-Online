@@ -17,31 +17,45 @@
 
 <script>
 import { db } from './firebase'
-import { collection, doc, addDoc, getDoc, getDocs } from 'firebase/firestore'
+import { addDoc, collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore'
 
 export default {
   data () {
     return {
-      events: []
+      events: [],
+      monthlyEvents: []
     }
   },
   mounted () {},
   methods: {
     async createEvent () {
       const docRef = await addDoc(collection(db, 'events'), {
-        eventName: 'Specialized Talk Global Warming',
-        date: new Date(2021, 11, 5, 18, 0, 0),
-        description:
-          'Mrs. Fischer will held a talk about global warming. If you are interested in this we would be glad if you could join us',
-        deadlineRegistration: new Date(2021, 11, 4, 18, 0, 0),
+        eventName: 'Bridge',
+        date: new Date(2021, 10, 22, 18, 0, 0),
+        endTime: new Date(2021, 10, 22, 20, 0, 0),
+        description: 'We invite you to join us for a couple rounds of bridge.',
+        deadlineRegistration: new Date(2021, 10, 17, 18, 0, 0),
         limitAttenders: 50,
-        location: 'Dublin Hall 7',
-        organizer: 'Peter McConnor',
-        durationEvent: '2 hours',
-        participatingCommunities: ['Active Retirement Group Dublin'],
+        location: 'Link to Site',
+        organizer: 'Liz Chambers',
+        participatingCommunities: [
+          'Active Retirement Group Parnell',
+          'Active Retirement Group Dublin'
+        ],
         eventCanceled: false,
-        online: false,
-        participants: []
+        onlineOffline: 'online',
+        participants: [
+          {
+            user: 'Harald Harald',
+            actions: [
+              'Action one'
+            ]
+          }
+        ],
+        actions: [
+          'Action one',
+          'Action two'
+        ]
       })
       console.log(docRef)
     },
@@ -63,6 +77,16 @@ export default {
       })
       console.log(docRef)
     },
+    async createCommunity () {
+      const docRef = await addDoc(collection(db, 'communities'), {
+        name: 'Retirement Group Dublin',
+        address: 'North Circular Road 234',
+        phoneNumber: '123 456 789',
+        eMailAddress: 'retgroupdublin@gmail.com'
+      })
+      console.log(docRef)
+    },
+
     async getAllEvents () {
       const querySnapshot = await getDocs(collection(db, 'events'))
       querySnapshot.forEach((doc) => {
@@ -70,19 +94,49 @@ export default {
           id: doc.id,
           eventName: doc.data().eventName,
           date: doc.data().date,
+          endTime: doc.data().endTime,
           description: doc.data().description,
           deadlineRegistration: doc.data().deadlineRegistration,
           limitAttenders: doc.data().limitAttenders,
           location: doc.data().location,
           organizer: doc.data().organizer,
-          durationEvent: doc.data().durationEvent,
           participatingCommunities: doc.data().participatingCommunities,
           eventCanceled: doc.data().eventCanceled,
-          online: doc.data().online,
-          participants: doc.data().participants
+          onlineOffline: doc.data().onlineOffline,
+          participants: doc.data().participants,
+          actions: doc.data().actions
         }
         this.events.push(this.event)
         console.log(this.events)
+      })
+    },
+
+    async getMonthlyEvents () {
+      const startdate = new Date('2021-11-01')
+      const enddate = new Date('2021-12-01')
+      const q = query(collection(db, 'events'),
+        where('date', '>=', startdate),
+        where('date', '<', enddate))
+      const querySnapshot = await getDocs(q)
+      querySnapshot.forEach((doc) => {
+        this.monthlyEvent = {
+          id: doc.id,
+          eventName: doc.data().eventName,
+          date: doc.data().date,
+          endTime: doc.data().endTime,
+          description: doc.data().description,
+          deadlineRegistration: doc.data().deadlineRegistration,
+          limitAttenders: doc.data().limitAttenders,
+          location: doc.data().location,
+          organizer: doc.data().organizer,
+          participatingCommunities: doc.data().participatingCommunities,
+          eventCanceled: doc.data().eventCanceled,
+          onlineOffline: doc.data().onlineOffline,
+          participants: doc.data().participants,
+          actions: doc.data().actions
+        }
+        this.monthlyEvents.push(this.monthlyEvent)
+        console.log(this.monthlyEvents)
       })
     },
     async getEvent (eventId) {
