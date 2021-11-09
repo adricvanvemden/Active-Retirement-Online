@@ -8,8 +8,10 @@
       <router-link to="/games">Games</router-link>
       |
       <router-link to="/myAccount">My Account</router-link>
+      |
+      <router-link to="/admin/events/create">Create Event</router-link>
     </div>
-    <router-view/>
+    <router-view />
   </div>
 </template>
 
@@ -23,22 +25,20 @@ export default {
       events: []
     }
   },
-  mounted () {
-  },
+  mounted () {},
   methods: {
     async createEvent () {
       const docRef = await addDoc(collection(db, 'events'), {
         eventName: 'Specialized Talk Global Warming',
         date: new Date(2021, 11, 5, 18, 0, 0),
-        description: 'Mrs. Fischer will held a talk about global warming. If you are interested in this we would be glad if you could join us',
+        description:
+          'Mrs. Fischer will held a talk about global warming. If you are interested in this we would be glad if you could join us',
         deadlineRegistration: new Date(2021, 11, 4, 18, 0, 0),
         limitAttenders: 50,
         location: 'Dublin Hall 7',
         organizer: 'Peter McConnor',
         durationEvent: '2 hours',
-        participatingCommunities: [
-          'Active Retirement Group Dublin'
-        ],
+        participatingCommunities: ['Active Retirement Group Dublin'],
         eventCanceled: false,
         online: false,
         participants: []
@@ -96,7 +96,6 @@ export default {
     }
   }
 }
-
 </script>
 
 <style lang="scss">
