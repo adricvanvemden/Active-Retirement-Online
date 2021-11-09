@@ -8,8 +8,10 @@
       <router-link to="/games">Games</router-link>
       |
       <router-link to="/myAccount">My Account</router-link>
+      |
+      <router-link to="/admin/events/create">Create Event</router-link>
     </div>
-    <router-view/>
+    <router-view />
   </div>
 </template>
 
@@ -24,8 +26,7 @@ export default {
       monthlyEvents: []
     }
   },
-  mounted () {
-  },
+  mounted () {},
   methods: {
     async createEvent () {
       const docRef = await addDoc(collection(db, 'events'), {
@@ -149,7 +150,6 @@ export default {
     }
   }
 }
-
 </script>
 
 <style lang="scss">
