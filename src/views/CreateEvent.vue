@@ -104,6 +104,7 @@ export default {
     return {
       name: null,
       date: null,
+      dateObject: null,
       startTime: null,
       endTime: null,
       attendanceLimit: null,
@@ -141,16 +142,16 @@ export default {
     async createEvent () {
       const docRef = await addDoc(collection(db, 'events'), {
         eventName: this.name,
-        date: this.date,
+        date: new Date(this.date),
         description: this.description,
-        deadlineRegistration: this.date,
+        deadlineRegistration: new Date(this.date),
         limitAttenders: this.attendanceLimit,
         location: this.location,
         startTime: this.startTime,
         endTime: this.endTime,
         participatingCommunities: this.communities.selected,
         eventCanceled: false,
-        online: this.online.selected,
+        onlineOffline: this.online.selected,
         actions: [
           this.actions.action1,
           this.actions.action2,
@@ -161,7 +162,6 @@ export default {
       console.log(docRef)
     },
     onCreateEvent () {
-      console.log()
       this.createEvent()
     }
   }
