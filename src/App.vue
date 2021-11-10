@@ -21,7 +21,8 @@ export default {
   data () {
     return {
       events: [],
-      monthlyEvents: []
+      monthlyEvents: [],
+      eventsByType: [],
     }
   },
   mounted () {
@@ -54,7 +55,8 @@ export default {
         actions: [
           'Action one',
           'Action two'
-        ]
+        ],
+        type: 'online'
       })
       console.log(docRef)
     },
@@ -103,10 +105,36 @@ export default {
           eventCanceled: doc.data().eventCanceled,
           onlineOffline: doc.data().onlineOffline,
           participants: doc.data().participants,
-          actions: doc.data().actions
+          actions: doc.data().actions,
+          type: doc.data().type
         }
         this.events.push(this.event)
         console.log(this.events)
+      })
+    },
+
+    async getAllEventsByType (type) {
+      const querySnapshot = await getDocs(collection(db, 'events'), where('type', '==', type))
+      querySnapshot.forEach((doc) => {
+        this.event = {
+          id: doc.id,
+          eventName: doc.data().eventName,
+          date: doc.data().date,
+          endTime: doc.data().endTime,
+          description: doc.data().description,
+          deadlineRegistration: doc.data().deadlineRegistration,
+          limitAttenders: doc.data().limitAttenders,
+          location: doc.data().location,
+          organizer: doc.data().organizer,
+          participatingCommunities: doc.data().participatingCommunities,
+          eventCanceled: doc.data().eventCanceled,
+          onlineOffline: doc.data().onlineOffline,
+          participants: doc.data().participants,
+          actions: doc.data().actions,
+          type: doc.data().type
+        }
+        this.eventsByType.push(this.event)
+        console.log(this.eventsByType)
       })
     },
 
@@ -132,7 +160,8 @@ export default {
           eventCanceled: doc.data().eventCanceled,
           onlineOffline: doc.data().onlineOffline,
           participants: doc.data().participants,
-          actions: doc.data().actions
+          actions: doc.data().actions,
+          type: doc.data().type
         }
         this.monthlyEvents.push(this.monthlyEvent)
         console.log(this.monthlyEvents)
