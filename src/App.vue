@@ -4,7 +4,8 @@
       <router-link to="/">Calendar</router-link> |
       <router-link to="/events">Events</router-link> |
       <router-link to="/games">Games</router-link> |
-      <router-link to="/myAccount">My Account</router-link>
+      <router-link to="/myAccount">My Account</router-link> |
+      <router-link to="/signIn">Sign In</router-link>
     </div>
     <router-view/>
   </div>
