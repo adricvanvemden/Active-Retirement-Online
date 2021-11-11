@@ -17,7 +17,15 @@
 
 <script>
 import { db } from './firebase'
-import { addDoc, collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore'
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where
+} from 'firebase/firestore'
 
 export default {
   data () {
@@ -47,15 +55,10 @@ export default {
         participants: [
           {
             user: 'Harald Harald',
-            actions: [
-              'Action one'
-            ]
+            actions: ['Action one']
           }
         ],
-        actions: [
-          'Action one',
-          'Action two'
-        ]
+        actions: ['Action one', 'Action two']
       })
       console.log(docRef)
     },
@@ -114,9 +117,11 @@ export default {
     async getMonthlyEvents () {
       const startdate = new Date('2021-11-01')
       const enddate = new Date('2021-12-01')
-      const q = query(collection(db, 'events'),
+      const q = query(
+        collection(db, 'events'),
         where('date', '>=', startdate),
-        where('date', '<', enddate))
+        where('date', '<', enddate)
+      )
       const querySnapshot = await getDocs(q)
       querySnapshot.forEach((doc) => {
         this.monthlyEvent = {
