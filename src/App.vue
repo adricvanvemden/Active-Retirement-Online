@@ -14,15 +14,16 @@
 </template>
 
 <script>
-import { db } from './firebase'
-import { addDoc, collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore'
+import { db, auth } from './firebase'
+import { addDoc, collection, doc, getDoc, getDocs, setDoc, query, where } from 'firebase/firestore'
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth'
 
 export default {
   data () {
     return {
       events: [],
       monthlyEvents: [],
-      eventsByType: [],
+      eventsByType: []
     }
   },
   mounted () {
@@ -175,6 +176,66 @@ export default {
       } else {
         console.log('No such event!')
       }
+    },
+
+    async getUser (userId) {
+      const docRef = doc(db, 'users', userId)
+      const docSnap = await getDoc(docRef)
+      if (docSnap.exists()) {
+        console.log('Document data:', docSnap.data())
+      } else {
+        console.log('No such User!')
+      }
+    },
+
+    signUp (email, password, firstName, lastName, gender, phoneNumber, ageGroup,
+      address, zipCode, county, hobbies, community) {
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const docRef = setDoc(collection(db, 'users', userCredential.user.uid), {
+            firstName: firstName,
+            lastName: lastName,
+            gender: gender,
+            eMail: email,
+            phoneNumber: phoneNumber,
+            ageGroup: ageGroup,
+            address: address,
+            zipCode: zipCode,
+            county: county,
+            hobbies: hobbies,
+            dateOfRegistration: new Date().getTime(),
+            community: community,
+            userRole: 'registered'
+          })
+          console.log('Registration successful', docRef)
+        })
+        .catch((error) => {
+          const errorCode = error.code
+          console.log(errorCode)
+          const errorMessage = error.message
+          console.log(errorMessage)
+        })
+    },
+    signInWithEmail (email, password) {
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // user which get all the attributes of document with the same id
+          // const user = doc(db, 'users', userCredential.user.uid)
+        })
+        .catch((error) => {
+          const errorCode = error.code
+          console.log(errorCode)
+          const errorMessage = error.message
+          console.log(errorMessage)
+        })
+    },
+
+    signOutFromApp () {
+      signOut(auth).then(() => {
+        // Sign-out successful.
+      }).catch((error) => {
+        console.log(error)
+      })
     }
   }
 }
