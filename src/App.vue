@@ -188,9 +188,9 @@ export default {
       }
     },
 
-    signUp (email, password, firstName, lastName, gender, phoneNumber, ageGroup,
+    async signUp (email, password, firstName, lastName, gender, phoneNumber, ageGroup,
       address, zipCode, county, hobbies, community) {
-      createUserWithEmailAndPassword(auth, email, password)
+      await createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           const docRef = setDoc(collection(db, 'users', userCredential.user.uid), {
             firstName: firstName,
@@ -216,11 +216,12 @@ export default {
           console.log(errorMessage)
         })
     },
-    signInWithEmail (email, password) {
-      signInWithEmailAndPassword(auth, email, password)
+    async signInWithEmail (email, password) {
+      await signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           // user which get all the attributes of document with the same id
-          // const user = doc(db, 'users', userCredential.user.uid)
+          const user = doc(db, 'users', userCredential.user.uid)
+          console.log(user)
         })
         .catch((error) => {
           const errorCode = error.code
@@ -230,8 +231,8 @@ export default {
         })
     },
 
-    signOutFromApp () {
-      signOut(auth).then(() => {
+    async signOutFromApp () {
+      await signOut(auth).then(() => {
         // Sign-out successful.
       }).catch((error) => {
         console.log(error)
