@@ -1,0 +1,29 @@
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+
+$base-red: #a01d24;
+$base-blue: #204293;
+
+.btn-danger {
+  @include button-variant(
+    $base-red,
+    darken($base-red, 7.5%),
+    darken($base-red, 10%),
+    lighten($base-red, 5%),
+    lighten($base-red, 10%),
+    darken($base-red, 30%)
+  );
+  color: #fff;
+}
+.btn-primary {
+  @include button-variant(
+    $base-blue,
+    darken($base-blue, 7.5%),
+    darken($base-blue, 10%),
+    lighten($base-blue, 5%),
+    lighten($base-blue, 10%),
+    darken($base-blue, 30%)
+  );
+  color: #fff;
+}
