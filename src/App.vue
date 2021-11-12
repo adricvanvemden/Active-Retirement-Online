@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <div id="nav">
+      <router-link to="/signIn">Sign In</router-link>
       <router-link to="/">Calendar</router-link>
       |
       <router-link to="/events">Events</router-link>
