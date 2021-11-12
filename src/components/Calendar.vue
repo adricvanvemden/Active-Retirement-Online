@@ -1,14 +1,21 @@
 <template>
   <div class="calendar">
-    <div class="grid-week-days">
-      <div v-for="weekDay in weekDays" :key="weekDay">
-        {{ weekDay }}
-      </div>
+    <div class="month-selector">
+      <b-icon icon="caret-left-fill" @click="onLeftCaret()" />
+      <div class="month" @click="onDate()">{{ monthFull }} {{ year }}</div>
+      <b-icon icon="caret-right-fill" @click="onRightCaret()" />
     </div>
+    <div class="calendar-border">
+      <div class="grid-week-days">
+        <div v-for="weekDay in weekDays" :key="weekDay">
+          {{ weekDay }}
+        </div>
+      </div>
 
-    <div v-for="week in calendar" :key="week.value" class="grid-week">
-      <div v-for="day in week" :key="day.value">
-        {{ formatToDay(day) }}
+      <div v-for="week in calendar" :key="week.value" class="grid-week">
+        <div v-for="day in week" :key="day.value">
+          {{ formatToDay(day) }}
+        </div>
       </div>
     </div>
   </div>
@@ -32,16 +39,24 @@ export default {
         'Saturday',
         'Sunday'
       ],
-      year: 2021,
-      month: 10, // jan = 0
+      currentDate: '',
+      fullDate: '',
+      year: '',
+      month: '', // jan = 0
+      monthFull: '',
       calendar: ''
     }
   },
 
   computed: {},
-  watch: {},
+  watch: {
+    fullDate () {
+      this.calendar = calendar.monthDates(this.year, this.month)
+    }
+  },
 
   created () {
+    this.setCurrentDate()
     this.calendar = calendar.monthDates(this.year, this.month)
   },
 
@@ -52,13 +67,45 @@ export default {
 
     formatToDay (date) {
       return moment(date).format('DD')
+    },
+
+    setCurrentDate () {
+      this.currentDate = moment()
+      this.fullDate = moment()
+      this.year = moment().year()
+      this.month = moment().month()
+      this.monthFull = moment().month(this.month).format('MMMM')
+    },
+
+    onLeftCaret () {
+      this.currentDate = moment()
+      this.fullDate = moment(this.fullDate).subtract(1, 'months')
+      this.month = this.fullDate.month()
+      this.monthFull = moment().month(this.month).format('MMMM')
+      if (this.month === 11) {
+        this.year--
+      }
+    },
+
+    onRightCaret () {
+      this.currentDate = moment()
+      this.fullDate = moment(this.fullDate).add(1, 'months')
+      this.month = this.fullDate.month()
+      this.monthFull = moment().month(this.month).format('MMMM')
+      if (this.month === 0) {
+        this.year++
+      }
+    },
+
+    onDate () {
+      this.setCurrentDate()
     }
   }
 }
 </script>
 
 <style lang="scss">
-.calendar {
+.calendar-border {
   border: 1px solid;
   max-width: 1400px;
   margin-left: auto;
@@ -77,5 +124,20 @@ export default {
   grid-template-rows: 100px;
   border-top: 1px solid;
   justify-items: left;
+}
+
+.month-selector {
+  font-size: 32px;
+  display: flex;
+  user-select: none;
+  align-items: center;
+
+  .month {
+    width: 250px;
+    cursor: pointer;
+  }
+  svg {
+    cursor: pointer;
+  }
 }
 </style>
