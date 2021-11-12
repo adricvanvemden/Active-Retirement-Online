@@ -17,6 +17,7 @@
           v-for="day in week"
           :key="day.value"
           :class="{ past: isPast(day) }"
+          :id="formatToID(day)"
         >
           <div
             v-if="!isToday(day)"
@@ -34,6 +35,8 @@
 </template>
 
 <script>
+import { collection, getDocs, where, query } from 'firebase/firestore'
+import { db } from '@/firebase'
 import moment from 'moment'
 const Calendar = require('calendar').Calendar
 const calendar = new Calendar(1) // 1 to start on Monday
@@ -56,20 +59,20 @@ export default {
       year: '',
       month: '', // jan = 0
       monthFull: '',
-      calendar: ''
+      calendar: '',
+      events: []
     }
   },
 
   computed: {},
   watch: {
     fullDate () {
-      this.calendar = calendar.monthDates(this.year, this.month)
+      this.setCalendar()
     }
   },
 
   created () {
     this.setCurrentDate()
-    this.calendar = calendar.monthDates(this.year, this.month)
   },
 
   methods: {
@@ -77,11 +80,20 @@ export default {
       console.log(val)
     },
 
+    setCalendar () {
+      this.calendar = calendar.monthDates(this.year, this.month)
+      this.getMonthlyEvents()
+    },
+
     formatToDay (date) {
       return moment(date).format('DD')
     },
     formatToDayMonth (date) {
       return moment(date).format('DD MMM')
+    },
+
+    formatToID (date) {
+      return moment(date).format('DD-MMM')
     },
 
     isToday (date) {
@@ -133,6 +145,52 @@ export default {
 
     onDate () {
       this.setCurrentDate()
+    },
+
+    appendEvents () {
+      for (const event of this.events) {
+        const date = new Date(event.date.seconds * 1000)
+        const element = document.getElementById(this.formatToID(date))
+        element.append(event.eventName)
+        console.log(element)
+      }
+    },
+
+    // temp function just to populate the calendar
+    async getMonthlyEvents () {
+      const startDate = new Date(
+        moment(this.fullDate).startOf('month').format('YYYY-MM-DD')
+      )
+      const endDate = new Date(
+        moment(this.fullDate).endOf('month').format('YYYY-MM-DD')
+      )
+      const q = query(
+        collection(db, 'events'),
+        where('date', '>=', startDate),
+        where('date', '<=', endDate)
+      )
+      const querySnapshot = await getDocs(q)
+      querySnapshot.forEach((doc) => {
+        this.monthlyEvent = {
+          id: doc.id,
+          eventName: doc.data().eventName,
+          date: doc.data().date,
+          endTime: doc.data().endTime,
+          description: doc.data().description,
+          deadlineRegistration: doc.data().deadlineRegistration,
+          limitAttenders: doc.data().limitAttenders,
+          location: doc.data().location,
+          organizer: doc.data().organizer,
+          participatingCommunities: doc.data().participatingCommunities,
+          eventCanceled: doc.data().eventCanceled,
+          onlineOffline: doc.data().onlineOffline,
+          participants: doc.data().participants,
+          actions: doc.data().actions
+        }
+        this.events.push(this.monthlyEvent)
+        // console.log(this.events)
+      })
+      this.appendEvents()
     }
   }
 }

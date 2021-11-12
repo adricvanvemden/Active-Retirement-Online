@@ -117,6 +117,7 @@ export default {
     async getMonthlyEvents () {
       const startdate = new Date('2021-11-01')
       const enddate = new Date('2021-12-01')
+      console.log(startdate)
       const q = query(
         collection(db, 'events'),
         where('date', '>=', startdate),
