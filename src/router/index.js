@@ -16,7 +16,7 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/Events.vue')
+    component: () => import(/* webpackChunkName: "events" */ '../views/Events.vue')
   },
   {
     path: '/games',
@@ -24,7 +24,7 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/Games.vue')
+    component: () => import(/* webpackChunkName: "games" */ '../views/Games.vue')
   },
   {
     path: '/myAccount',
@@ -32,15 +32,23 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/MyAccount.vue')
+    component: () => import(/* webpackChunkName: "account" */ '../views/MyAccount.vue')
   },
   {
+
     path: '/signIn',
     name: 'SignIn',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/SignIn.vue')
+    component: () => import(/* webpackChunkName: "signIn" */ '../views/SignIn.vue')
+  },
+    path: '/admin/events/create',
+    name: 'createEvent',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "events-admin" */ '../views/CreateEvent.vue')
   }
 ]
 
