@@ -118,11 +118,14 @@
 
 <script>
 import { db } from '@/firebase'
-import { collection, addDoc } from 'firebase/firestore'
+import { collection, addDoc, getDocs } from 'firebase/firestore'
 import moment from 'moment'
 
 export default {
   name: 'Home',
+  created () {
+    this.getAllCommunities()
+  },
   computed: {
     datePickerDate () {
       return moment().format('YYYY-MM-DD')
@@ -220,10 +223,7 @@ export default {
         selected: null
       },
       communities: {
-        options: [
-          { text: 'community1', value: 'cm1' },
-          { text: 'community2', value: 'cm2' }
-        ],
+        options: [],
         selected: []
       },
       type: {
@@ -262,6 +262,24 @@ export default {
       })
       console.log(docRef)
     },
+
+    async getAllCommunities () {
+      const querySnapshot = await getDocs(collection(db, 'communities'))
+      querySnapshot.forEach((doc) => {
+        this.community = {
+          id: doc.id,
+          name: doc.data().name,
+          address: doc.data().address,
+          phoneNumber: doc.data().phoneNumber,
+          eMailAddress: doc.data().eMailAddress
+        }
+        this.communities.options.push({
+          text: this.community.name,
+          value: this.community.id
+        })
+      })
+    },
+
     onCreateEvent () {
       this.createEvent()
     }

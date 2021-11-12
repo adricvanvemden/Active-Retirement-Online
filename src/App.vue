@@ -82,10 +82,10 @@ export default {
     },
     async createCommunity () {
       const docRef = await addDoc(collection(db, 'communities'), {
-        name: 'Retirement Group Dublin',
-        address: 'North Circular Road 234',
+        name: 'Retirement Group Meath',
+        address: 'North-East Circular Road 715',
         phoneNumber: '123 456 789',
-        eMailAddress: 'retgroupdublin@gmail.com'
+        eMailAddress: 'retgroupmeath@gmail.com'
       })
       console.log(docRef)
     },

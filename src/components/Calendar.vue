@@ -145,7 +145,7 @@ export default {
   margin-right: auto;
 }
 .calendar-border {
-  border: 1px solid;
+  border: 1px solid #b8b8b8;
 }
 .grid-week-days {
   display: grid;
@@ -159,7 +159,7 @@ export default {
   display: grid;
   grid-template-columns: repeat(7, 250px);
   grid-template-rows: 125px;
-  border-top: 1px solid;
+  border-top: 1px solid #b8b8b8;
   justify-items: left;
   font-size: 20px;
 }
