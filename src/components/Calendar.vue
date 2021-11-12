@@ -13,8 +13,20 @@
       </div>
 
       <div v-for="week in calendar" :key="week.value" class="grid-week">
-        <div v-for="day in week" :key="day.value">
-          {{ formatToDay(day) }}
+        <div
+          v-for="day in week"
+          :key="day.value"
+          :class="{ past: isPast(day) }"
+        >
+          <div
+            v-if="!isToday(day)"
+            :class="{ 'outside-month': isOutsideMonth(day) }"
+          >
+            {{ formatToDay(day) }}
+          </div>
+          <div v-else class="today">
+            {{ formatToDayMonth(day) }}
+          </div>
         </div>
       </div>
     </div>
@@ -68,6 +80,28 @@ export default {
     formatToDay (date) {
       return moment(date).format('DD')
     },
+    formatToDayMonth (date) {
+      return moment(date).format('DD MMM')
+    },
+
+    isToday (date) {
+      return (
+        moment(this.currentDate).format('YYYY-MM-DD') ===
+        moment(date).format('YYYY-MM-DD')
+      )
+    },
+
+    isPast (date) {
+      if (this.isOutsideMonth(date)) return
+      return (
+        moment(date).format('YYYY-MM-DD') <
+        moment(this.currentDate).format('YYYY-MM-DD')
+      )
+    },
+
+    isOutsideMonth (date) {
+      return !(moment(date).month() === this.fullDate.month())
+    },
 
     setCurrentDate () {
       this.currentDate = moment()
@@ -105,25 +139,29 @@ export default {
 </script>
 
 <style lang="scss">
-.calendar-border {
-  border: 1px solid;
-  max-width: 1400px;
+.calendar {
+  width: 1750px;
   margin-left: auto;
   margin-right: auto;
 }
+.calendar-border {
+  border: 1px solid;
+}
 .grid-week-days {
   display: grid;
-  grid-template-columns: repeat(7, auto);
-  grid-template-rows: 50px;
+  grid-template-columns: repeat(7, 250px);
+  grid-template-rows: 40px;
   justify-items: left;
+  font-size: 28px;
 }
 
 .grid-week {
   display: grid;
-  grid-template-columns: repeat(7, auto);
-  grid-template-rows: 100px;
+  grid-template-columns: repeat(7, 250px);
+  grid-template-rows: 125px;
   border-top: 1px solid;
   justify-items: left;
+  font-size: 20px;
 }
 
 .month-selector {
@@ -139,5 +177,22 @@ export default {
   svg {
     cursor: pointer;
   }
+}
+
+.today {
+  border-top: 3px solid #204293;
+  width: 250px;
+  color: #204293;
+  display: flex;
+}
+
+.past {
+  background-color: #e5e5e5;
+  display: flex;
+  width: 100%;
+}
+
+.outside-month {
+  display: none;
 }
 </style>
