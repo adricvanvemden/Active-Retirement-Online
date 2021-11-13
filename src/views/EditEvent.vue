@@ -118,9 +118,9 @@
 
 <script>
 import { db } from '@/firebase'
-import { updateDoc, collection } from 'firebase/firestore'
+import { updateDoc, collection, getDocs, query, doc } from 'firebase/firestore'
 import moment from 'moment'
-console.log(collection(db, 'events'))
+
 export default {
   name: 'Home',
   computed: {
@@ -150,6 +150,7 @@ export default {
         this.startTime === '' ||
         this.endTime === '' ||
         this.attendanceLimit === '' ||
+        this.date === '' ||
         this.description === ''
       ) {
         return true
@@ -238,9 +239,43 @@ export default {
       }
     }
   },
+  created () {
+    this.getEvent()
+  },
   methods: {
+    async getEvent () {
+      // Better way to make the query
+      const q = query(
+        collection(db, 'events')
+      )
+      const querySnapshot = await getDocs(q)
+      querySnapshot.forEach((doc) => {
+        if (doc.id === 'KVeQ6OHJYa4fc4R0NMGx') {
+          this.name = doc.data().eventName
+          // this.date = moment.utc(doc.data().date).format('YYYY-MM-DD')
+          this.startTime = doc.data().startTime
+          this.endTime = doc.data().endTime
+          this.description = doc.data().description
+          this.deadlineRegistration = doc.data().deadlineRegistration
+          this.attendanceLimit = doc.data().limitAttenders
+          this.location = doc.data().location
+          this.type.selected = doc.data().type
+          this.online.selected = doc.data().onlineOffline
+          this.actions.action1.value = doc.data().actions[0].value
+          this.actions.action1.selected = doc.data().actions[0].selected
+          this.actions.action2.value = doc.data().actions[1].value
+          this.actions.action2.selected = doc.data().actions[1].selected
+          this.actions.action3.value = doc.data().actions[2].value
+          this.actions.action3.selected = doc.data().actions[2].selected
+          // this.communities = doc.data().participatingCommunities
+        }
+      })
+    },
+
     async editEvent () {
-      const docRef = await updateDoc(collection(db, 'events'), {
+      const docRef = doc(db, 'events', 'KVeQ6OHJYa4fc4R0NMGx')
+
+      await updateDoc(docRef, {
         eventName: this.name,
         date: new Date(this.date),
         description: this.description,
