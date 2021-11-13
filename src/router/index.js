@@ -43,12 +43,21 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "signIn" */ '../views/SignIn.vue')
   },
+  {
     path: '/admin/events/create',
     name: 'createEvent',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "events-admin" */ '../views/CreateEvent.vue')
+  },
+  {
+    path: '/admin/events/edit',
+    name: 'editEvent',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "events-admin" */ '../views/EditEvent.vue')
   }
 ]
 
