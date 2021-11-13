@@ -104,14 +104,37 @@
     </div>
 
     <div class="buttons-wrapper">
-      <b-button class="btn-danger" squared>CANCEL</b-button>
+      <b-button class="btn-danger" v-b-modal.modal-prevent-closing squared>CANCEL</b-button>
+      <b-modal
+        id="modal-prevent-closing"
+        ref="modal"
+        title="Enter your cancellation reason"
+        @show="resetModal"
+        @hidden="resetModal"
+        @ok="handleOk"
+      >
+      <form ref="form" @submit.stop.prevent="handleSubmit">
+        <b-form-group
+          label="Cancellation Reason"
+          label-for="cancel-input"
+          invalid-feedback="Cancellation reason is required"
+          :state="cancellationReasonState"
+        >
+        <b-form-input
+          id="cancel-input"
+          v-model="cancellationReason"
+          :state="cancellationReasonState"
+          required
+        ></b-form-input>
+        </b-form-group>
+      </form>
+      </b-modal>
       <b-button
         class="btn-primary"
         squared
         :disabled="createButtonDisabled"
         @click="onEditEvent()"
-        >EDIT EVENT</b-button
-      >
+      >EDIT EVENT</b-button>
     </div>
   </div>
 </template>
@@ -236,7 +259,9 @@ export default {
           { text: 'Games', value: 'game' }
         ],
         selected: null
-      }
+      },
+      cancellationState: null,
+      cancellationReason: ''
     }
   },
   created () {
@@ -252,7 +277,7 @@ export default {
       querySnapshot.forEach((doc) => {
         if (doc.id === 'KVeQ6OHJYa4fc4R0NMGx') {
           this.name = doc.data().eventName
-          // this.date = moment.utc(doc.data().date).format('YYYY-MM-DD')
+          // this.date = moment(doc.data().date).format('YYYY-MM-DD')
           this.startTime = doc.data().startTime
           this.endTime = doc.data().endTime
           this.description = doc.data().description
@@ -279,13 +304,11 @@ export default {
         eventName: this.name,
         date: new Date(this.date),
         description: this.description,
-        deadlineRegistration: new Date(this.date),
         limitAttenders: this.attendanceLimit,
         location: this.location,
         startTime: this.startTime,
         endTime: this.endTime,
         participatingCommunities: this.communities.selected,
-        eventCanceled: false,
         onlineOffline: this.online.selected,
         actions: [
           this.actions.action1,
@@ -299,6 +322,33 @@ export default {
     },
     onEditEvent () {
       this.editEvent()
+    },
+    checkFormValidity () {
+      const valid = this.$refs.form.checkValidity()
+      this.cancellationReasonState = valid
+      return valid
+    },
+    resetModal () {
+      this.cancellationReason = ''
+      this.cancellationReasonState = null
+    },
+    handleOk (bvModalEvt) {
+      // Prevent modal from closing
+      bvModalEvt.preventDefault()
+      // Trigger submit handler
+      this.handleSubmit()
+    },
+    handleSubmit () {
+      // Exit when the form isn't valid
+      if (!this.checkFormValidity()) {
+        return
+      }
+      // Push the name to submitted names
+      console.log(this.cancellationReason)
+      // Hide the modal manually
+      this.$nextTick(() => {
+        this.$bvModal.hide('modal-prevent-closing')
+      })
     }
   }
 }
