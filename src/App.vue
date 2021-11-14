@@ -15,7 +15,7 @@
 
 <script>
 import { db, auth } from './firebase'
-import { addDoc, collection, doc, getDoc, getDocs, setDoc, query, where } from 'firebase/firestore'
+import { addDoc, collection, doc, getDoc, getDocs, setDoc, query, updateDoc, where } from 'firebase/firestore'
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth'
 
 export default {
@@ -236,6 +236,27 @@ export default {
         // Sign-out successful.
       }).catch((error) => {
         console.log(error)
+      })
+    },
+
+    async editEvent (pokemonId) {
+      const eventRef = doc(db, 'pokemon', pokemonId)
+      await updateDoc(eventRef, {
+        // replace attribute with frontend attribute
+        eventName: 'attribute',
+        date: 'attribute',
+        endTime: 'attribute',
+        description: 'attribute',
+        deadlineRegistration: 'attribute',
+        limitAttenders: 'attribute',
+        location: 'attribute',
+        organizer: 'attribute',
+        participatingCommunities: 'attribute',
+        eventCanceled: 'attribute',
+        onlineOffline: 'attribute',
+        participants: 'attribute',
+        actions: 'attribute',
+        type: 'attribute'
       })
     }
   }
