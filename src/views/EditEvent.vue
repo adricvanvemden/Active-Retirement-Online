@@ -111,30 +111,38 @@
         title="Enter your cancellation reason"
         @show="resetModal"
         @hidden="resetModal"
-        @ok="handleOk"
+        @ok="handleOkCancel"
       >
-      <form ref="form" @submit.stop.prevent="handleSubmit">
-        <b-form-group
-          label="Cancellation Reason"
-          label-for="cancel-input"
-          invalid-feedback="Cancellation reason is required"
-          :state="cancellationReasonState"
-        >
-        <b-form-input
-          id="cancel-input"
-          v-model="cancellationReason"
-          :state="cancellationReasonState"
-          required
-        ></b-form-input>
-        </b-form-group>
-      </form>
+        <form ref="form" @submit.stop.prevent="handleSubmitCancel">
+          <b-form-group
+            label="Cancellation Reason"
+            label-for="cancel-input"
+            invalid-feedback="Cancellation reason is required"
+            :state="cancellationReasonState"
+          >
+            <b-form-textarea
+              id="cancel-input"
+              v-model="cancellationReason"
+              :state="cancellationReasonState"
+              rows="3"
+              required
+            ></b-form-textarea>
+          </b-form-group>
+        </form>
       </b-modal>
       <b-button
         class="btn-primary"
         squared
+        v-b-modal.confirm-edit
         :disabled="createButtonDisabled"
-        @click="onEditEvent()"
       >EDIT EVENT</b-button>
+      <b-modal
+       id="confirm-edit"
+       title="Confirm Edit"
+       @ok="onEditEvent()"
+      >
+        <p class="my-4">Are you sure you want to confirm edit ?</p>
+      </b-modal>
     </div>
   </div>
 </template>
@@ -143,6 +151,7 @@
 import { db } from '@/firebase'
 import { updateDoc, collection, getDocs, query, doc } from 'firebase/firestore'
 import moment from 'moment'
+const eventId = 'KVeQ6OHJYa4fc4R0NMGx'
 
 export default {
   name: 'Home',
@@ -260,7 +269,7 @@ export default {
         ],
         selected: null
       },
-      cancellationState: null,
+      cancellationReasonState: null,
       cancellationReason: ''
     }
   },
@@ -275,7 +284,7 @@ export default {
       )
       const querySnapshot = await getDocs(q)
       querySnapshot.forEach((doc) => {
-        if (doc.id === 'KVeQ6OHJYa4fc4R0NMGx') {
+        if (doc.id === eventId) {
           this.name = doc.data().eventName
           // this.date = moment(doc.data().date).format('YYYY-MM-DD')
           this.startTime = doc.data().startTime
@@ -298,7 +307,7 @@ export default {
     },
 
     async editEvent () {
-      const docRef = doc(db, 'events', 'KVeQ6OHJYa4fc4R0NMGx')
+      const docRef = doc(db, 'events', eventId)
 
       await updateDoc(docRef, {
         eventName: this.name,
@@ -332,19 +341,22 @@ export default {
       this.cancellationReason = ''
       this.cancellationReasonState = null
     },
-    handleOk (bvModalEvt) {
+    handleOkCancel (bvModalEvt) {
       // Prevent modal from closing
       bvModalEvt.preventDefault()
       // Trigger submit handler
-      this.handleSubmit()
+      this.handleSubmitCancel()
     },
-    handleSubmit () {
+    async handleSubmitCancel () {
       // Exit when the form isn't valid
       if (!this.checkFormValidity()) {
         return
       }
-      // Push the name to submitted names
-      console.log(this.cancellationReason)
+      const docRef = doc(db, 'events', eventId)
+      await updateDoc(docRef, {
+        eventCanceled: true,
+        eventCancellationReason: this.cancellationReason
+      })
       // Hide the modal manually
       this.$nextTick(() => {
         this.$bvModal.hide('modal-prevent-closing')
