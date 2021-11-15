@@ -192,7 +192,7 @@ export default {
       address, zipCode, county, hobbies, community) {
       await createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
-          const docRef = setDoc(collection(db, 'users', userCredential.user.uid), {
+          const docRef = setDoc(doc(db, 'users', userCredential.user.uid), {
             firstName: firstName,
             lastName: lastName,
             gender: gender,
