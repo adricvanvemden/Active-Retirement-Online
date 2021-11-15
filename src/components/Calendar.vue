@@ -16,6 +16,7 @@
         <div
           v-for="day in week"
           :key="day.value"
+          class="cell"
           :class="{ past: isPast(day) }"
           :id="formatToID(day)"
         >
@@ -23,7 +24,9 @@
             v-if="!isToday(day)"
             :class="{ 'outside-month': isOutsideMonth(day) }"
           >
-            {{ formatToDay(day) }}
+            <div class="date">
+              {{ formatToDay(day) }}
+            </div>
           </div>
           <div v-else class="today">
             {{ formatToDayMonth(day) }}
@@ -151,8 +154,22 @@ export default {
       for (const event of this.events) {
         const date = new Date(event.date.seconds * 1000)
         const element = document.getElementById(this.formatToID(date))
-        element.append(event.eventName)
-        console.log(element)
+        const wrapper = document.createElement('div')
+        wrapper.classList += 'event'
+        const dot = document.createElement('div')
+        dot.classList += 'dot ' + event.type
+        wrapper.append(dot)
+
+        const eventEl = document.createElement('div')
+        eventEl.innerHTML =
+          '<b>' +
+          event.eventName +
+          ':</b>' +
+          event.startTime +
+          ' - ' +
+          event.endTime
+        wrapper.append(eventEl)
+        element.append(wrapper)
       }
     },
 
@@ -175,6 +192,7 @@ export default {
           id: doc.id,
           eventName: doc.data().eventName,
           date: doc.data().date,
+          startTime: doc.data().startTime,
           endTime: doc.data().endTime,
           description: doc.data().description,
           deadlineRegistration: doc.data().deadlineRegistration,
@@ -220,6 +238,20 @@ export default {
   border-top: 1px solid #b8b8b8;
   justify-items: left;
   font-size: 20px;
+  overflow: hidden;
+}
+
+.event {
+  display: flex;
+  align-items: center;
+  max-width: 240px;
+  font-size: 18px;
+  &,
+  & > * {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 .month-selector {
@@ -246,11 +278,44 @@ export default {
 
 .past {
   background-color: #e5e5e5;
-  display: flex;
   width: 100%;
 }
 
 .outside-month {
   display: none;
+}
+
+.cell {
+  .date {
+    width: 10px;
+  }
+  .dot {
+    min-height: 10px;
+    min-width: 10px;
+    background-color: #bbb;
+    border-radius: 50%;
+
+    &.food {
+      background-color: #00ff37;
+    }
+
+    &.webinar {
+      background-color: #0184ff;
+    }
+
+    &.trips {
+      background-color: #fde400;
+    }
+
+    &.games {
+      background-color: #ff0202;
+    }
+  }
+}
+
+.past {
+  .dot {
+    background-color: black;
+  }
 }
 </style>
