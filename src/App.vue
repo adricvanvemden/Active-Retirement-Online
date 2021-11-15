@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <div id="nav">
+      <router-link to="/signIn">Sign In</router-link>
       <router-link to="/">Calendar</router-link>
       |
       <router-link to="/events">Events</router-link>
@@ -8,8 +9,10 @@
       <router-link to="/games">Games</router-link>
       |
       <router-link to="/myAccount">My Account</router-link>
+      |
+      <router-link to="/admin/events/create">Create Event</router-link>
     </div>
-    <router-view/>
+    <router-view />
   </div>
 </template>
 
@@ -26,8 +29,7 @@ export default {
       eventsByType: []
     }
   },
-  mounted () {
-  },
+  mounted () {},
   methods: {
     async createEvent () {
       const docRef = await addDoc(collection(db, 'events'), {
@@ -48,9 +50,7 @@ export default {
         participants: [
           {
             user: 'Harald Harald',
-            actions: [
-              'Action one'
-            ]
+            actions: ['Action one']
           }
         ],
         actions: [
@@ -142,9 +142,11 @@ export default {
     async getMonthlyEvents () {
       const startdate = new Date('2021-11-01')
       const enddate = new Date('2021-12-01')
-      const q = query(collection(db, 'events'),
+      const q = query(
+        collection(db, 'events'),
         where('date', '>=', startdate),
-        where('date', '<', enddate))
+        where('date', '<', enddate)
+      )
       const querySnapshot = await getDocs(q)
       querySnapshot.forEach((doc) => {
         this.monthlyEvent = {
@@ -261,7 +263,6 @@ export default {
     }
   }
 }
-
 </script>
 
 <style lang="scss">
