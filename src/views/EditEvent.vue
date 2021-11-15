@@ -104,7 +104,9 @@
     </div>
 
     <div class="buttons-wrapper">
-      <b-button class="btn-danger" v-b-modal.modal-prevent-closing squared>CANCEL</b-button>
+      <b-button class="btn-danger" v-b-modal.modal-prevent-closing squared
+        >CANCEL</b-button
+      >
       <b-modal
         id="modal-prevent-closing"
         ref="modal"
@@ -135,12 +137,9 @@
         squared
         v-b-modal.confirm-edit
         :disabled="createButtonDisabled"
-      >EDIT EVENT</b-button>
-      <b-modal
-       id="confirm-edit"
-       title="Confirm Edit"
-       @ok="onEditEvent()"
+        >EDIT EVENT</b-button
       >
+      <b-modal id="confirm-edit" title="Confirm Edit" @ok="onEditEvent()">
         <p class="my-4">Are you sure you want to confirm edit ?</p>
       </b-modal>
     </div>
@@ -279,14 +278,14 @@ export default {
   methods: {
     async getEvent () {
       // Better way to make the query
-      const q = query(
-        collection(db, 'events')
-      )
+      const q = query(collection(db, 'events'))
       const querySnapshot = await getDocs(q)
       querySnapshot.forEach((doc) => {
         if (doc.id === eventId) {
           this.name = doc.data().eventName
-          // this.date = moment(doc.data().date).format('YYYY-MM-DD')
+          this.date = moment(doc.data().date.seconds * 1000).format(
+            'YYYY-MM-DD'
+          )
           this.startTime = doc.data().startTime
           this.endTime = doc.data().endTime
           this.description = doc.data().description
