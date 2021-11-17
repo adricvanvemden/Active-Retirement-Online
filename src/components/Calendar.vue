@@ -38,14 +38,14 @@
             :key="event.id"
             class="event-wrapper event"
           >
-            <s v-if="event.cancelled">
+            <s v-if="event.cancelled" class="event-inner-wrapper">
               <div class="dot" :class="[event.type]"></div>
               <div>
                 <b>{{ event.eventName }}:</b>
                 {{ event.startTime }} - {{ event.endTime }}
               </div>
             </s>
-            <div v-else class="d-flex align-items-center">
+            <div v-else class="event-inner-wrapper">
               <div class="dot" :class="[event.type]"></div>
               <div>
                 <b>{{ event.eventName }}:</b>
@@ -351,13 +351,18 @@ export default {
   align-items: center;
   max-width: 240px;
   font-size: 18px;
+  cursor: pointer;
+}
+
+.event-inner-wrapper {
+  display: flex;
+  align-items: center;
   &,
   & > * {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  cursor: pointer;
 }
 
 .month-selector {
