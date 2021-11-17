@@ -14,6 +14,7 @@
 
       <div v-for="week in calendar" :key="week.value" class="grid-week">
         <div
+          @click="onCell(day)"
           v-for="day in week"
           :key="day.value"
           class="cell"
@@ -31,9 +32,55 @@
           <div v-else class="today">
             {{ formatToDayMonth(day) }}
           </div>
+          <!-- events -->
+          <div
+            v-for="event in calendarEvents(day)"
+            :key="event.id"
+            class="event-wrapper event"
+          >
+            <s v-if="event.cancelled">
+              <div class="dot" :class="[event.type]"></div>
+              <div>
+                <b>{{ event.eventName }}:</b>
+                {{ event.startTime }} - {{ event.endTime }}
+              </div>
+            </s>
+            <div v-else class="d-flex align-items-center">
+              <div class="dot" :class="[event.type]"></div>
+              <div>
+                <b>{{ event.eventName }}:</b>
+                {{ event.startTime }} - {{ event.endTime }}
+              </div>
+            </div>
+          </div>
+          <!-- -->
         </div>
       </div>
     </div>
+    <!-- modals -->
+    <b-modal
+      ok-only
+      ok-title="Close"
+      hide-header-close
+      id="modal-calendar-event"
+      ref="modal"
+      :title="formatToDayMonthYear(selectedDate)"
+      size="lg"
+    >
+      <div v-for="event in modalEvents" :key="event.id" class="modal-events">
+        <div class="modal-event-title">
+          <div class="dot" :class="[event.type]"></div>
+          {{ event.eventName }}
+        </div>
+        <div class="modal-event-subtitle">
+          {{ event.startTime }} - {{ event.endTime }} @ {{ event.location }}
+          <b-button variant="primary" @click="onGoToEvent(event.id)">
+            Go to event
+          </b-button>
+        </div>
+        <div class="modal-event-desc">{{ event.description }}</div>
+      </div>
+    </b-modal>
   </div>
 </template>
 
@@ -63,13 +110,29 @@ export default {
       month: '', // jan = 0
       monthFull: '',
       calendar: '',
-      events: []
+      events: [],
+      selectedDate: ''
     }
   },
 
-  computed: {},
+  computed: {
+    modalEvents () {
+      const modalEvents = []
+      this.events.map((element) => {
+        if (
+          moment(element.date.seconds * 1000).format() ===
+          moment(this.selectedDate).format()
+        ) {
+          modalEvents.push(element)
+        }
+      })
+      return modalEvents
+    }
+  },
   watch: {
     fullDate () {
+      this.events = []
+      // this.removeEvents()
       this.setCalendar()
     }
   },
@@ -79,8 +142,16 @@ export default {
   },
 
   methods: {
-    loggie (val) {
-      console.log(val)
+    onGoToEvent (eventID) {
+      this.$router.push('/event/' + eventID)
+    },
+
+    onCell (date) {
+      const element = document.getElementById(this.formatToID(date))
+      if (element.lastElementChild.classList.contains('event-wrapper')) {
+        this.selectedDate = date
+        this.$bvModal.show('modal-calendar-event')
+      }
     },
 
     setCalendar () {
@@ -94,7 +165,9 @@ export default {
     formatToDayMonth (date) {
       return moment(date).format('DD MMM')
     },
-
+    formatToDayMonthYear (date) {
+      return moment(date).format('DD MMMM, YYYY')
+    },
     formatToID (date) {
       return moment(date).format('DD-MMM')
     },
@@ -155,21 +228,53 @@ export default {
         const date = new Date(event.date.seconds * 1000)
         const element = document.getElementById(this.formatToID(date))
         const wrapper = document.createElement('div')
-        wrapper.classList += 'event'
+        wrapper.classList += 'event-wrapper event'
         const dot = document.createElement('div')
         dot.classList += 'dot ' + event.type
         wrapper.append(dot)
 
         const eventEl = document.createElement('div')
-        eventEl.innerHTML =
-          '<b>' +
-          event.eventName +
-          ':</b>' +
-          event.startTime +
-          ' - ' +
-          event.endTime
+        if (event.cancelled) {
+          eventEl.innerHTML =
+            '<s>' +
+            '<b>' +
+            event.eventName +
+            ':</b>' +
+            event.startTime +
+            ' - ' +
+            event.endTime +
+            '</s>'
+        } else {
+          eventEl.innerHTML =
+            '<b>' +
+            event.eventName +
+            ':</b>' +
+            event.startTime +
+            ' - ' +
+            event.endTime
+        }
+
         wrapper.append(eventEl)
         element.append(wrapper)
+      }
+    },
+
+    calendarEvents (date) {
+      const calendarEvents = []
+      this.events.map((element) => {
+        if (
+          moment(element.date.seconds * 1000).format() === moment(date).format()
+        ) {
+          calendarEvents.push(element)
+        }
+      })
+      return calendarEvents
+    },
+
+    removeEvents () {
+      const elements = document.getElementsByClassName('event-wrapper')
+      while (elements.length > 0) {
+        elements[0].parentNode.removeChild(elements[0])
       }
     },
 
@@ -208,7 +313,7 @@ export default {
         this.events.push(this.monthlyEvent)
         // console.log(this.events)
       })
-      this.appendEvents()
+      // this.appendEvents()
     }
   }
 }
@@ -252,6 +357,7 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
   }
+  cursor: pointer;
 }
 
 .month-selector {
@@ -289,27 +395,30 @@ export default {
   .date {
     width: 10px;
   }
-  .dot {
-    min-height: 10px;
-    min-width: 10px;
-    background-color: #bbb;
-    border-radius: 50%;
+}
 
-    &.food {
-      background-color: #00ff37;
-    }
+.dot {
+  min-height: 10px;
+  min-width: 10px;
+  max-height: 10px;
+  max-width: 10px;
+  background-color: #bbb;
+  border-radius: 50%;
 
-    &.webinar {
-      background-color: #0184ff;
-    }
+  &.food {
+    background-color: #00ff37;
+  }
 
-    &.trips {
-      background-color: #fde400;
-    }
+  &.webinar {
+    background-color: #0184ff;
+  }
 
-    &.games {
-      background-color: #ff0202;
-    }
+  &.trips {
+    background-color: #fde400;
+  }
+
+  &.games {
+    background-color: #ff0202;
   }
 }
 
@@ -317,5 +426,38 @@ export default {
   .dot {
     background-color: black;
   }
+}
+
+.modal-footer {
+  justify-content: center;
+}
+
+.modal-events {
+  display: flex;
+  flex-direction: column;
+  border-bottom: solid 1px;
+  font-size: 22px;
+  & > * {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.modal-event-title {
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+}
+
+.modal-event-subtitle {
+  display: flex;
+  justify-content: space-between;
+  margin-left: 10px;
+}
+
+.modal-event-desc {
+  margin-top: 10px;
+  margin-left: 10px;
 }
 </style>
