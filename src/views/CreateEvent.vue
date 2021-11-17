@@ -197,7 +197,6 @@ export default {
     return {
       name: '',
       date: '',
-      dateObject: '',
       startTime: '',
       endTime: '',
       attendanceLimit: '',
@@ -261,6 +260,7 @@ export default {
         type: this.type.selected
       })
       console.log(docRef)
+      this.clearFields()
     },
 
     async getAllCommunities () {
@@ -278,6 +278,22 @@ export default {
           value: this.community.id
         })
       })
+    },
+
+    clearFields () {
+      this.name = ''
+      this.date = ''
+      this.startTime = ''
+      this.endTime = ''
+      this.attendanceLimit = ''
+      this.location = ''
+      this.description = ''
+      this.actions.action1 = { selected: null, value: '' }
+      this.actions.action2 = { selected: null, value: '' }
+      this.actions.action3 = { selected: null, value: '' }
+      this.online.selected = null
+      this.communities.selected = []
+      this.type.selected = null
     },
 
     onCreateEvent () {
