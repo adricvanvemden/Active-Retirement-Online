@@ -8,19 +8,22 @@
           <div class="input_wrap">
             <label for="input_text" class="input_text">Email or phone number</label>
             <div class="input_field">
-              <input type="text" class="input" id="input_text">
+              <input type="text" class="input" id="input_text" v-model="loginData.email">
             </div>
           </div>
           <div class="input_wrap">
             <label for="input_password" class="input_text">Password</label>
             <div class="input_field">
-              <input type="password" class="input" id="input_password">
+              <input type="password" class="input" id="input_password" v-model="loginData.password">
             </div>
           </div>
         </form>
         <br>
       <br>
-      <button class="btn">SIGN IN</button>
+      <button
+        class="btn"
+        type="submit"
+        @click="signInWithEmail()">SIGN IN</button>
       <br>
       <p>Don't have an account, yet?</p>
       <br>
@@ -30,7 +33,38 @@
 </template>
 
 <script>
+import { auth } from '../firebase'
+import { signInWithEmailAndPassword } from 'firebase/auth'
+import router from '@/router'
 
+export default {
+  data () {
+    return {
+      loginData: {
+        email: null,
+        password: null
+      }
+    }
+  },
+  mounted () {
+  },
+  methods: {
+    signInWithEmail () {
+      signInWithEmailAndPassword(auth, this.loginData.email, this.loginData.password)
+        .then((userCredential) => {
+          const user = userCredential.user
+          console.log(user)
+          router.push('/')
+        })
+        .catch((error) => {
+          const errorCode = error.code
+          console.log(errorCode)
+          const errorMessage = error.message
+          console.log(errorMessage)
+        })
+    }
+  }
+}
 </script>
 
 <style lang="scss">
