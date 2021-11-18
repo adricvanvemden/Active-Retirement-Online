@@ -17,21 +17,15 @@
 </template>
 
 <script>
-import { db } from './firebase'
-import {
-  addDoc,
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  where
-} from 'firebase/firestore'
+import { db, auth } from './firebase'
+import { addDoc, collection, doc, getDoc, getDocs, setDoc, query, updateDoc, where } from 'firebase/firestore'
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth'
 
 export default {
   data () {
     return {
       events: [],
+      eventsByType: [],
       monthlyEvents: []
     }
   },
@@ -59,7 +53,11 @@ export default {
             actions: ['Action one']
           }
         ],
-        actions: ['Action one', 'Action two']
+        actions: [
+          'Action one',
+          'Action two'
+        ],
+        type: 'online'
       })
       console.log(docRef)
     },
@@ -98,6 +96,7 @@ export default {
           id: doc.id,
           eventName: doc.data().eventName,
           date: doc.data().date,
+          startTime: doc.data().startTime,
           endTime: doc.data().endTime,
           description: doc.data().description,
           deadlineRegistration: doc.data().deadlineRegistration,
@@ -108,10 +107,37 @@ export default {
           eventCanceled: doc.data().eventCanceled,
           onlineOffline: doc.data().onlineOffline,
           participants: doc.data().participants,
-          actions: doc.data().actions
+          actions: doc.data().actions,
+          type: doc.data().type
         }
         this.events.push(this.event)
         console.log(this.events)
+      })
+    },
+
+    async getAllEventsByType (type) {
+      const querySnapshot = await getDocs(collection(db, 'events'), where('type', '==', type))
+      querySnapshot.forEach((doc) => {
+        this.event = {
+          id: doc.id,
+          eventName: doc.data().eventName,
+          date: doc.data().date,
+          startTime: doc.data().startTime,
+          endTime: doc.data().endTime,
+          description: doc.data().description,
+          deadlineRegistration: doc.data().deadlineRegistration,
+          limitAttenders: doc.data().limitAttenders,
+          location: doc.data().location,
+          organizer: doc.data().organizer,
+          participatingCommunities: doc.data().participatingCommunities,
+          eventCanceled: doc.data().eventCanceled,
+          onlineOffline: doc.data().onlineOffline,
+          participants: doc.data().participants,
+          actions: doc.data().actions,
+          type: doc.data().type
+        }
+        this.eventsByType.push(this.event)
+        console.log(this.eventsByType)
       })
     },
 
@@ -130,6 +156,7 @@ export default {
           id: doc.id,
           eventName: doc.data().eventName,
           date: doc.data().date,
+          startTime: doc.data().startTime,
           endTime: doc.data().endTime,
           description: doc.data().description,
           deadlineRegistration: doc.data().deadlineRegistration,
@@ -140,7 +167,8 @@ export default {
           eventCanceled: doc.data().eventCanceled,
           onlineOffline: doc.data().onlineOffline,
           participants: doc.data().participants,
-          actions: doc.data().actions
+          actions: doc.data().actions,
+          type: doc.data().type
         }
         this.monthlyEvents.push(this.monthlyEvent)
         console.log(this.monthlyEvents)
@@ -154,6 +182,88 @@ export default {
       } else {
         console.log('No such event!')
       }
+    },
+
+    async getUser (userId) {
+      const docRef = doc(db, 'users', userId)
+      const docSnap = await getDoc(docRef)
+      if (docSnap.exists()) {
+        console.log('Document data:', docSnap.data())
+      } else {
+        console.log('No such User!')
+      }
+    },
+    async signUp (email, password, firstName, lastName, gender, phoneNumber, ageGroup,
+      address, zipCode, county, hobbies, community) {
+      await createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const docRef = setDoc(doc(db, 'users', userCredential.user.uid), {
+            firstName: firstName,
+            lastName: lastName,
+            gender: gender,
+            eMail: email,
+            phoneNumber: phoneNumber,
+            ageGroup: ageGroup,
+            address: address,
+            zipCode: zipCode,
+            county: county,
+            hobbies: hobbies,
+            dateOfRegistration: new Date().getTime(),
+            community: community,
+            userRole: 'registered'
+          })
+          console.log('Registration successful', docRef)
+        })
+        .catch((error) => {
+          const errorCode = error.code
+          console.log(errorCode)
+          const errorMessage = error.message
+          console.log(errorMessage)
+        })
+    },
+    async signInWithEmail (email, password) {
+      await signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // user which get all the attributes of document with the same id
+          const user = doc(db, 'users', userCredential.user.uid)
+          console.log(user)
+        })
+        .catch((error) => {
+          const errorCode = error.code
+          console.log(errorCode)
+          const errorMessage = error.message
+          console.log(errorMessage)
+        })
+    },
+
+    async signOutFromApp () {
+      await signOut(auth).then(() => {
+        // Sign-out successful.
+      }).catch((error) => {
+        console.log(error)
+      })
+    },
+
+    async editEvent (pokemonId) {
+      const eventRef = doc(db, 'pokemon', pokemonId)
+      await updateDoc(eventRef, {
+        // replace attribute with frontend attribute
+        eventName: 'attribute',
+        date: 'attribute',
+        startTime: 'attribute',
+        endTime: 'attribute',
+        description: 'attribute',
+        deadlineRegistration: 'attribute',
+        limitAttenders: 'attribute',
+        location: 'attribute',
+        organizer: 'attribute',
+        participatingCommunities: 'attribute',
+        eventCanceled: 'attribute',
+        onlineOffline: 'attribute',
+        participants: 'attribute',
+        actions: 'attribute',
+        type: 'attribute'
+      })
     }
   }
 }
