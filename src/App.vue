@@ -2,14 +2,10 @@
   <div id="app">
     <div id="nav">
       <router-link to="/">Calendar</router-link>
-      |
       <router-link to="/events">Events</router-link>
-      |
       <router-link to="/games">Games</router-link>
-      |
+      <img class="logo" src="./assets/logo.jpeg" @click="onImg()" />
       <router-link to="/myAccount">My Account</router-link>
-      |
-      <router-link to="/admin/events/create">Create Event</router-link>
     </div>
     <router-view />
   </div>
@@ -17,7 +13,15 @@
 
 <script>
 import { db } from './firebase'
-import { addDoc, collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore'
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where
+} from 'firebase/firestore'
 
 export default {
   data () {
@@ -28,6 +32,9 @@ export default {
   },
   mounted () {},
   methods: {
+    onImg () {
+      this.$router.push('/')
+    },
     async createEvent () {
       const docRef = await addDoc(collection(db, 'events'), {
         eventName: 'Bridge',
@@ -47,15 +54,10 @@ export default {
         participants: [
           {
             user: 'Harald Harald',
-            actions: [
-              'Action one'
-            ]
+            actions: ['Action one']
           }
         ],
-        actions: [
-          'Action one',
-          'Action two'
-        ]
+        actions: ['Action one', 'Action two']
       })
       console.log(docRef)
     },
@@ -114,9 +116,11 @@ export default {
     async getMonthlyEvents () {
       const startdate = new Date('2021-11-01')
       const enddate = new Date('2021-12-01')
-      const q = query(collection(db, 'events'),
+      const q = query(
+        collection(db, 'events'),
         where('date', '>=', startdate),
-        where('date', '<', enddate))
+        where('date', '<', enddate)
+      )
       const querySnapshot = await getDocs(q)
       querySnapshot.forEach((doc) => {
         this.monthlyEvent = {
@@ -162,15 +166,38 @@ export default {
 }
 
 #nav {
-  padding: 30px;
-
+  body {
+    list-style: none;
+    float: left;
+    margin-right: 40px;
+    border: none;
+    text-align: center;
+    float: center;
+    width: auto;
+  }
   a {
-    font-weight: bold;
-    color: #2c3e50;
-
+    color: black;
+    text-decoration: none;
+    font-size: x-large;
+    font-weight: normal;
+    font-family: "Montserrat", sans-serif;
+    padding: 12px 60px;
+    background-color: lightgrey;
     &.router-link-exact-active {
-      color: #42b983;
+      background-color: darkred;
+      color: white;
     }
+  }
+  .active {
+    background-color: darkred;
+  }
+  a:hover:not(.active) {
+    background-color: lightcoral;
+  }
+  .logo {
+    width: 400px;
+    height: 120px;
+    float: fixedgit;
   }
 }
 </style>
