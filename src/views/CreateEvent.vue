@@ -118,11 +118,14 @@
 
 <script>
 import { db } from '@/firebase'
-import { collection, addDoc } from 'firebase/firestore'
+import { collection, addDoc, getDocs } from 'firebase/firestore'
 import moment from 'moment'
 
 export default {
   name: 'Home',
+  created () {
+    this.getAllCommunities()
+  },
   computed: {
     datePickerDate () {
       return moment().format('YYYY-MM-DD')
@@ -194,7 +197,6 @@ export default {
     return {
       name: '',
       date: '',
-      dateObject: '',
       startTime: '',
       endTime: '',
       attendanceLimit: '',
@@ -220,10 +222,7 @@ export default {
         selected: null
       },
       communities: {
-        options: [
-          { text: 'community1', value: 'cm1' },
-          { text: 'community2', value: 'cm2' }
-        ],
+        options: [],
         selected: []
       },
       type: {
@@ -261,7 +260,42 @@ export default {
         type: this.type.selected
       })
       console.log(docRef)
+      this.clearFields()
     },
+
+    async getAllCommunities () {
+      const querySnapshot = await getDocs(collection(db, 'communities'))
+      querySnapshot.forEach((doc) => {
+        this.community = {
+          id: doc.id,
+          name: doc.data().name,
+          address: doc.data().address,
+          phoneNumber: doc.data().phoneNumber,
+          eMailAddress: doc.data().eMailAddress
+        }
+        this.communities.options.push({
+          text: this.community.name,
+          value: this.community.id
+        })
+      })
+    },
+
+    clearFields () {
+      this.name = ''
+      this.date = ''
+      this.startTime = ''
+      this.endTime = ''
+      this.attendanceLimit = ''
+      this.location = ''
+      this.description = ''
+      this.actions.action1 = { selected: null, value: '' }
+      this.actions.action2 = { selected: null, value: '' }
+      this.actions.action3 = { selected: null, value: '' }
+      this.online.selected = null
+      this.communities.selected = []
+      this.type.selected = null
+    },
+
     onCreateEvent () {
       this.createEvent()
     }
