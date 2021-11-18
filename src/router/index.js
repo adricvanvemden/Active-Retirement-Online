@@ -35,7 +35,6 @@ const routes = [
     component: () => import(/* webpackChunkName: "account" */ '../views/MyAccount.vue')
   },
   {
-
     path: '/signIn',
     name: 'SignIn',
     // route level code-splitting
@@ -43,6 +42,7 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "signIn" */ '../views/SignIn.vue')
   },
+  {
     path: '/admin/events/create',
     name: 'createEvent',
     // route level code-splitting
