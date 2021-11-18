@@ -83,6 +83,7 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "events" */ '../views/WebinarEvents.vue')
   },
+  {
     path: '/admin/events/create',
     name: 'createEvent',
     // route level code-splitting
