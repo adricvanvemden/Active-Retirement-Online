@@ -244,8 +244,8 @@ export default {
       })
     },
 
-    async editEvent (pokemonId) {
-      const eventRef = doc(db, 'pokemon', pokemonId)
+    async editEvent (eventId) {
+      const eventRef = doc(db, 'events', eventId)
       await updateDoc(eventRef, {
         // replace attribute with frontend attribute
         eventName: 'attribute',
@@ -258,13 +258,21 @@ export default {
         location: 'attribute',
         organizer: 'attribute',
         participatingCommunities: 'attribute',
-        eventCanceled: 'attribute',
+        eventCanceled: false,
         onlineOffline: 'attribute',
         participants: 'attribute',
         actions: 'attribute',
         type: 'attribute'
       })
     }
+  },
+  async cancelEvent (eventId) {
+    const eventRef = doc(db, 'events', eventId)
+    await updateDoc(eventRef, {
+      // replace attribute with frontend attribute
+      eventCanceled: true,
+      cancelReason: 'attribute'
+    })
   }
 }
 </script>
