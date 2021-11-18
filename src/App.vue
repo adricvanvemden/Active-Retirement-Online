@@ -25,8 +25,8 @@ export default {
   data () {
     return {
       events: [],
-      monthlyEvents: [],
-      eventsByType: []
+      eventsByType: [],
+      monthlyEvents: []
     }
   },
   mounted () {},
@@ -192,7 +192,6 @@ export default {
         console.log('No such User!')
       }
     },
-
     async signUp (email, password, firstName, lastName, gender, phoneNumber, ageGroup,
       address, zipCode, county, hobbies, community) {
       await createUserWithEmailAndPassword(auth, email, password)
