@@ -1,14 +1,14 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import Dashboard from '../views/Dashboard.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home
+    name: 'Dashboard',
+    component: Dashboard
   },
   {
     path: '/events',
@@ -35,7 +35,6 @@ const routes = [
     component: () => import(/* webpackChunkName: "account" */ '../views/MyAccount.vue')
   },
   {
-
     path: '/signIn',
     name: 'SignIn',
     // route level code-splitting
@@ -44,6 +43,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "signIn" */ '../views/SignIn.vue')
   },
   {
+
     path: '/myAccount',
     name: 'MyAccount',
     // route level code-splitting
@@ -82,6 +82,22 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "events" */ '../views/WebinarEvents.vue')
+  },
+    path: '/admin/events/create',
+    name: 'createEvent',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "events-admin" */ '../views/CreateEvent.vue')
+  },
+  {
+    path: '/admin/events/edit',
+    name: 'editEvent',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "events-admin" */ '../views/EditEvent.vue')
+
   }
 ]
 
