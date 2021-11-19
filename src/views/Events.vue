@@ -33,15 +33,6 @@ export default {
 </script>
 
 <style lang="scss">
-a {
-  color: black;
-  text-decoration: none;
-  &:hover {
-    color: black;
-    background: #d3d3d3;
-  }
-}
-
 .icon {
   height: 100px;
   width: 100px;
@@ -63,6 +54,8 @@ a {
     grid-template-columns: 150px 350px;
     align-items: center;
     justify-items: left;
+    color: black;
+    text-decoration: none;
 
     border: 3px solid #d3d3d3;
     border-radius: 18px;
@@ -71,6 +64,11 @@ a {
     font-weight: 600;
     padding-right: 100px;
     background: #f3f4f5;
+
+    &:hover {
+      color: black;
+      background: #d3d3d3;
+    }
   }
 }
 

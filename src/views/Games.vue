@@ -39,6 +39,8 @@
     grid-template-columns: 150px 350px;
     align-items: center;
     justify-items: center;
+    color: black;
+    text-decoration: none;
 
     border: 3px solid #d3d3d3;
     border-radius: 18px;
@@ -48,6 +50,10 @@
     padding-right: 100px;
     background: #f3f4f5;
 
+    &:hover {
+      color: black;
+      background: #d3d3d3;
+    }
     img {
       width: 100px;
       height: 80px;
