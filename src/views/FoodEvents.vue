@@ -3,13 +3,17 @@
     <div class="header">
       <h1>Hello "firstname", look at al these <b>food</b> related events!</h1>
     </div>
-    <div class="infoBox" >
+    <div class="infoBox">
       <div class="eventInfo" v-for="event in events" :key="event.id">
         <div class="nameRegister" v-if="event.type === 'food'">
           <div class="eventName">
             {{ event.eventName }}
           </div>
-          <div class="registerBtn" onclick="location.href='path where you can register'"> <!--insert here correct path for register btn-->
+          <div
+            class="registerBtn"
+            onclick="location.href='path where you can register'"
+          >
+            <!--insert here correct path for register btn-->
             Register for event
           </div>
         </div>
@@ -17,12 +21,13 @@
           {{ event.date }}
         </div>
         <div class="eventTime" v-if="event.type === 'food'">
-          {{ event.startTime }} - {{ event.endTime }} @{{ event.location }}<br>
+          {{ event.startTime }} - {{ event.endTime }} @{{ event.location
+          }}<br />
         </div>
         <div class="eventDescription" v-if="event.type === 'food'">
           {{ event.description }}
         </div>
-        <hr v-if="event.type === 'food'">
+        <hr v-if="event.type === 'food'" />
       </div>
     </div>
   </div>
@@ -30,12 +35,7 @@
 
 <script>
 import { db } from '../firebase'
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs
-} from 'firebase/firestore'
+import { collection, doc, getDoc, getDocs } from 'firebase/firestore'
 
 export default {
   data () {
@@ -92,53 +92,53 @@ export default {
 </script>
 
 <style>
-  .header {
-    padding-bottom: 20px;
-  }
-  .infoBox {
-    border: 3px solid #d3d3d3;
-  }
-  .event {
-    padding: 50px 20px 20px;
-  }
-  .nameRegister {
-    padding: 30px 30px 0px 6%;
-    display: flex;
-    justify-content: space-between;
-  }
-  .eventName {
-    font-size: 30px;
-  }
-  .registerBtn {
-    background: darkblue;
-    padding: 1%;
-    margin-right: 2%;
-    margin-left: 5%;
-    margin-bottom: 2%;
-    border: 1px solid black;
-    color: white;
-  }
-  hr {
-    height: 5%;
-    width: 90%;
-    color: black;
-    margin-left: 6%;
-    margin-right: 2%;
-  }
-  .eventTime {
-    padding-left: 6%;
-    margin-bottom: 1%;
-    display: flex;
-    justify-content:flex-start;
-  }
-  .eventDescription {
-    padding-left: 6%;
-    display: flex;
-    justify-content:flex-start;
-  }
-  .eventDate {
-    padding-left: 6%;
-    display: flex;
-    justify-content:flex-start;
-  }
+.header {
+  padding-bottom: 20px;
+}
+.infoBox {
+  border: 3px solid #d3d3d3;
+}
+.event {
+  padding: 50px 20px 20px;
+}
+.nameRegister {
+  padding: 30px 30px 0px 6%;
+  display: flex;
+  justify-content: space-between;
+}
+.eventName {
+  font-size: 30px;
+}
+.registerBtn {
+  background: darkblue;
+  padding: 1%;
+  margin-right: 2%;
+  margin-left: 5%;
+  margin-bottom: 2%;
+  border: 1px solid black;
+  color: white;
+}
+hr {
+  height: 5%;
+  width: 90%;
+  color: black;
+  margin-left: 6%;
+  margin-right: 2%;
+}
+.eventTime {
+  padding-left: 6%;
+  margin-bottom: 1%;
+  display: flex;
+  justify-content: flex-start;
+}
+.eventDescription {
+  padding-left: 6%;
+  display: flex;
+  justify-content: flex-start;
+}
+.eventDate {
+  padding-left: 6%;
+  display: flex;
+  justify-content: flex-start;
+}
 </style>

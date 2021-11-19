@@ -43,6 +43,7 @@ export default {
     font-size: 24px;
 
     a {
+      color: black;
       padding: 0px 10px 0px 10px;
       align-self: center;
       text-decoration: none;
