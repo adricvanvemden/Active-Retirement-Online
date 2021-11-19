@@ -4,6 +4,16 @@
       <div>Name of event:</div>
       <b-input placeholder="Enter name.." v-model="name" />
 
+      <div>Type:</div>
+      <b-form-select
+        class="w-100"
+        v-model="type.selected"
+        :options="type.options"
+      ></b-form-select>
+
+      <div>Location:</div>
+      <b-input placeholder="Enter location.." v-model="location" />
+
       <div>Online/Offline:</div>
       <b-form-select
         class="w-100"
@@ -11,25 +21,35 @@
         :options="online.options"
       ></b-form-select>
 
-      <div>Location:</div>
-      <b-input placeholder="Enter location.." v-model="location" />
+      <div>Attendance limit:</div>
+      <div class="w-100">
+        <b-input
+          placeholder="Enter limit.."
+          v-model="attendanceLimit"
+          :state="attendanceState"
+        />
+        <b-form-invalid-feedback> Enter a number. </b-form-invalid-feedback>
+      </div>
 
       <div>Date:</div>
-      <b-input type="date" v-model="date" />
+      <b-input type="date" v-model="date" :min="datePickerDate" />
 
       <div>Start time:</div>
-      <b-input type="time" v-model="startTime" />
+
+      <div class="w-100">
+        <b-input type="time" v-model="startTime" :state="startTimeState" />
+        <b-form-invalid-feedback>
+          Start time has to be before end time
+        </b-form-invalid-feedback>
+      </div>
 
       <div>End time:</div>
-      <b-input type="time" v-model="endTime" />
-
-      <div>Attendance limit:</div>
-      <b-input
-        placeholder="Enter max limit.."
-        v-model="attendanceLimit"
-        :state="attendanceState"
-      />
-      <b-form-invalid-feedback> Enter a number. </b-form-invalid-feedback>
+      <div class="w-100">
+        <b-input type="time" v-model="endTime" :state="endTimeState" />
+        <b-form-invalid-feedback>
+          End time has to be after start time
+        </b-form-invalid-feedback>
+      </div>
 
       <div class="row-5">Description:</div>
       <b-form-textarea
@@ -82,33 +102,105 @@
         ></b-form-checkbox-group>
       </b-form-group>
     </div>
-    <b-button @click="onCreateEvent()">Create Event</b-button>
+
+    <div class="buttons-wrapper">
+      <b-button class="btn-danger" squared>CANCEL</b-button>
+      <b-button
+        class="btn-primary"
+        squared
+        :disabled="createButtonDisabled"
+        @click="onCreateEvent()"
+        >CREATE EVENT</b-button
+      >
+    </div>
   </div>
 </template>
 
 <script>
 import { db } from '@/firebase'
-import { collection, addDoc } from 'firebase/firestore'
+import { collection, addDoc, getDocs } from 'firebase/firestore'
+import moment from 'moment'
 
 export default {
   name: 'Home',
+  created () {
+    this.getAllCommunities()
+  },
   computed: {
+    datePickerDate () {
+      return moment().format('YYYY-MM-DD')
+    },
     attendanceState () {
-      if (this.attendanceLimit === null || this.attendanceLimit === '') return
+      if (this.attendanceLimit === '') return
       if (this.attendanceLimit[0] === '-') return false
       return !isNaN(this.attendanceLimit)
+    },
+
+    endTimeState () {
+      if (this.endTime === '') return
+      return this.endTime > this.startTime
+    },
+
+    startTimeState () {
+      if (this.startTime === '') return
+      return this.startTime < this.endTime
+    },
+
+    createButtonDisabled () {
+      if (
+        this.name === '' ||
+        this.location === '' ||
+        this.startTime === '' ||
+        this.endTime === '' ||
+        this.attendanceLimit === '' ||
+        this.description === ''
+      ) {
+        return true
+      }
+      if (
+        this.online.selected === null ||
+        this.type.selected === null ||
+        this.communities.selected.length === 0
+      ) {
+        return true
+      }
+      if (!this.attendanceState || !this.endTimeState || !this.startTimeState) {
+        return true
+      }
+
+      if (
+        this.actions.action1.value !== '' &&
+        this.actions.action1.selected === null
+      ) {
+        return true
+      }
+
+      if (
+        this.actions.action2.value !== '' &&
+        this.actions.action2.selected === null
+      ) {
+        return true
+      }
+
+      if (
+        this.actions.action3.value !== '' &&
+        this.actions.action3.selected === null
+      ) {
+        return true
+      }
+
+      return false
     }
   },
 
   data () {
     return {
-      name: null,
-      date: null,
-      dateObject: null,
-      startTime: null,
-      endTime: null,
-      attendanceLimit: null,
-      location: null,
+      name: '',
+      date: '',
+      startTime: '',
+      endTime: '',
+      attendanceLimit: '',
+      location: '',
       description: '',
       actions: {
         options: [
@@ -116,9 +208,9 @@ export default {
           { value: 'radio', text: 'Radio' },
           { value: 'checkbox', text: 'Checkbox' }
         ],
-        action1: { selected: null, value: null },
-        action2: { selected: null, value: null },
-        action3: { selected: null, value: null }
+        action1: { selected: null, value: '' },
+        action2: { selected: null, value: '' },
+        action3: { selected: null, value: '' }
       },
       online: {
         options: [
@@ -130,11 +222,18 @@ export default {
         selected: null
       },
       communities: {
-        options: [
-          { text: 'community1', value: 'cm1' },
-          { text: 'community2', value: 'cm2' }
-        ],
+        options: [],
         selected: []
+      },
+      type: {
+        options: [
+          { value: null, text: 'Please select an option' },
+          { text: 'Food', value: 'food' },
+          { text: 'Webinar', value: 'webinar' },
+          { text: 'Trips', value: 'trip' },
+          { text: 'Games', value: 'game' }
+        ],
+        selected: null
       }
     }
   },
@@ -157,10 +256,46 @@ export default {
           this.actions.action2,
           this.actions.action3
         ],
-        participants: []
+        participants: [],
+        type: this.type.selected
       })
       console.log(docRef)
+      this.clearFields()
     },
+
+    async getAllCommunities () {
+      const querySnapshot = await getDocs(collection(db, 'communities'))
+      querySnapshot.forEach((doc) => {
+        this.community = {
+          id: doc.id,
+          name: doc.data().name,
+          address: doc.data().address,
+          phoneNumber: doc.data().phoneNumber,
+          eMailAddress: doc.data().eMailAddress
+        }
+        this.communities.options.push({
+          text: this.community.name,
+          value: this.community.id
+        })
+      })
+    },
+
+    clearFields () {
+      this.name = ''
+      this.date = ''
+      this.startTime = ''
+      this.endTime = ''
+      this.attendanceLimit = ''
+      this.location = ''
+      this.description = ''
+      this.actions.action1 = { selected: null, value: '' }
+      this.actions.action2 = { selected: null, value: '' }
+      this.actions.action3 = { selected: null, value: '' }
+      this.online.selected = null
+      this.communities.selected = []
+      this.type.selected = null
+    },
+
     onCreateEvent () {
       this.createEvent()
     }
@@ -203,14 +338,20 @@ export default {
   grid-row: 9;
 }
 
-.add-action-button {
-  border-radius: 50%;
-  width: 35px;
-  height: 35px;
+.row-10 {
+  grid-row: 10;
+}
+
+.buttons-wrapper {
+  margin-left: 200px;
+  margin-top: 10px;
   display: flex;
-  justify-self: center;
-  justify-content: center;
-  align-items: center;
-  font-size: 24px;
+  justify-content: space-between;
+  width: 410px;
+
+  .btn {
+    width: 200px;
+    height: 50px;
+  }
 }
 </style>

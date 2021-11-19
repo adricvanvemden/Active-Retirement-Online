@@ -1,5 +1,16 @@
 <template>
-  <div class="events">
-    <h1>This is an events page</h1>
+  <div class="event">
+    <Events />
   </div>
 </template>
+
+<script>
+import Events from '@/components/Events.vue'
+
+export default {
+  name: 'E',
+  components: {
+    Events
+  }
+}
+</script>
