@@ -22,22 +22,22 @@ const routes = [
   {
     path: '/events/food',
     name: 'food_events',
-    component: () => import(/* webpackChunkName: "events" */ '../views/FoodEvents.vue')
+    component: () => import(/* webpackChunkName: "events" */ '../views/EventsFiltered.vue')
   },
   {
     path: '/events/games',
     name: 'game_events',
-    component: () => import(/* webpackChunkName: "events" */ '../views/GameEvents.vue')
+    component: () => import(/* webpackChunkName: "events" */ '../views/EventsFiltered.vue')
   },
   {
     path: '/events/trips',
     name: 'trip_events',
-    component: () => import(/* webpackChunkName: "events" */ '../views/TripEvents.vue')
+    component: () => import(/* webpackChunkName: "events" */ '../views/EventsFiltered.vue')
   },
   {
     path: '/events/webinar',
     name: 'webinar_events',
-    component: () => import(/* webpackChunkName: "events" */ '../views/WebinarEvents.vue')
+    component: () => import(/* webpackChunkName: "events" */ '../views/EventsFiltered.vue')
   },
   {
     path: '/games',

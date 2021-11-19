@@ -67,18 +67,8 @@
       :title="formatToDayMonthYear(selectedDate)"
       size="lg"
     >
-      <div v-for="event in modalEvents" :key="event.id" class="modal-events">
-        <div class="modal-event-title">
-          <div class="dot" :class="[event.type]"></div>
-          {{ event.eventName }}
-        </div>
-        <div class="modal-event-subtitle">
-          {{ event.startTime }} - {{ event.endTime }} @ {{ event.location }}
-          <b-button variant="primary" @click="onGoToEvent(event.id)">
-            Go to event
-          </b-button>
-        </div>
-        <div class="modal-event-desc">{{ event.description }}</div>
+      <div v-for="event in modalEvents" :key="event.id">
+        <SingleEvent :event="event" btn-text="Go to event" dot />
       </div>
     </b-modal>
   </div>
@@ -88,11 +78,15 @@
 import { collection, getDocs, where, query } from 'firebase/firestore'
 import { db } from '@/firebase'
 import moment from 'moment'
+import SingleEvent from './SingleEvent.vue'
 const Calendar = require('calendar').Calendar
 const calendar = new Calendar(1) // 1 to start on Monday
 
 export default {
   name: 'Calendar',
+  components: {
+    SingleEvent
+  },
   data () {
     return {
       weekDays: [
@@ -132,7 +126,6 @@ export default {
   watch: {
     fullDate () {
       this.events = []
-      // this.removeEvents()
       this.setCalendar()
     }
   },
@@ -308,12 +301,11 @@ export default {
           eventCanceled: doc.data().eventCanceled,
           onlineOffline: doc.data().onlineOffline,
           participants: doc.data().participants,
-          actions: doc.data().actions
+          actions: doc.data().actions,
+          type: doc.data().type
         }
         this.events.push(this.monthlyEvent)
-        // console.log(this.events)
       })
-      // this.appendEvents()
     }
   }
 }
@@ -435,34 +427,5 @@ export default {
 
 .modal-footer {
   justify-content: center;
-}
-
-.modal-events {
-  display: flex;
-  flex-direction: column;
-  border-bottom: solid 1px;
-  font-size: 22px;
-  & > * {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-}
-
-.modal-event-title {
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-}
-
-.modal-event-subtitle {
-  display: flex;
-  justify-content: space-between;
-  margin-left: 10px;
-}
-
-.modal-event-desc {
-  margin-top: 10px;
-  margin-left: 10px;
 }
 </style>
