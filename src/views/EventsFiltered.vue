@@ -21,8 +21,8 @@ export default {
   beforeMount () {
     if (this.$route.path.includes('food')) this.type = 'food'
     else if (this.$route.path.includes('webinar')) this.type = 'webinar'
-    else if (this.$route.path.includes('trips')) this.type = 'trips'
-    else if (this.$route.path.includes('games')) this.type = 'games'
+    else if (this.$route.path.includes('trips')) this.type = 'trip'
+    else if (this.$route.path.includes('games')) this.type = 'game'
   }
 }
 </script>

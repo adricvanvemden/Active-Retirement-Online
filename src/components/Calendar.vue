@@ -38,8 +38,11 @@
             :key="event.id"
             class="event-wrapper event"
           >
-            <s v-if="event.cancelled" class="event-inner-wrapper">
-              <div class="dot" :class="[event.type]"></div>
+            <s v-if="event.eventCanceled" class="event-inner-wrapper">
+              <div
+                class="dot"
+                :class="[event.type, { cancelled: event.eventCanceled }]"
+              ></div>
               <div>
                 <b>{{ event.eventName }}:</b>
                 {{ event.startTime }} - {{ event.endTime }}
@@ -68,7 +71,12 @@
       size="lg"
     >
       <div v-for="event in modalEvents" :key="event.id">
-        <SingleEvent :event="event" btn-text="Go to event" dot />
+        <SingleEvent
+          :event="event"
+          btn-text="Go to event"
+          dot
+          :cancelled="event.eventCanceled"
+        />
       </div>
     </b-modal>
   </div>
@@ -306,6 +314,7 @@ export default {
         }
         this.events.push(this.monthlyEvent)
       })
+      console.log(this.events)
     }
   }
 }
@@ -416,6 +425,10 @@ export default {
 
   &.games {
     background-color: #ff0202;
+  }
+
+  &.cancelled {
+    background-color: black;
   }
 }
 

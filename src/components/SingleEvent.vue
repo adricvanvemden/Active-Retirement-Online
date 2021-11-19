@@ -1,7 +1,9 @@
 <template>
-  <div class="single-event">
+  <div class="single-event" :class="{ cancelled: cancelled }">
     <div class="event-title">
-      <div :class="[event.type, { dot: dot }]"></div>
+      <div
+        :class="[event.type, { dot: dot }, { cancelled: event.eventCanceled }]"
+      ></div>
       {{ event.eventName }}
     </div>
     <div v-if="date" class="event-date">{{ formatDate(event.date) }}</div>
@@ -24,7 +26,8 @@ export default {
     event: Object,
     dot: Boolean,
     btnText: String,
-    date: Boolean
+    date: Boolean,
+    cancelled: Boolean
   },
   methods: {
     formatDate (date) {
@@ -38,6 +41,9 @@ export default {
 </script>
 
 <style lang="scss">
+.cancelled {
+  text-decoration: line-through;
+}
 .single-event {
   margin: 20px;
   display: flex;
@@ -96,6 +102,10 @@ export default {
 
     &.games {
       background-color: #ff0202;
+    }
+
+    &.cancelled {
+      background-color: black;
     }
   }
 }
