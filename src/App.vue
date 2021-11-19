@@ -1,23 +1,34 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/signIn">Sign In</router-link>
-      <router-link to="/">Calendar</router-link>
-      <router-link to="/events">Events</router-link>
-      <router-link to="/games">Games</router-link>
-      <img class="logo" src="./assets/logo.jpeg" @click="onImg()" />
-      <router-link to="/myAccount">My Account</router-link>
-    </div>
+    <Nav v-if="this.$route.path !== '/'" />
     <router-view />
   </div>
 </template>
 
 <script>
 import { db, auth } from './firebase'
-import { addDoc, collection, doc, getDoc, getDocs, setDoc, query, updateDoc, where } from 'firebase/firestore'
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth'
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  setDoc,
+  query,
+  updateDoc,
+  where
+} from 'firebase/firestore'
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut
+} from 'firebase/auth'
+import Nav from './components/Nav.vue'
 
 export default {
+  components: {
+    Nav
+  },
   data () {
     return {
       events: [],
@@ -25,6 +36,7 @@ export default {
       monthlyEvents: []
     }
   },
+  computed: {},
   mounted () {},
   methods: {
     onImg () {
@@ -52,10 +64,7 @@ export default {
             actions: ['Action one']
           }
         ],
-        actions: [
-          'Action one',
-          'Action two'
-        ],
+        actions: ['Action one', 'Action two'],
         type: 'online'
       })
       console.log(docRef)
@@ -115,7 +124,10 @@ export default {
     },
 
     async getAllEventsByType (type) {
-      const querySnapshot = await getDocs(collection(db, 'events'), where('type', '==', type))
+      const querySnapshot = await getDocs(
+        collection(db, 'events'),
+        where('type', '==', type)
+      )
       querySnapshot.forEach((doc) => {
         this.event = {
           id: doc.id,
@@ -191,8 +203,20 @@ export default {
         console.log('No such User!')
       }
     },
-    async signUp (email, password, firstName, lastName, gender, phoneNumber, ageGroup,
-      address, zipCode, county, hobbies, community) {
+    async signUp (
+      email,
+      password,
+      firstName,
+      lastName,
+      gender,
+      phoneNumber,
+      ageGroup,
+      address,
+      zipCode,
+      county,
+      hobbies,
+      community
+    ) {
       await createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           const docRef = setDoc(doc(db, 'users', userCredential.user.uid), {
@@ -235,11 +259,13 @@ export default {
     },
 
     async signOutFromApp () {
-      await signOut(auth).then(() => {
-        // Sign-out successful.
-      }).catch((error) => {
-        console.log(error)
-      })
+      await signOut(auth)
+        .then(() => {
+          // Sign-out successful.
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     },
 
     async editEvent (eventId) {
@@ -281,7 +307,6 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
 }
 
 #nav {
@@ -293,30 +318,6 @@ export default {
     text-align: center;
     float: center;
     width: auto;
-  }
-  a {
-    color: black;
-    text-decoration: none;
-    font-size: x-large;
-    font-weight: normal;
-    font-family: "Montserrat", sans-serif;
-    padding: 12px 60px;
-    background-color: lightgrey;
-    &.router-link-exact-active {
-      background-color: darkred;
-      color: white;
-    }
-  }
-  .active {
-    background-color: darkred;
-  }
-  a:hover:not(.active) {
-    background-color: lightcoral;
-  }
-  .logo {
-    width: 400px;
-    height: 120px;
-    float: fixedgit;
   }
 }
 </style>
