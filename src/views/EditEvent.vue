@@ -150,7 +150,7 @@
 import { db } from '@/firebase'
 import { updateDoc, collection, getDocs, query, doc } from 'firebase/firestore'
 import moment from 'moment'
-const eventId = 'KVeQ6OHJYa4fc4R0NMGx'
+const eventId = 'qferaeJuNqdjD0SJhMxV'
 
 export default {
   name: 'Home',
@@ -252,10 +252,7 @@ export default {
         selected: null
       },
       communities: {
-        options: [
-          { text: 'community1', value: 'cm1' },
-          { text: 'community2', value: 'cm2' }
-        ],
+        options: [],
         selected: []
       },
       type: {
@@ -300,14 +297,31 @@ export default {
           this.actions.action2.selected = doc.data().actions[1].selected
           this.actions.action3.value = doc.data().actions[2].value
           this.actions.action3.selected = doc.data().actions[2].selected
-          // this.communities = doc.data().participatingCommunities
+          this.getAllCommunities(doc.data().participatingCommunities)
         }
       })
     },
-
+    async getAllCommunities (participatingCommunities) {
+      const querySnapshot = await getDocs(collection(db, 'communities'))
+      querySnapshot.forEach((doc) => {
+        this.community = {
+          id: doc.id,
+          name: doc.data().name,
+          address: doc.data().address,
+          phoneNumber: doc.data().phoneNumber,
+          eMailAddress: doc.data().eMailAddress
+        }
+        if (participatingCommunities.includes(doc.id)) {
+          this.communities.selected.push(this.community.id)
+        }
+        this.communities.options.push({
+          text: this.community.name,
+          value: this.community.id
+        })
+      })
+    },
     async editEvent () {
       const docRef = doc(db, 'events', eventId)
-
       await updateDoc(docRef, {
         eventName: this.name,
         date: new Date(this.date),
@@ -323,7 +337,6 @@ export default {
           this.actions.action2,
           this.actions.action3
         ],
-        participants: [],
         type: this.type.selected
       })
       console.log(docRef)
