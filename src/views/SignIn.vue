@@ -41,7 +41,7 @@
       <br />
       <p>Don't have an account, yet?</p>
       <br />
-      <b-btn variant="primary">SIGN UP</b-btn>
+      <b-btn variant="primary" type="submit" @click="buttonClicked">SIGN UP</b-btn>
     </div>
   </div>
 </template>
@@ -79,6 +79,9 @@ export default {
           const errorMessage = error.message
           console.log(errorMessage)
         })
+    },
+    buttonClicked () {
+      router.push('/registration')
     }
   }
 }
