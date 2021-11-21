@@ -55,7 +55,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "events-admin" */ '../views/CreateEvent.vue')
   },
   {
-    path: '/admin/events/edit',
+    path: '/admin/events/edit/:eventId',
     name: 'edit_event',
     component: () => import(/* webpackChunkName: "events-admin" */ '../views/EditEvent.vue')
 
