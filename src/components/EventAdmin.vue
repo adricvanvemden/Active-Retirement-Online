@@ -168,11 +168,11 @@ export default {
   props: {
     btnText: String,
     create: Boolean,
-    edit: Boolean,
-    eventId: String
+    edit: Boolean
   },
   created () {
     this.getAllCommunities()
+    this.eventId = this.$route.params.eventId
     if (this.edit) {
       this.getEvent(this.eventId)
     }
@@ -250,6 +250,7 @@ export default {
 
   data () {
     return {
+      eventId: '',
       name: '',
       date: '',
       startTime: '',
