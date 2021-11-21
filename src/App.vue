@@ -191,6 +191,8 @@ export default {
       }
     },
 
+    // for retreiving the item from the sessionstorage: use this:
+    // const user = JSON.parse(sessionStorage.getItem('user'))
     async signUp (email, password, firstName, lastName, gender, phoneNumber, ageGroup,
       address, zipCode, county, hobbies, community) {
       await createUserWithEmailAndPassword(auth, email, password)
@@ -210,6 +212,7 @@ export default {
             community: community,
             userRole: 'registered'
           })
+          sessionStorage.setItem('user', JSON.stringify(docRef))
           console.log('Registration successful', docRef)
         })
         .catch((error) => {
@@ -224,6 +227,7 @@ export default {
         .then((userCredential) => {
           // user which get all the attributes of document with the same id
           const user = doc(db, 'users', userCredential.user.uid)
+          sessionStorage.setItem('user', JSON.stringify(user))
           console.log(user)
         })
         .catch((error) => {
@@ -236,6 +240,7 @@ export default {
 
     async signOutFromApp () {
       await signOut(auth).then(() => {
+        sessionStorage.removeItem('user')
         // Sign-out successful.
       }).catch((error) => {
         console.log(error)
