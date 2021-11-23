@@ -40,6 +40,12 @@ const routes = [
     component: () => import(/* webpackChunkName: "events" */ '../views/EventsFiltered.vue')
   },
   {
+    path: '/events/:eventId',
+    name: 'single_event',
+    component: () => import(/* webpackChunkName: "events" */ '../views/SpecificEventView.vue')
+
+  },
+  {
     path: '/games',
     name: 'games',
     component: () => import(/* webpackChunkName: "games" */ '../views/Games.vue')

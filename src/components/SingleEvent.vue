@@ -10,11 +10,8 @@
     <div class="event-subtitle">
       {{ event.startTime }} - {{ event.endTime }} @ {{ event.location }} |
       {{ event.onlineOffline }}
-      <b-button v-if="!isAdmin" variant="primary" @click="onGoToEvent(event.id)">
+      <b-button variant="primary" @click="onGoToEvent(event.id)">
         {{ btnText }}
-      </b-button>
-      <b-button v-else variant="danger" @click="onGoToEditEvent(event.id)">
-        EDIT EVENT
       </b-button>
     </div>
     <div class="event-desc">{{ event.description }}</div>
