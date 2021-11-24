@@ -191,8 +191,6 @@ export default {
       }
     },
 
-    // for retreiving the item from the sessionstorage: use this:
-    // const user = JSON.parse(sessionStorage.getItem('user'))
     async signUp (email, password, firstName, lastName, gender, phoneNumber, ageGroup,
       address, zipCode, county, hobbies, community) {
       await createUserWithEmailAndPassword(auth, email, password)
@@ -227,7 +225,26 @@ export default {
         .then((userCredential) => {
           // user which get all the attributes of document with the same id
           const user = doc(db, 'users', userCredential.user.uid)
-          sessionStorage.setItem('user', JSON.stringify(user))
+          console.log(user)
+        })
+        .catch((error) => {
+          const errorCode = error.code
+          console.log(errorCode)
+          const errorMessage = error.message
+          console.log(errorMessage)
+        })
+    },
+
+    async PhoneNumberSignIn (phoneNumber, password) {
+      let email = null
+      const q = query(collection(db, 'users'), where('phoneNumber', '==', phoneNumber))
+      const querySnapshot = await getDocs(q)
+      querySnapshot.forEach((doc) => {
+        email = doc.data().eMail
+      })
+      await signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const user = doc(db, 'users', userCredential.user.uid)
           console.log(user)
         })
         .catch((error) => {
