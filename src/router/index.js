@@ -58,7 +58,21 @@ const routes = [
     path: '/admin/events/edit',
     name: 'edit_event',
     component: () => import(/* webpackChunkName: "events-admin" */ '../views/EditEvent.vue')
-
+  },
+  {
+    path: '/games/bridge',
+    name: 'bridge',
+    component: () => import(/* webpackChunkName: "games" */ '../views/JoinBridge.vue')
+  },
+  {
+    path: '/games/reversi',
+    name: 'reversi',
+    component: () => import(/* webpackChunkName: "games" */ '../views/JoinReversi.vue')
+  },
+  {
+    path: '/games/chess',
+    name: 'chess',
+    component: () => import(/* webpackChunkName: "games" */ '../views/JoinChess.vue')
   }
 ]
 
