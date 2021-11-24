@@ -153,7 +153,7 @@ export default {
 #logo {
   position: relative;
   margin-top: 30px;
-  margin-bottom: 0;
+  margin-bottom: 20px;
 }
 
 p {
@@ -235,7 +235,7 @@ p {
     right: 0;
     background-image: url("../assets/background.jpg");
     background-size: cover;
-    height: 100vh;
+    height: 150%;
     opacity: 0.25;
   }
 }

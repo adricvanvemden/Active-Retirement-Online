@@ -8,12 +8,13 @@
         height="120px;"
       />
     </div>
+
     <div id="form">
-      <form method="post" onsubmit="return validation();">
+      <form method="post">
         <div class="input_wrap">
           <div class="input_field">
             <input
-              type="text"
+              type="email"
               class="input"
               id="input_text"
               placeholder="email"
@@ -39,7 +40,7 @@
         >SIGN IN</b-btn
       >
       <br />
-      <p>Don't have an account, yet?</p>
+      <p id="p1">Don't have an account, yet?</p>
       <br />
       <b-btn variant="primary" type="submit" @click="buttonClicked">SIGN UP</b-btn>
     </div>
@@ -143,9 +144,11 @@ export default {
   position: relative;
 }
 
-p {
+#p1 {
   position: relative;
   padding-top: 50px;
+  font-weight: normal;
+  font-size: 20px;
 }
 
 .signIn {
