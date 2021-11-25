@@ -8,12 +8,12 @@
     </div>
     <div class="description">
       <p>
-        Single<br />
+        Single<br /><br />
         1. Click on Opponent {Bill (easy), Bill Sr. (medium), Beth (hard)}<br />
         2. Click on chess piece<br />
         3. Click on green checkers field<br />
         4. For Game Rules and Game Instructions scroll down the page<br /><br />
-        Multiplayer<br />
+        Multiplayer<br /><br />
         1. Select Opponent {Bill (easy), Bill Sr. (medium), Beth (hard)}<br />
         2. Click on Multiplayer<br />
         3. Enter your name<br />
@@ -23,13 +23,8 @@
         7. For Game Rules and Game Instructions scroll down the page
       </p>
     </div>
-    <br /><br />
-    <button
-      class="btn"
-      onclick="location.href='https://cardgames.io/chess/'"
-      target="_blank"
-      rel="noreferrer noopener"
-    >
+    <br />
+    <button class="btn" onclick="location.href='https://cardgames.io/chess/'">
       PLAY
     </button>
   </div>
@@ -50,13 +45,21 @@
   background: #204293;
 }
 .description {
-  font-size: 32;
-  text-align: center;
+  text-align: left;
   font-weight: bold;
+  font-size: x-large;
   position: relative;
-  border: none;
-  border-radius: 0;
   text-decoration: none;
-  display: inline-block;
+
+  background: #f3f4f5;
+  border: 3px solid #d3d3d3;
+  border-radius: 18px;
+
+  margin-left: 15%;
+  margin-right: 15%;
+  margin-top: 50px;
+
+  align-items: center;
+  justify-items: center;
 }
 </style>

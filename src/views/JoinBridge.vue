@@ -8,7 +8,7 @@
     </div>
     <div class="description">
       <p>
-        Single <br />
+        Single <br /><br />
         1. Click on Button “PLAY” <br />
         2. Select Cards on Bidding Table OR Press Button “Double” OR Press
         Button “Pass” <br />
@@ -20,9 +20,8 @@
     <br /><br /><br />
     <button
       class="btn"
-      onclick="location.href='https://www.247bridge.com/'"
+      @click="location.href = 'https://www.247bridge.com/'"
       target="_blank"
-      rel="noreferrer noopener"
     >
       PLAY
     </button>
@@ -44,17 +43,21 @@
   background: #204293;
 }
 .description {
-  font-size: 32;
-  text-align: center;
+  text-align: left;
   font-weight: bold;
+  font-size: x-large;
   position: relative;
-  border: none;
-  border-radius: 0;
   text-decoration: none;
-  display: inline-block;
-}
-.p {
-  font-size: 24;
-  text-align: center;
+
+  background: #f3f4f5;
+  border: 3px solid #d3d3d3;
+  border-radius: 18px;
+
+  margin-left: 15%;
+  margin-right: 15%;
+  margin-top: 50px;
+
+  align-items: center;
+  justify-items: center;
 }
 </style>

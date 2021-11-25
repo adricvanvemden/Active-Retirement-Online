@@ -9,11 +9,11 @@
     </div>
     <div class="description">
       <p>
-        Single<br />
+        Single<br /><br />
         1. Click on highlighted checkers field<br />
         2. For Game Rules and Game Instructions scroll down the page<br /><br />
 
-        Multiplayer<br />
+        Multiplayer<br /><br />
         1. Click on Multiplayer<br />
         2. Enter your name<br />
         3. Click on Opponent<br />
@@ -22,12 +22,7 @@
       </p>
     </div>
     <br /><br /><br />
-    <button
-      class="btn"
-      onclick="location.href='https://cardgames.io/reversi/'"
-      target="_blank"
-      rel="noreferrer noopener"
-    >
+    <button class="btn" onclick="location.href='https://cardgames.io/reversi/'">
       PLAY
     </button>
   </div>
@@ -48,13 +43,21 @@
   background: #204293;
 }
 .description {
-  font-size: 32;
-  text-align: center;
+  text-align: left;
   font-weight: bold;
+  font-size: x-large;
   position: relative;
-  border: none;
-  border-radius: 0;
   text-decoration: none;
-  display: inline-block;
+
+  background: #f3f4f5;
+  border: 3px solid #d3d3d3;
+  border-radius: 18px;
+
+  margin-left: 15%;
+  margin-right: 15%;
+  margin-top: 50px;
+
+  align-items: center;
+  justify-items: center;
 }
 </style>
