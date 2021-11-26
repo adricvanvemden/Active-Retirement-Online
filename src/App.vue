@@ -181,16 +181,6 @@ export default {
       }
     },
 
-    async getUser (userId) {
-      const docRef = doc(db, 'users', userId)
-      const docSnap = await getDoc(docRef)
-      if (docSnap.exists()) {
-        console.log('Document data:', docSnap.data())
-      } else {
-        console.log('No such User!')
-      }
-    },
-
     async signUp (email, password, firstName, lastName, gender, phoneNumber, ageGroup,
       address, zipCode, county, hobbies, community) {
       // if inputfield email is empty
@@ -304,6 +294,38 @@ export default {
       })
     }
   },
+  // admin is able to get user information with userId as parameter
+  // user is able to get his/her information with user auth.currentUser.uid as parameter
+  async getUserInformation (userId) {
+    const docRef = doc(db, 'users', userId)
+    const docSnap = await getDoc(docRef)
+    if (docSnap.exists()) {
+      const user = docSnap.data()
+      // attributes can be reached by {{user.attributeName}}
+      console.log('Document data:', user)
+    } else {
+      console.log('No such User!')
+    }
+  },
+
+  // admin is able to edit user profile with userId
+  // user is able to edit his/her information with user auth.currentUser.uid as parameter
+  async editUserInformation (userId) {
+    const userRef = doc(db, 'users', userId)
+    await updateDoc(userRef, {
+      // fill in attributes which are needed and connected to the frontend (watch out for spelling of attribute names(should be identical as in registerFunction)
+      firstName: 'attribute',
+      lastName: 'attribute',
+      gender: 'attribute',
+      eMail: 'attribute',
+      phoneNumber: 'attribute',
+      ageGroup: 'attribute',
+      address: 'attribute',
+      hobbies: 'attribute',
+      community: 'attribute'
+    })
+  },
+
   async cancelEvent (eventId) {
     const eventRef = doc(db, 'events', eventId)
     await updateDoc(eventRef, {
