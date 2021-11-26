@@ -72,7 +72,7 @@
 
       <b-input
         placeholder="Enter action.."
-        class="col-2"
+        class="e-col-2"
         v-model="actions.action2.value"
       />
       <b-form-select
@@ -83,7 +83,7 @@
 
       <b-input
         placeholder="Enter action.."
-        class="col-2"
+        class="e-col-2"
         v-model="actions.action3.value"
       />
       <b-form-select
@@ -447,7 +447,7 @@ export default {
   height: 175px;
 }
 
-.col-2 {
+.e-col-2 {
   grid-column: 2;
 }
 .row-5 {

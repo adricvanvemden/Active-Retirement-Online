@@ -138,7 +138,7 @@ export default {
     }
   },
 
-  created () {
+  mounted () {
     this.setCurrentDate()
   },
 
@@ -224,42 +224,6 @@ export default {
       this.setCurrentDate()
     },
 
-    appendEvents () {
-      for (const event of this.events) {
-        const date = new Date(event.date.seconds * 1000)
-        const element = document.getElementById(this.formatToID(date))
-        const wrapper = document.createElement('div')
-        wrapper.classList += 'event-wrapper event'
-        const dot = document.createElement('div')
-        dot.classList += 'dot ' + event.type
-        wrapper.append(dot)
-
-        const eventEl = document.createElement('div')
-        if (event.cancelled) {
-          eventEl.innerHTML =
-            '<s>' +
-            '<b>' +
-            event.eventName +
-            ':</b>' +
-            event.startTime +
-            ' - ' +
-            event.endTime +
-            '</s>'
-        } else {
-          eventEl.innerHTML =
-            '<b>' +
-            event.eventName +
-            ':</b>' +
-            event.startTime +
-            ' - ' +
-            event.endTime
-        }
-
-        wrapper.append(eventEl)
-        element.append(wrapper)
-      }
-    },
-
     calendarEvents (date) {
       const calendarEvents = []
       this.events.map((element) => {
@@ -272,10 +236,19 @@ export default {
       return calendarEvents
     },
 
-    removeEvents () {
-      const elements = document.getElementsByClassName('event-wrapper')
-      while (elements.length > 0) {
-        elements[0].parentNode.removeChild(elements[0])
+    upcomingEvent () {
+      this.$root.hideToast('upcomingEvent')
+      for (const event of this.events) {
+        if (this.isToday(event.date.seconds * 1000)) {
+          this.$root.makeToast(
+            'upcomingEvent',
+            'primary',
+            'You have an event today!',
+            `${event.description}
+            ${event.startTime} - ${event.endTime}`,
+            true
+          )
+        }
       }
     },
 
@@ -315,6 +288,8 @@ export default {
         this.events.push(this.monthlyEvent)
       })
       console.log(this.events)
+
+      this.upcomingEvent()
     }
   }
 }
