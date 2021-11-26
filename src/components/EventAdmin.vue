@@ -316,13 +316,40 @@ export default {
         ],
         participants: [],
         type: this.type.selected
-      })
+      }).catch(
+        this.$root.makeToast(
+          'error-create-event',
+          'danger',
+          'Something went wrong!',
+          'The event might not have been created. Please check and try again.',
+          false,
+          5000
+        )
+      )
       console.log(docRef)
       this.clearFields()
+
+      this.$root.makeToast(
+        'success-create-event',
+        'success',
+        'Success!',
+        'The event is created',
+        false,
+        5000
+      )
     },
 
     async getAllCommunities () {
-      const querySnapshot = await getDocs(collection(db, 'communities'))
+      const querySnapshot = await getDocs(collection(db, 'communities')).catch(
+        this.$root.makeToast(
+          'error-get-communities',
+          'danger',
+          'Something went wrong!',
+          'Could not retrieve all communties, please try again. If the problem keeps happening contact an admin',
+          false,
+          5000
+        )
+      )
       querySnapshot.forEach((doc) => {
         this.community = {
           id: doc.id,
@@ -340,7 +367,16 @@ export default {
 
     async getEvent (eventId) {
       const docRef = doc(db, 'events', eventId)
-      const docSnap = await getDoc(docRef)
+      const docSnap = await getDoc(docRef).catch(
+        this.$root.makeToast(
+          'error-get-event',
+          'danger',
+          'Something went wrong!',
+          'Could not load the event, please try again. if the problem keeps happening contact an admin',
+          false,
+          5000
+        )
+      )
       if (docSnap.exists()) {
         this.name = docSnap.data().eventName
         this.date = moment(docSnap.data().date.seconds * 1000).format(
@@ -386,7 +422,25 @@ export default {
           this.actions.action3
         ],
         type: this.type.selected
-      })
+      }).catch(
+        this.$root.makeToast(
+          'error-edit',
+          'danger',
+          'Something went wrong!',
+          'The event might not have been updated. Please check and try again. If the problem keeps happening contact an admin',
+          false,
+          5000
+        )
+      )
+
+      this.$root.makeToast(
+        'success-edit',
+        'success',
+        'Success!',
+        'The event is updated',
+        false,
+        5000
+      )
     },
 
     async cancelEvent (eventId) {
@@ -394,7 +448,25 @@ export default {
       await updateDoc(eventRef, {
         eventCanceled: true,
         cancelReason: this.cancellationReason
-      })
+      }).catch(
+        this.$root.makeToast(
+          'error-cancel',
+          'danger',
+          'Something went wrong!',
+          'The event might not have been cancelled. Please check and try again.',
+          false,
+          5000
+        )
+      )
+
+      this.$root.makeToast(
+        'success-cancel',
+        'success',
+        'Success!',
+        'The event is cancelled',
+        false,
+        5000
+      )
     },
 
     clearFields () {

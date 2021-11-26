@@ -265,7 +265,16 @@ export default {
         where('date', '>=', startDate),
         where('date', '<=', endDate)
       )
-      const querySnapshot = await getDocs(q)
+      const querySnapshot = await getDocs(q).catch(
+        this.$root.makeToast(
+          'error',
+          'danger',
+          'Something went wrong!',
+          'Try again, if the problem keeps happening contact an admin',
+          false,
+          5000
+        )
+      )
       querySnapshot.forEach((doc) => {
         this.monthlyEvent = {
           id: doc.id,
