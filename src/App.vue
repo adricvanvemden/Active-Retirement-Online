@@ -193,32 +193,61 @@ export default {
 
     async signUp (email, password, firstName, lastName, gender, phoneNumber, ageGroup,
       address, zipCode, county, hobbies, community) {
-      await createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          const docRef = setDoc(doc(db, 'users', userCredential.user.uid), {
-            firstName: firstName,
-            lastName: lastName,
-            gender: gender,
-            eMail: email,
-            phoneNumber: phoneNumber,
-            ageGroup: ageGroup,
-            address: address,
-            zipCode: zipCode,
-            county: county,
-            hobbies: hobbies,
-            dateOfRegistration: new Date().getTime(),
-            community: community,
-            userRole: 'registered'
+      // if inputfield email is empty
+      if (email.length <= 0) {
+        const generatedEmail = (Math.random() + 1).toString(36).substring(0) + '@gmail.com'
+        await createUserWithEmailAndPassword(auth, email, password)
+          .then((userCredential) => {
+            const docRef = setDoc(doc(db, 'users', userCredential.user.uid), {
+              firstName: firstName,
+              lastName: lastName,
+              gender: gender,
+              eMail: generatedEmail,
+              phoneNumber: phoneNumber,
+              ageGroup: ageGroup,
+              address: address,
+              zipCode: zipCode,
+              county: county,
+              hobbies: hobbies,
+              dateOfRegistration: new Date().getTime(),
+              community: community,
+              userRole: 'registered'
+            })
+            console.log('Registration successful', docRef)
           })
-          sessionStorage.setItem('user', JSON.stringify(docRef))
-          console.log('Registration successful', docRef)
-        })
-        .catch((error) => {
-          const errorCode = error.code
-          console.log(errorCode)
-          const errorMessage = error.message
-          console.log(errorMessage)
-        })
+          .catch((error) => {
+            const errorCode = error.code
+            console.log(errorCode)
+            const errorMessage = error.message
+            console.log(errorMessage)
+          })
+      } else {
+        await createUserWithEmailAndPassword(auth, email, password)
+          .then((userCredential) => {
+            const docRef = setDoc(doc(db, 'users', userCredential.user.uid), {
+              firstName: firstName,
+              lastName: lastName,
+              gender: gender,
+              eMail: email,
+              phoneNumber: phoneNumber,
+              ageGroup: ageGroup,
+              address: address,
+              zipCode: zipCode,
+              county: county,
+              hobbies: hobbies,
+              dateOfRegistration: new Date().getTime(),
+              community: community,
+              userRole: 'registered'
+            })
+            console.log('Registration successful', docRef)
+          })
+          .catch((error) => {
+            const errorCode = error.code
+            console.log(errorCode)
+            const errorMessage = error.message
+            console.log(errorMessage)
+          })
+      }
     },
     async signInWithEmail (email, password) {
       await signInWithEmailAndPassword(auth, email, password)
@@ -242,22 +271,11 @@ export default {
       querySnapshot.forEach((doc) => {
         email = doc.data().eMail
       })
-      await signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          const user = doc(db, 'users', userCredential.user.uid)
-          console.log(user)
-        })
-        .catch((error) => {
-          const errorCode = error.code
-          console.log(errorCode)
-          const errorMessage = error.message
-          console.log(errorMessage)
-        })
+      await this.signInWithEmail(email, password)
     },
 
     async signOutFromApp () {
       await signOut(auth).then(() => {
-        sessionStorage.removeItem('user')
         // Sign-out successful.
       }).catch((error) => {
         console.log(error)
