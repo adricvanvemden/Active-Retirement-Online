@@ -44,9 +44,29 @@
     </div>
     <div class="buttons-wrapper">
       <b-btn variant="primary" size="lg" squared :disabled="event.eventCanceled || this.isRegistered"
-        @click="registerForEvent(eventID)"
+        v-b-modal.modal-confirm-register
         >Register for event</b-btn
       >
+      <b-modal
+        id="modal-confirm-register"
+        title="Confirm Register"
+        hide-header-close
+        @ok="registerForEvent(eventID)"
+        ok-title="Confirm"
+        cancel-variant="danger"
+      >
+      <div class="modal-confirm-register-text">
+        <strong>Name of event: </strong>{{ event.eventName }}
+        <br>
+        <strong>Location: </strong>{{ event.location }}
+        <br>
+        <strong>Date: </strong>{{ formatToDate(event.date.seconds) }}
+        <br>
+        <strong>Time : </strong>{{ event.startTime }} - {{ event.endTime }}
+        <br><br>
+        <b>Are you sure you want to register to this event?</b>
+      </div>
+    </b-modal>
       <b-btn variant="danger" size="lg" squared v-b-modal.modal-cancel-event
         >CANCEL EVENT
       </b-btn>
@@ -113,7 +133,7 @@ export default {
       // this.user = JSON.parse(sessionStorage.getItem('user'))
       // For the moment the user is Olivier but we will have to remove the comment
       // above when we will store the user in sessionStorage
-      this.user = 'Olivier'
+      this.user = 'Olivir'
     },
     isUserRegistered () {
       if (this.event.participants.includes(this.user)) {
@@ -201,5 +221,9 @@ export default {
   display: flex;
   justify-content: flex-end;
   margin-right: 100px;
+}
+.modal-confirm-register-text {
+  font-weight: 600;
+  font-size: 22px;
 }
 </style>
