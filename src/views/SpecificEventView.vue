@@ -43,31 +43,54 @@
       {{ action.value }}
     </div>
     <div class="buttons-wrapper">
-      <b-btn variant="primary" size="lg" squared :disabled="event.eventCanceled"
+      <b-btn variant="primary" size="lg" squared :disabled="event.eventCanceled || this.isRegistered"
+        @click="registerForEvent(eventID)"
         >Register for event</b-btn
       >
-      <b-btn variant="danger" size="lg" squared>CANCEL EVENT</b-btn>
-      <b-btn variant="primary" size="lg" squared>EDIT EVENT</b-btn>
+      <b-btn variant="danger" size="lg" squared v-b-modal.modal-cancel-event
+        >CANCEL EVENT
+      </b-btn>
+
+      <b-modal
+        id="modal-cancel-event"
+        hide-header-close
+        title="Reason of cancellation"
+        ok-title="Confirm"
+        @ok="cancelEvent(eventID)"
+        cancel-variant="danger"
+      >
+      <b-form-textarea
+        id="cancel-input"
+        v-model="event.cancellationReason"
+        rows="3"
+        required
+      ></b-form-textarea>
+    </b-modal>
+
+      <b-btn variant="primary" size="lg" squared @click="onGoToEditEvent(eventID)">EDIT EVENT</b-btn>
     </div>
   </div>
 </template>
 
 <script>
 import { db } from '../firebase'
-import { doc, getDoc } from 'firebase/firestore'
+import { doc, getDoc, updateDoc } from 'firebase/firestore'
 import moment from 'moment'
+
 export default {
   name: 'SpecificEventView',
 
   beforeMount () {
     this.eventID = this.$route.path.slice(8)
     this.getEvent(this.eventID)
+    this.getUser()
   },
-
   data () {
     return {
       eventID: '',
-      event: { date: { seconds: '' } }
+      event: { date: { seconds: '' } },
+      user: '',
+      isRegistered: false
     }
   },
 
@@ -80,8 +103,42 @@ export default {
       const docSnap = await getDoc(docRef)
       if (docSnap.exists()) {
         this.event = docSnap.data()
+        console.log(this.event)
+        this.isUserRegistered()
       } else {
         console.log('No such event!')
+      }
+    },
+    getUser () {
+      // this.user = JSON.parse(sessionStorage.getItem('user'))
+      // For the moment the user is Olivier but we will have to remove the comment
+      // above when we will store the user in sessionStorage
+      this.user = 'Olivier'
+    },
+    isUserRegistered () {
+      if (this.event.participants.includes(this.user)) {
+        this.isRegistered = true
+      }
+    },
+    onGoToEditEvent (eventID) {
+      this.$router.push('/admin/events/edit/' + eventID)
+    },
+    async cancelEvent (eventId) {
+      const eventRef = doc(db, 'events', eventId)
+      await updateDoc(eventRef, {
+        eventCanceled: true,
+        cancelReason: this.cancellationReason
+      })
+    },
+    async registerForEvent (eventId) {
+      if (!this.event.participants.includes(this.user)) {
+        this.event.participants.push(this.user)
+        const eventRef = doc(db, 'events', eventId)
+        await updateDoc(eventRef, {
+          participants: this.event.participants
+        }).then(() => {
+          this.isRegistered = true
+        })
       }
     }
   }
