@@ -32,7 +32,6 @@ export default {
         'lastName',
         'emailAdress',
         'age',
-        'gender',
         'phoneNumber',
         'community'
       ],
@@ -60,7 +59,6 @@ export default {
             lastName: doc.data().lastName,
             emailAdress: doc.data().eMail,
             age: doc.data().ageGroup,
-            gender: doc.data().gender,
             phoneNumber: doc.data().phoneNumber,
             community: doc.data().community,
             role: doc.data().userRole
