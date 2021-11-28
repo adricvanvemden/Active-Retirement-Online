@@ -244,9 +244,11 @@ export default {
             'upcomingEvent',
             'primary',
             'You have an event today!',
-            `${event.description}
+            `${event.eventName}
             ${event.startTime} - ${event.endTime}`,
-            true
+            true,
+            0,
+            `/events/${event.id}`
           )
         }
       }
@@ -265,7 +267,32 @@ export default {
         where('date', '>=', startDate),
         where('date', '<=', endDate)
       )
-      const querySnapshot = await getDocs(q).catch(
+      try {
+        const querySnapshot = await getDocs(q)
+        querySnapshot.forEach((doc) => {
+          this.monthlyEvent = {
+            id: doc.id,
+            eventName: doc.data().eventName,
+            date: doc.data().date,
+            startTime: doc.data().startTime,
+            endTime: doc.data().endTime,
+            description: doc.data().description,
+            deadlineRegistration: doc.data().deadlineRegistration,
+            limitAttenders: doc.data().limitAttenders,
+            location: doc.data().location,
+            organizer: doc.data().organizer,
+            participatingCommunities: doc.data().participatingCommunities,
+            eventCanceled: doc.data().eventCanceled,
+            onlineOffline: doc.data().onlineOffline,
+            participants: doc.data().participants,
+            actions: doc.data().actions,
+            type: doc.data().type
+          }
+          this.events.push(this.monthlyEvent)
+        })
+
+        this.upcomingEvent()
+      } catch {
         this.$root.makeToast(
           'error',
           'danger',
@@ -274,31 +301,7 @@ export default {
           false,
           5000
         )
-      )
-      querySnapshot.forEach((doc) => {
-        this.monthlyEvent = {
-          id: doc.id,
-          eventName: doc.data().eventName,
-          date: doc.data().date,
-          startTime: doc.data().startTime,
-          endTime: doc.data().endTime,
-          description: doc.data().description,
-          deadlineRegistration: doc.data().deadlineRegistration,
-          limitAttenders: doc.data().limitAttenders,
-          location: doc.data().location,
-          organizer: doc.data().organizer,
-          participatingCommunities: doc.data().participatingCommunities,
-          eventCanceled: doc.data().eventCanceled,
-          onlineOffline: doc.data().onlineOffline,
-          participants: doc.data().participants,
-          actions: doc.data().actions,
-          type: doc.data().type
-        }
-        this.events.push(this.monthlyEvent)
-      })
-      console.log(this.events)
-
-      this.upcomingEvent()
+      }
     }
   }
 }

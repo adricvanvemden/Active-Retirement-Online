@@ -20,7 +20,7 @@ new Vue({
   router,
   store,
   methods: {
-    makeToast (id, variant, title, text, noAutoHide, delay) {
+    makeToast (id, variant, title, text, noAutoHide, delay, to) {
       this.$bvToast.toast(text, {
         id: id,
         title: title,
@@ -28,6 +28,7 @@ new Vue({
         appendToast: true,
         noAutoHide: noAutoHide,
         autoHideDelay: delay,
+        to: to,
         toaster: 'b-toaster-bottom-right'
       })
     },

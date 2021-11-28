@@ -297,26 +297,30 @@ export default {
   },
   methods: {
     async createEvent () {
-      const docRef = await addDoc(collection(db, 'events'), {
-        eventName: this.name,
-        date: new Date(this.date),
-        description: this.description,
-        deadlineRegistration: new Date(this.date),
-        limitAttenders: this.attendanceLimit,
-        location: this.location,
-        startTime: this.startTime,
-        endTime: this.endTime,
-        participatingCommunities: this.communities.selected,
-        eventCanceled: false,
-        onlineOffline: this.online.selected,
-        actions: [
-          this.actions.action1,
-          this.actions.action2,
-          this.actions.action3
-        ],
-        participants: [],
-        type: this.type.selected
-      }).catch(
+      try {
+        const docRef = await addDoc(collection(db, 'events'), {
+          eventName: this.name,
+          date: new Date(this.date),
+          description: this.description,
+          deadlineRegistration: new Date(this.date),
+          limitAttenders: this.attendanceLimit,
+          location: this.location,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          participatingCommunities: this.communities.selected,
+          eventCanceled: false,
+          onlineOffline: this.online.selected,
+          actions: [
+            this.actions.action1,
+            this.actions.action2,
+            this.actions.action3
+          ],
+          participants: [],
+          type: this.type.selected
+        })
+        console.log(docRef)
+        this.clearFields()
+      } catch {
         this.$root.makeToast(
           'error-create-event',
           'danger',
@@ -325,9 +329,7 @@ export default {
           false,
           5000
         )
-      )
-      console.log(docRef)
-      this.clearFields()
+      }
 
       this.$root.makeToast(
         'success-create-event',
@@ -340,7 +342,22 @@ export default {
     },
 
     async getAllCommunities () {
-      const querySnapshot = await getDocs(collection(db, 'communities')).catch(
+      const querySnapshot = await getDocs(collection(db, 'communities'))
+      try {
+        querySnapshot.forEach((doc) => {
+          this.community = {
+            id: doc.id,
+            name: doc.data().name,
+            address: doc.data().address,
+            phoneNumber: doc.data().phoneNumber,
+            eMailAddress: doc.data().eMailAddress
+          }
+          this.communities.options.push({
+            text: this.community.name,
+            value: this.community.id
+          })
+        })
+      } catch {
         this.$root.makeToast(
           'error-get-communities',
           'danger',
@@ -349,34 +366,12 @@ export default {
           false,
           5000
         )
-      )
-      querySnapshot.forEach((doc) => {
-        this.community = {
-          id: doc.id,
-          name: doc.data().name,
-          address: doc.data().address,
-          phoneNumber: doc.data().phoneNumber,
-          eMailAddress: doc.data().eMailAddress
-        }
-        this.communities.options.push({
-          text: this.community.name,
-          value: this.community.id
-        })
-      })
+      }
     },
 
     async getEvent (eventId) {
       const docRef = doc(db, 'events', eventId)
-      const docSnap = await getDoc(docRef).catch(
-        this.$root.makeToast(
-          'error-get-event',
-          'danger',
-          'Something went wrong!',
-          'Could not load the event, please try again. if the problem keeps happening contact an admin',
-          false,
-          5000
-        )
-      )
+      const docSnap = await getDoc(docRef)
       if (docSnap.exists()) {
         this.name = docSnap.data().eventName
         this.date = moment(docSnap.data().date.seconds * 1000).format(
@@ -398,31 +393,40 @@ export default {
         this.actions.action3.selected = docSnap.data().actions[2].selected
         this.communities.selected = docSnap.data().participatingCommunities
       } else {
-        console.log('No such event!')
+        this.$root.makeToast(
+          'error-get-event',
+          'danger',
+          'Something went wrong!',
+          'Could not load the event, please try again. if the problem keeps happening contact an admin',
+          false,
+          5000
+        )
       }
     },
 
     async editEvent (eventId) {
       const eventRef = doc(db, 'events', eventId)
-      await updateDoc(eventRef, {
-        eventName: this.name,
-        date: new Date(this.date),
-        startTime: this.startTime,
-        endTime: this.endTime,
-        description: this.description,
-        deadlineRegistration: new Date(this.date),
-        limitAttenders: this.attendanceLimit,
-        location: this.location,
-        participatingCommunities: this.communities.selected,
-        eventCanceled: false,
-        onlineOffline: this.online.selected,
-        actions: [
-          this.actions.action1,
-          this.actions.action2,
-          this.actions.action3
-        ],
-        type: this.type.selected
-      }).catch(
+      try {
+        await updateDoc(eventRef, {
+          eventName: this.name,
+          date: new Date(this.date),
+          startTime: this.startTime,
+          endTime: this.endTime,
+          description: this.description,
+          deadlineRegistration: new Date(this.date),
+          limitAttenders: this.attendanceLimit,
+          location: this.location,
+          participatingCommunities: this.communities.selected,
+          eventCanceled: false,
+          onlineOffline: this.online.selected,
+          actions: [
+            this.actions.action1,
+            this.actions.action2,
+            this.actions.action3
+          ],
+          type: this.type.selected
+        })
+      } catch {
         this.$root.makeToast(
           'error-edit',
           'danger',
@@ -431,7 +435,7 @@ export default {
           false,
           5000
         )
-      )
+      }
 
       this.$root.makeToast(
         'success-edit',
@@ -445,10 +449,12 @@ export default {
 
     async cancelEvent (eventId) {
       const eventRef = doc(db, 'events', eventId)
-      await updateDoc(eventRef, {
-        eventCanceled: true,
-        cancelReason: this.cancellationReason
-      }).catch(
+      try {
+        await updateDoc(eventRef, {
+          eventCanceled: true,
+          cancelReason: this.cancellationReason
+        })
+      } catch {
         this.$root.makeToast(
           'error-cancel',
           'danger',
@@ -457,7 +463,7 @@ export default {
           false,
           5000
         )
-      )
+      }
 
       this.$root.makeToast(
         'success-cancel',
