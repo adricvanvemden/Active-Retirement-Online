@@ -5,9 +5,19 @@
         Hello "firstname", look at al these <b>{{ type }}</b> related events!
       </h1>
     </div>
+    <div v-if="isAdmin" class="createEvent">
+      <router-link :to="{ name: 'create_event' }">
+        <b-button variant="primary"> CREATE EVENT </b-button>
+      </router-link>
+    </div>
     <div class="infoBox">
       <div class="eventInfo" v-for="event in events" :key="event.id">
-        <SingleEvent :event="event" btn-text="Register for event" date />
+        <SingleEvent
+          :event="event"
+          btn-text="Register for event"
+          date
+          isAdmin
+        />
       </div>
     </div>
   </div>
@@ -23,7 +33,8 @@ export default {
     SingleEvent
   },
   props: {
-    type: String
+    type: String,
+    isAdmin: Boolean
   },
   computed: {},
   data () {
