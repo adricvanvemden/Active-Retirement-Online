@@ -23,9 +23,7 @@ import {
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  signOut,
-  getAuth,
-  onAuthStateChanged
+  signOut
 } from 'firebase/auth'
 import Nav from './components/Nav.vue'
 
@@ -41,17 +39,7 @@ export default {
     }
   },
   computed: {},
-  mounted () {
-    const auth = getAuth()
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const uid = user.uid
-        console.log(uid)
-        this.getUser(uid)
-      } else {
-      }
-    })
-  },
+  mounted () {},
   methods: {
     onImg () {
       this.$router.push('/')
