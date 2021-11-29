@@ -9,6 +9,26 @@
       />
     </div>
 
+    <div
+      v-if="validationErrors.length"
+      class="error"
+    >
+      <b-btn variant="primary" @click="resetError()" class="delete">Close</b-btn>
+      <div id="errors">
+        Please check your inputs. The following problems were found:
+        <ul id="errorMessages">
+          <li
+            v-for="(error, index) in validationErrors"
+            :key="`error-${index}`"
+            v-html="error"
+          />
+        </ul>
+      </div>
+    </div>
+    <div v-if="getError" class="error">
+      Oops, something didn't work. Please check your input.
+    </div>
+
     <div id="form">
       <form method="post">
         <div class="input_wrap">
@@ -36,7 +56,7 @@
       </form>
       <br />
       <br />
-      <b-btn variant="primary" type="submit" @click="signInWithEmail()"
+      <b-btn variant="primary" type="submit" @click="validate"
         >SIGN IN</b-btn
       >
       <br />
@@ -58,7 +78,8 @@ export default {
       loginData: {
         email: null,
         password: null
-      }
+      },
+      validationErrors: []
     }
   },
   mounted () {},
@@ -79,10 +100,35 @@ export default {
           console.log(errorCode)
           const errorMessage = error.message
           console.log(errorMessage)
+          this.validationErrors.push('<strong>Email</strong> or <strong>password</strong> is invalid.')
         })
     },
     buttonClicked () {
       router.push('/registration')
+    },
+    resetError () {
+      this.validationErrors = []
+    },
+
+    validate () {
+      this.resetError()
+
+      if (!this.loginData.email) {
+        this.validationErrors.push(
+          "<strong>Email</strong> can't be empty."
+        )
+      }
+      if (/.+@.+/.test(this.loginData.email) !== true) {
+        this.validationErrors.push('<strong>Email</strong> must be valid.')
+      }
+      if (!this.loginData.password) {
+        this.validationErrors.push(
+          "<strong>Password</strong> can't be empty."
+        )
+      }
+      if (this.validationErrors.length <= 0) {
+        this.signInWithEmail()
+      }
     }
   }
 }
@@ -93,6 +139,26 @@ export default {
   position: relative;
   margin-top: 30px;
   margin-bottom: 30px;
+}
+
+.error {
+  position: relative;
+  background-color: beige;
+  width: 700px;
+  text-align: center;
+  padding: 15px;
+  margin-left: auto;
+  margin-right: auto;
+  border: 4px solid #cc6363;
+  border-radius: 3px;
+}
+
+#errors {
+  margin-top: 15px;
+}
+
+#errorMessages {
+  color: #e80000;
 }
 
 #form {
@@ -161,7 +227,7 @@ export default {
     right: 0;
     background-image: url("../assets/background.jpg");
     background-size: cover;
-    height: 100vh;
+    height: 150%;
     opacity: 0.25;
   }
 }
