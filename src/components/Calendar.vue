@@ -138,7 +138,7 @@ export default {
     }
   },
 
-  created () {
+  mounted () {
     this.setCurrentDate()
   },
 
@@ -224,42 +224,6 @@ export default {
       this.setCurrentDate()
     },
 
-    appendEvents () {
-      for (const event of this.events) {
-        const date = new Date(event.date.seconds * 1000)
-        const element = document.getElementById(this.formatToID(date))
-        const wrapper = document.createElement('div')
-        wrapper.classList += 'event-wrapper event'
-        const dot = document.createElement('div')
-        dot.classList += 'dot ' + event.type
-        wrapper.append(dot)
-
-        const eventEl = document.createElement('div')
-        if (event.cancelled) {
-          eventEl.innerHTML =
-            '<s>' +
-            '<b>' +
-            event.eventName +
-            ':</b>' +
-            event.startTime +
-            ' - ' +
-            event.endTime +
-            '</s>'
-        } else {
-          eventEl.innerHTML =
-            '<b>' +
-            event.eventName +
-            ':</b>' +
-            event.startTime +
-            ' - ' +
-            event.endTime
-        }
-
-        wrapper.append(eventEl)
-        element.append(wrapper)
-      }
-    },
-
     calendarEvents (date) {
       const calendarEvents = []
       this.events.map((element) => {
@@ -272,10 +236,21 @@ export default {
       return calendarEvents
     },
 
-    removeEvents () {
-      const elements = document.getElementsByClassName('event-wrapper')
-      while (elements.length > 0) {
-        elements[0].parentNode.removeChild(elements[0])
+    upcomingEvent () {
+      this.$root.hideToast('upcomingEvent')
+      for (const event of this.events) {
+        if (this.isToday(event.date.seconds * 1000)) {
+          this.$root.makeToast(
+            'upcomingEvent',
+            'primary',
+            'You have an event today!',
+            `${event.eventName}
+            ${event.startTime} - ${event.endTime}`,
+            true,
+            0,
+            `/events/${event.id}`
+          )
+        }
       }
     },
 
@@ -292,29 +267,41 @@ export default {
         where('date', '>=', startDate),
         where('date', '<=', endDate)
       )
-      const querySnapshot = await getDocs(q)
-      querySnapshot.forEach((doc) => {
-        this.monthlyEvent = {
-          id: doc.id,
-          eventName: doc.data().eventName,
-          date: doc.data().date,
-          startTime: doc.data().startTime,
-          endTime: doc.data().endTime,
-          description: doc.data().description,
-          deadlineRegistration: doc.data().deadlineRegistration,
-          limitAttenders: doc.data().limitAttenders,
-          location: doc.data().location,
-          organizer: doc.data().organizer,
-          participatingCommunities: doc.data().participatingCommunities,
-          eventCanceled: doc.data().eventCanceled,
-          onlineOffline: doc.data().onlineOffline,
-          participants: doc.data().participants,
-          actions: doc.data().actions,
-          type: doc.data().type
-        }
-        this.events.push(this.monthlyEvent)
-      })
-      console.log(this.events)
+      try {
+        const querySnapshot = await getDocs(q)
+        querySnapshot.forEach((doc) => {
+          this.monthlyEvent = {
+            id: doc.id,
+            eventName: doc.data().eventName,
+            date: doc.data().date,
+            startTime: doc.data().startTime,
+            endTime: doc.data().endTime,
+            description: doc.data().description,
+            deadlineRegistration: doc.data().deadlineRegistration,
+            limitAttenders: doc.data().limitAttenders,
+            location: doc.data().location,
+            organizer: doc.data().organizer,
+            participatingCommunities: doc.data().participatingCommunities,
+            eventCanceled: doc.data().eventCanceled,
+            onlineOffline: doc.data().onlineOffline,
+            participants: doc.data().participants,
+            actions: doc.data().actions,
+            type: doc.data().type
+          }
+          this.events.push(this.monthlyEvent)
+        })
+
+        this.upcomingEvent()
+      } catch {
+        this.$root.makeToast(
+          'error',
+          'danger',
+          'Something went wrong!',
+          'Try again, if the problem keeps happening contact an admin',
+          false,
+          5000
+        )
+      }
     }
   }
 }
