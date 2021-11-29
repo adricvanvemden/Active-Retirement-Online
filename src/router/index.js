@@ -66,6 +66,11 @@ const routes = [
     component: () => import(/* webpackChunkName: "events-admin" */ '../views/EditEvent.vue')
   },
   {
+    path: '/registration',
+    name: 'registration',
+    component: () => import('../views/Registration.vue')
+  },
+  {
     path: '/users',
     name: 'users',
     component: () => import(/* webpackChunkName: "users" */ '../views/Users.vue')
