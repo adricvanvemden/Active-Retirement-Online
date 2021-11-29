@@ -1,100 +1,105 @@
 <template>
-<div class="signUp">
-  <div id="logo">
-    <img
-      src="../assets/active-retirement-connect.png"
-      alt="Logo"
-      width="400px;"
-      height="120px;"
-    />
+  <div class="signUp">
+    <div id="logo">
+      <img
+        src="../assets/active-retirement-connect.png"
+        alt="Logo"
+        width="400px;"
+        height="120px;"
+      />
+    </div>
+    <p>Please fill out the following form to sign up<br /></p>
+    <div id="text2">
+      For the email adress and phone number, only one is required.
+    </div>
+    <div id="form">
+      <form method="post" onsubmit="return validation();">
+        <div class="input_wrap">
+          <div class="input_field">
+            <input
+              type="text"
+              class="input"
+              id="input_firstname"
+              placeholder="First name"
+              v-model="registerData.firstname"
+            />
+          </div>
+        </div>
+        <div class="input_wrap">
+          <div class="input_field">
+            <input
+              type="text"
+              class="input"
+              id="input_lastname"
+              placeholder="Last name"
+              v-model="registerData.lastname"
+            />
+          </div>
+        </div>
+        <div class="input_wrap">
+          <div class="input_field">
+            <select id="age">
+              <option value="60+">Age: 60+</option>
+              <option value="70+">Age: 70+</option>
+              <option value="80+">Age: 80+</option>
+            </select>
+          </div>
+        </div>
+        <div class="input_wrap">
+          <div class="input_field">
+            <input
+              type="text"
+              class="input"
+              id="input_text"
+              placeholder="email"
+              v-model="registerData.email"
+            />
+          </div>
+        </div>
+        <div class="input_wrap">
+          <div class="input_field">
+            <input
+              type="text"
+              class="input"
+              id="input_phone"
+              placeholder="Phone number"
+              v-model="registerData.phone"
+            />
+          </div>
+        </div>
+        <div class="input_wrap">
+          <div class="input_field">
+            <input
+              type="password"
+              class="input"
+              id="input_password"
+              placeholder="Password"
+              v-model="registerData.password"
+            />
+          </div>
+        </div>
+        <div class="input_wrap">
+          <div class="input_field">
+            <input
+              type="password"
+              class="input"
+              id="input_repeat"
+              placeholder="Confirm Password"
+              v-model="registerData.password2"
+            />
+          </div>
+        </div>
+      </form>
+      <br />
+      <br />
+      <b-btn
+        variant="primary"
+        type="submit"
+        @click="signUpWithEmailAndPassword()"
+        >SIGN UP</b-btn
+      >
+    </div>
   </div>
-  <p>Please fill out the following form to sign up<br>
-    <div id="text2">For the email adress and phone number, only one is required.</div>
-  <div id="form">
-    <form method="post" onsubmit="return validation();">
-      <div class="input_wrap">
-        <div class="input_field">
-          <input
-            type="text"
-            class="input"
-            id="input_firstname"
-            placeholder="First name"
-            v-model="registerData.firstname"
-          />
-        </div>
-      </div>
-      <div class="input_wrap">
-        <div class="input_field">
-          <input
-            type="text"
-            class="input"
-            id="input_lastname"
-            placeholder="Last name"
-            v-model="registerData.lastname"
-          />
-        </div>
-      </div>
-      <div class="input_wrap">
-        <div class="input_field">
-          <select id="age">
-            <option value="60+">Age: 60+</option>
-            <option value="70+">Age: 70+</option>
-            <option value="80+">Age: 80+</option>
-          </select>
-        </div>
-      </div>
-      <div class="input_wrap">
-        <div class="input_field">
-          <input
-            type="text"
-            class="input"
-            id="input_text"
-            placeholder="email"
-            v-model="registerData.email"
-          />
-        </div>
-      </div>
-      <div class="input_wrap">
-        <div class="input_field">
-          <input
-            type="text"
-            class="input"
-            id="input_phone"
-            placeholder="Phone number"
-            v-model="registerData.phone"
-          />
-        </div>
-      </div>
-      <div class="input_wrap">
-        <div class="input_field">
-          <input
-            type="password"
-            class="input"
-            id="input_password"
-            placeholder="Password"
-            v-model="registerData.password"
-          />
-        </div>
-      </div>
-      <div class="input_wrap">
-        <div class="input_field">
-          <input
-            type="password"
-            class="input"
-            id="input_repeat"
-            placeholder="Confirm Password"
-            v-model="registerData.password2"
-          />
-        </div>
-      </div>
-    </form>
-    <br />
-    <br />
-    <b-btn variant="primary" type="submit" @click="signUpWithEmailAndPassword()"
-    >SIGN UP</b-btn
-    >
-  </div>
-</div>
 </template>
 
 <script>
@@ -125,14 +130,19 @@ export default {
 
     signUpWithEmailAndPassword () {
       if (this.registerData.password === this.registerData.password2) {
-        createUserWithEmailAndPassword(auth, this.registerData.email, this.registerData.password)
+        createUserWithEmailAndPassword(
+          auth,
+          this.registerData.email,
+          this.registerData.password
+        )
           .then((userCredential) => {
             const docRef = setDoc(doc(db, 'users', userCredential.user.uid), {
-              firstname: this.registerData.firstname,
-              lastname: this.registerData.lastname,
-              age: this.registerData.age,
-              phone: this.registerData.phone,
-              email: this.registerData.email
+              firstName: this.registerData.firstname,
+              lastName: this.registerData.lastname,
+              ageGroup: this.registerData.age,
+              phoneNumber: this.registerData.phone,
+              eMail: this.registerData.email,
+              userRole: 'user'
             })
             console.log('Registration successful', docRef)
             router.push('/dashboard')
