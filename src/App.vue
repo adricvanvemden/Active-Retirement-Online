@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <Nav v-if="this.$route.path !== '/' && this.$route.path !== '/registration'" />
+    <Nav
+      v-if="this.$route.path !== '/' && this.$route.path !== '/registration'"
+    />
     <router-view />
   </div>
 </template>
@@ -21,7 +23,9 @@ import {
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  signOut
+  signOut,
+  getAuth,
+  onAuthStateChanged
 } from 'firebase/auth'
 import Nav from './components/Nav.vue'
 
@@ -37,7 +41,17 @@ export default {
     }
   },
   computed: {},
-  mounted () {},
+  mounted () {
+    const auth = getAuth()
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const uid = user.uid
+        console.log(uid)
+        this.getUser(uid)
+      } else {
+      }
+    })
+  },
   methods: {
     onImg () {
       this.$router.push('/')
@@ -199,6 +213,7 @@ export default {
       const docSnap = await getDoc(docRef)
       if (docSnap.exists()) {
         console.log('Document data:', docSnap.data())
+        this.$store.dispatch('setUser', docSnap.data())
       } else {
         console.log('No such User!')
       }
