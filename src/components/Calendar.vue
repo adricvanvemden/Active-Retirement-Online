@@ -133,7 +133,6 @@ export default {
   },
   watch: {
     fullDate (val) {
-      console.log(val)
       this.events = []
       this.setCalendar()
     }
