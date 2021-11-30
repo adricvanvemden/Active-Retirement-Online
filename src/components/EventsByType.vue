@@ -2,7 +2,8 @@
   <div>
     <div class="header">
       <h1>
-        Hello "firstname", look at al these <b>{{ type }}</b> related events!
+        Hello {{ $store.state.user.firstName }}, look at al these
+        <b>{{ type }}</b> related events!
       </h1>
     </div>
     <div v-if="isAdmin" class="createEvent">

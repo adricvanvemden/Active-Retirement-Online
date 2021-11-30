@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <Nav v-if="this.$route.path !== '/' && this.$route.path !== '/registration'" />
+    <Nav
+      v-if="this.$route.path !== '/' && this.$route.path !== '/registration'"
+    />
     <router-view />
   </div>
 </template>
@@ -199,6 +201,7 @@ export default {
       const docSnap = await getDoc(docRef)
       if (docSnap.exists()) {
         console.log('Document data:', docSnap.data())
+        this.$store.dispatch('setUser', docSnap.data())
       } else {
         console.log('No such User!')
       }

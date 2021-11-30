@@ -3,6 +3,9 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
+import { db } from './firebase'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import { doc, getDoc } from 'firebase/firestore'
 
 // Import Bootstrap an BootstrapVue CSS files (order is important)
 import 'bootstrap/dist/css/bootstrap.css'
@@ -16,9 +19,41 @@ Vue.use(IconsPlugin)
 
 Vue.config.productionTip = false
 
+router.beforeEach((to, from, next) => {
+  if (to.meta.requiresAuth) {
+    if (store.state.user === undefined) {
+      next({ path: '/' })
+    } else if (to.meta.requiresAdmin) {
+      if (store.state.user.userRole !== 'admin') {
+        next({ path: '/404' })
+      } else next()
+    } else next()
+  } else next()
+})
+
+const auth = getAuth()
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    const uid = user.uid
+    getUser(uid)
+  } else {
+    store.dispatch('setUser', undefined)
+  }
+})
+
+async function getUser (userId) {
+  const docRef = doc(db, 'users', userId)
+  const docSnap = await getDoc(docRef)
+  if (docSnap.exists()) {
+    store.dispatch('setUser', docSnap.data())
+  }
+}
+
 new Vue({
   router,
   store,
+  el: '#app',
+  name: 'App',
   methods: {
     makeToast (id, variant, title, text, noAutoHide, delay, to) {
       this.$bvToast.toast(text, {
