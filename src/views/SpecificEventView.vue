@@ -132,10 +132,10 @@ export default {
       }
     },
     getUser () {
-      // this.user = JSON.parse(sessionStorage.getItem('user'))
+      // this.user = $store.state.user
       // For the moment the user is Olivier but we will have to remove the comment
       // above when we will store the user in sessionStorage
-      this.user = 'Olivierr'
+      this.user = 'Olivier'
     },
     isUserRegistered () {
       if (this.event.participants.includes(this.user)) {
@@ -153,15 +153,18 @@ export default {
       })
     },
     async registerForEvent (eventId) {
-      console.log(this.actionsSelected)
+      const userToRegister = {
+        userId: '',
+        actions: this.actionsSelected
+      }
       if (!this.event.participants.includes(this.user)) {
-        this.event.participants.push(this.user)
-        /* const eventRef = doc(db, 'events', eventId)
+        this.event.participants.push(userToRegister)
+        const eventRef = doc(db, 'events', eventId)
         await updateDoc(eventRef, {
           participants: this.event.participants
         }).then(() => {
           this.isRegistered = true
-        }) */
+        })
       }
     }
   }
