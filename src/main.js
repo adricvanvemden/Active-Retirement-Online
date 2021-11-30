@@ -19,5 +19,22 @@ Vue.config.productionTip = false
 new Vue({
   router,
   store,
+  methods: {
+    makeToast (id, variant, title, text, noAutoHide, delay, to) {
+      this.$bvToast.toast(text, {
+        id: id,
+        title: title,
+        variant: variant,
+        appendToast: true,
+        noAutoHide: noAutoHide,
+        autoHideDelay: delay,
+        to: to,
+        toaster: 'b-toaster-bottom-right'
+      })
+    },
+    hideToast (id) {
+      this.$bvToast.hide(id)
+    }
+  },
   render: h => h(App)
 }).$mount('#app')
