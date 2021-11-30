@@ -38,6 +38,7 @@
       <input
         :type="action.selected"
         name="drone"
+        v-model="actionsSelected[action.value]"
         :disabled="event.eventCanceled"
       />
       {{ action.value }}
@@ -110,7 +111,8 @@ export default {
       eventID: '',
       event: { date: { seconds: '' } },
       user: '',
-      isRegistered: false
+      isRegistered: false,
+      actionsSelected: []
     }
   },
 
@@ -124,7 +126,7 @@ export default {
       if (docSnap.exists()) {
         this.event = docSnap.data()
         console.log(this.event)
-        this.isUserRegistered()
+        // this.isUserRegistered()
       } else {
         console.log('No such event!')
       }
@@ -133,7 +135,7 @@ export default {
       // this.user = JSON.parse(sessionStorage.getItem('user'))
       // For the moment the user is Olivier but we will have to remove the comment
       // above when we will store the user in sessionStorage
-      this.user = 'Olivir'
+      this.user = 'Olivierr'
     },
     isUserRegistered () {
       if (this.event.participants.includes(this.user)) {
@@ -151,14 +153,15 @@ export default {
       })
     },
     async registerForEvent (eventId) {
+      console.log(this.actionsSelected)
       if (!this.event.participants.includes(this.user)) {
         this.event.participants.push(this.user)
-        const eventRef = doc(db, 'events', eventId)
+        /* const eventRef = doc(db, 'events', eventId)
         await updateDoc(eventRef, {
           participants: this.event.participants
         }).then(() => {
           this.isRegistered = true
-        })
+        }) */
       }
     }
   }
