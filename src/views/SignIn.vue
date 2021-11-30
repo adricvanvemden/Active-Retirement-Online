@@ -116,7 +116,9 @@ export default {
       const docRef = doc(db, 'users', userId)
       const docSnap = await getDoc(docRef)
       if (docSnap.exists()) {
-        this.$store.dispatch('setUser', docSnap.data())
+        const userObj = docSnap.data()
+        userObj.id = docSnap.id
+        this.$store.dispatch('setUser', userObj)
         router.push('/dashboard')
       } else {
         console.log('No such User!')

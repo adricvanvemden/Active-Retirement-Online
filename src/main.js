@@ -45,7 +45,9 @@ async function getUser (userId) {
   const docRef = doc(db, 'users', userId)
   const docSnap = await getDoc(docRef)
   if (docSnap.exists()) {
-    store.dispatch('setUser', docSnap.data())
+    const userObj = docSnap.data()
+    userObj.id = userId
+    store.dispatch('setUser', userObj)
   }
 }
 
