@@ -30,15 +30,16 @@
     </div>
 
     <div
-      v-for="action in event.actions"
+      v-for="(action, index) in event.actions"
       :key="action.id"
       class="actions-wrapper"
       :class="{ cancelled: event.eventCanceled }"
     >
       <input
         :type="action.selected"
-        name="drone"
-        v-model="actionsSelected[action.value]"
+        name="action"
+        v-model="actionsSelected[index]"
+        :value="action"
         :disabled="event.eventCanceled"
       />
       {{ action.value }}
@@ -125,22 +126,21 @@ export default {
       const docSnap = await getDoc(docRef)
       if (docSnap.exists()) {
         this.event = docSnap.data()
-        console.log(this.event)
-        // this.isUserRegistered()
+        console.log('Event : ', this.event)
+        this.isUserRegistered()
       } else {
         console.log('No such event!')
       }
     },
     getUser () {
-      // this.user = $store.state.user
-      // For the moment the user is Olivier but we will have to remove the comment
-      // above when we will store the user in sessionStorage
-      this.user = 'Olivier'
+      this.user = this.$store.state.user
+      console.log('User : ', this.user)
     },
     isUserRegistered () {
-      if (this.event.participants.includes(this.user)) {
+      if (this.event.participants.some(e => e.userId === this.user.id)) {
         this.isRegistered = true
       }
+      console.log('isUserRegistered ? : ', this.isRegistered)
     },
     onGoToEditEvent (eventID) {
       this.$router.push('/admin/events/edit/' + eventID)
@@ -153,11 +153,20 @@ export default {
       })
     },
     async registerForEvent (eventId) {
-      const userToRegister = {
-        userId: '',
-        actions: this.actionsSelected
+      console.log('actionsSelected : ', this.actionsSelected)
+      const actionsSelectedString = []
+      for (let i = 0; i < this.actionsSelected.length; i++) {
+        if (this.actionsSelected[i] !== false && this.actionsSelected[i] !== undefined) {
+          actionsSelectedString.push(this.event.actions[i].value)
+        }
       }
-      if (!this.event.participants.includes(this.user)) {
+      console.log('actionsSelectedString : ', actionsSelectedString)
+      const userToRegister = {
+        userId: this.user.id,
+        actions: actionsSelectedString
+      }
+      console.log('userToRegister : ', userToRegister)
+      if (!this.event.participants.some(e => e.userId === this.user.id)) {
         this.event.participants.push(userToRegister)
         const eventRef = doc(db, 'events', eventId)
         await updateDoc(eventRef, {
