@@ -118,7 +118,7 @@
 
 <script>
 import { auth, db } from '@/firebase'
-import { doc, setDoc } from 'firebase/firestore'
+import { collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 import router from '@/router'
 
@@ -220,7 +220,17 @@ export default {
       if (this.validationErrors.length <= 0) {
         this.signUpWithEmailAndPassword()
       }
+    },
+    async getUserEmail () {
+      const userRef = collection(db, 'users')
+      const q = query(userRef, where('email', '==', this.registerData.email))
+      const querySnapshot = await getDocs(q)
+      querySnapshot.forEach((doc) => {
+
+        console.log(this.queriedPokemonByName)
+      })
     }
+
   }
 }
 </script>
