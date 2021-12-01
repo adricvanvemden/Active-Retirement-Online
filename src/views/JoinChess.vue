@@ -24,7 +24,10 @@
       </p>
     </div>
     <br />
-    <button class="btn" onclick="location.href='https://cardgames.io/chess/'">
+    <button
+      class="btn"
+      onclick=" window.open('https://cardgames.io/chess/,'_blank')"
+    >
       PLAY
     </button>
   </div>
@@ -43,6 +46,7 @@
   font-size: 20px;
   font-weight: bold;
   background: #204293;
+  margin-bottom: 80px;
 }
 .description {
   text-align: left;
@@ -50,8 +54,9 @@
   font-size: x-large;
   position: relative;
   text-decoration: none;
+  padding-left: 30px;
 
-  background: #f3f4f5;
+  background: lightblue;
   border: 3px solid #d3d3d3;
   border-radius: 18px;
 

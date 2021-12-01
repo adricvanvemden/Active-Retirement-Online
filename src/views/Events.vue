@@ -63,7 +63,7 @@ export default {
     font-size: 64px;
     font-weight: 600;
     padding-right: 100px;
-    background: #f3f4f5;
+    background: lightblue;
 
     &:hover {
       color: black;
