@@ -72,7 +72,7 @@
 
       <b-input
         placeholder="Enter action.."
-        class="col-2"
+        class="e-col-2"
         v-model="actions.action2.value"
       />
       <b-form-select
@@ -83,7 +83,7 @@
 
       <b-input
         placeholder="Enter action.."
-        class="col-2"
+        class="e-col-2"
         v-model="actions.action3.value"
       />
       <b-form-select
@@ -168,11 +168,11 @@ export default {
   props: {
     btnText: String,
     create: Boolean,
-    edit: Boolean,
-    eventId: String
+    edit: Boolean
   },
   created () {
     this.getAllCommunities()
+    this.eventId = this.$route.params.eventId
     if (this.edit) {
       this.getEvent(this.eventId)
     }
@@ -250,6 +250,7 @@ export default {
 
   data () {
     return {
+      eventId: '',
       name: '',
       date: '',
       startTime: '',
@@ -296,45 +297,76 @@ export default {
   },
   methods: {
     async createEvent () {
-      const docRef = await addDoc(collection(db, 'events'), {
-        eventName: this.name,
-        date: new Date(this.date),
-        description: this.description,
-        deadlineRegistration: new Date(this.date),
-        limitAttenders: this.attendanceLimit,
-        location: this.location,
-        startTime: this.startTime,
-        endTime: this.endTime,
-        participatingCommunities: this.communities.selected,
-        eventCanceled: false,
-        onlineOffline: this.online.selected,
-        actions: [
-          this.actions.action1,
-          this.actions.action2,
-          this.actions.action3
-        ],
-        participants: [],
-        type: this.type.selected
-      })
-      console.log(docRef)
-      this.clearFields()
+      try {
+        const docRef = await addDoc(collection(db, 'events'), {
+          eventName: this.name,
+          date: new Date(this.date),
+          description: this.description,
+          deadlineRegistration: new Date(this.date),
+          limitAttenders: this.attendanceLimit,
+          location: this.location,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          participatingCommunities: this.communities.selected,
+          eventCanceled: false,
+          onlineOffline: this.online.selected,
+          actions: [
+            this.actions.action1,
+            this.actions.action2,
+            this.actions.action3
+          ],
+          participants: [],
+          type: this.type.selected
+        })
+        console.log(docRef)
+        this.clearFields()
+      } catch {
+        this.$root.makeToast(
+          'error-create-event',
+          'danger',
+          'Something went wrong!',
+          'The event might not have been created. Please check and try again.',
+          false,
+          5000
+        )
+      }
+
+      this.$root.makeToast(
+        'success-create-event',
+        'success',
+        'Success!',
+        'The event is created',
+        false,
+        5000
+      )
     },
 
     async getAllCommunities () {
       const querySnapshot = await getDocs(collection(db, 'communities'))
-      querySnapshot.forEach((doc) => {
-        this.community = {
-          id: doc.id,
-          name: doc.data().name,
-          address: doc.data().address,
-          phoneNumber: doc.data().phoneNumber,
-          eMailAddress: doc.data().eMailAddress
-        }
-        this.communities.options.push({
-          text: this.community.name,
-          value: this.community.id
+      try {
+        querySnapshot.forEach((doc) => {
+          this.community = {
+            id: doc.id,
+            name: doc.data().name,
+            address: doc.data().address,
+            phoneNumber: doc.data().phoneNumber,
+            eMailAddress: doc.data().eMailAddress
+          }
+          this.communities.options.push({
+            text: this.community.name,
+            value: this.community.id
+          })
         })
-      })
+      } catch {
+        this.$root.makeToast(
+          'error-get-communities',
+          'danger',
+          'Something went wrong!',
+          'Could not retrieve all communties, please try again. If the problem keeps happening contact an admin',
+          false,
+          5000
+        )
+      }
     },
 
     async getEvent (eventId) {
@@ -361,39 +393,86 @@ export default {
         this.actions.action3.selected = docSnap.data().actions[2].selected
         this.communities.selected = docSnap.data().participatingCommunities
       } else {
-        console.log('No such event!')
+        this.$root.makeToast(
+          'error-get-event',
+          'danger',
+          'Something went wrong!',
+          'Could not load the event, please try again. if the problem keeps happening contact an admin',
+          false,
+          5000
+        )
       }
     },
 
     async editEvent (eventId) {
       const eventRef = doc(db, 'events', eventId)
-      await updateDoc(eventRef, {
-        eventName: this.name,
-        date: new Date(this.date),
-        startTime: this.startTime,
-        endTime: this.endTime,
-        description: this.description,
-        deadlineRegistration: new Date(this.date),
-        limitAttenders: this.attendanceLimit,
-        location: this.location,
-        participatingCommunities: this.communities.selected,
-        eventCanceled: false,
-        onlineOffline: this.online.selected,
-        actions: [
-          this.actions.action1,
-          this.actions.action2,
-          this.actions.action3
-        ],
-        type: this.type.selected
-      })
+      try {
+        await updateDoc(eventRef, {
+          eventName: this.name,
+          date: new Date(this.date),
+          startTime: this.startTime,
+          endTime: this.endTime,
+          description: this.description,
+          deadlineRegistration: new Date(this.date),
+          limitAttenders: this.attendanceLimit,
+          location: this.location,
+          participatingCommunities: this.communities.selected,
+          eventCanceled: false,
+          onlineOffline: this.online.selected,
+          actions: [
+            this.actions.action1,
+            this.actions.action2,
+            this.actions.action3
+          ],
+          type: this.type.selected
+        })
+      } catch {
+        this.$root.makeToast(
+          'error-edit',
+          'danger',
+          'Something went wrong!',
+          'The event might not have been updated. Please check and try again. If the problem keeps happening contact an admin',
+          false,
+          5000
+        )
+      }
+
+      this.$root.makeToast(
+        'success-edit',
+        'success',
+        'Success!',
+        'The event is updated',
+        false,
+        5000
+      )
     },
 
     async cancelEvent (eventId) {
       const eventRef = doc(db, 'events', eventId)
-      await updateDoc(eventRef, {
-        eventCanceled: true,
-        cancelReason: this.cancellationReason
-      })
+      try {
+        await updateDoc(eventRef, {
+          eventCanceled: true,
+          cancelReason: this.cancellationReason
+        })
+      } catch {
+        this.$root.makeToast(
+          'error-cancel',
+          'danger',
+          'Something went wrong!',
+          'The event might not have been cancelled. Please check and try again.',
+          false,
+          5000
+        )
+      }
+
+      this.$root.makeToast(
+        'success-cancel',
+        'success',
+        'Success!',
+        'The event is cancelled',
+        false,
+        5000
+      )
     },
 
     clearFields () {
@@ -446,7 +525,7 @@ export default {
   height: 175px;
 }
 
-.col-2 {
+.e-col-2 {
   grid-column: 2;
 }
 .row-5 {

@@ -40,6 +40,12 @@ const routes = [
     component: () => import(/* webpackChunkName: "events" */ '../views/EventsFiltered.vue')
   },
   {
+    path: '/events/:eventId',
+    name: 'single_event',
+    component: () => import(/* webpackChunkName: "events" */ '../views/SpecificEventView.vue')
+
+  },
+  {
     path: '/games',
     name: 'games',
     component: () => import(/* webpackChunkName: "games" */ '../views/Games.vue')
@@ -55,16 +61,24 @@ const routes = [
     component: () => import(/* webpackChunkName: "events-admin" */ '../views/CreateEvent.vue')
   },
   {
-    path: '/admin/events/edit',
+    path: '/admin/events/edit/:eventId',
     name: 'edit_event',
     component: () => import(/* webpackChunkName: "events-admin" */ '../views/EditEvent.vue')
-
   },
   {
     path: '/registration',
     name: 'registration',
-    component: () => import(/* webpackChunkName: "events-admin" */ '../views/Registration.vue')
-
+    component: () => import('../views/Registration.vue')
+  },
+  {
+    path: '/users',
+    name: 'users',
+    component: () => import(/* webpackChunkName: "users" */ '../views/Users.vue')
+  },
+  {
+    path: '/user/:userId',
+    name: 'user',
+    component: () => import(/* webpackChunkName: "user" */ '../views/User.vue')
   }
 ]
 
