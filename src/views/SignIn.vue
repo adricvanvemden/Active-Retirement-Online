@@ -8,7 +8,6 @@
         height="120px;"
       />
     </div>
-
     <div
       v-if="validationErrors.length"
       class="error"
@@ -25,10 +24,6 @@
         </ul>
       </div>
     </div>
-    <div v-if="getError" class="error">
-      Oops, something didn't work. Please check your input.
-    </div>
-
     <div id="form">
       <form method="post">
         <div class="input_wrap">
@@ -61,7 +56,7 @@
       >
       <div id="googleFacebook">
         <img
-          src="../assets/scss/google-facebook.png"
+          src="../assets/google-facebook.png"
           alt="Buttons"
         />
       </div>

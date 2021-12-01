@@ -311,13 +311,12 @@ p {
 #form .input_wrap input {
   padding: 10px;
   width: 100%;
-  border: 1px solid lightgrey;
   font-size: 16px;
   border-radius: 3px;
 }
 
 #form .input_wrap .input {
-  background: #e5e5e5;
+  background: #d9edf6;
   padding-right: 35px;
   border-style: solid;
   border-width: 4px;
@@ -329,8 +328,8 @@ p {
 }
 
 #age {
-  background: #e5e5e5;
-  padding: 10px;
+  background: #d9edf6;
+  padding: 12px;
   width: 100%;
   border: 4px solid;
   font-size: 16px;
