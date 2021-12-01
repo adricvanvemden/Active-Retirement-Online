@@ -59,7 +59,12 @@
       <b-btn variant="primary" type="submit" @click="validate"
         >SIGN IN</b-btn
       >
-      <br />
+      <div id="googleFacebook">
+        <img
+          src="../assets/scss/google-facebook.png"
+          alt="Buttons"
+        />
+      </div>
       <p id="p1">Don't have an account, yet?</p>
       <br />
       <b-btn variant="primary" type="submit" @click="buttonClicked">SIGN UP</b-btn>
@@ -193,13 +198,12 @@ export default {
 #form .input_wrap input {
   padding: 10px;
   width: 100%;
-  border: 1px solid lightgrey;
   font-size: 16px;
   border-radius: 3px;
 }
 
 #form .input_wrap .input {
-  background: #e5e5e5;
+  background: #d9edf6;
   padding-right: 35px;
   border-style: solid;
   border-width: 4px;
@@ -208,6 +212,12 @@ export default {
 
 #form .input_wrap .input_field {
   position: relative;
+}
+
+#googleFacebook {
+  position: relative;
+  margin-top: 40px;
+  text-align: center;
 }
 
 #p1 {

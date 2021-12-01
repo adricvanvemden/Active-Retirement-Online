@@ -9,7 +9,26 @@
     />
   </div>
   <p>Please fill out the following form to sign up<br>
-    <div id="text2">For the email adress and phone number, only one is required.</div>
+  <div id="text2">For the email adress and phone number, only one is required.</div>
+  <div
+    v-if="validationErrors.length"
+    class="error"
+  >
+    <b-btn variant="primary" @click="resetError()" class="delete">Close</b-btn>
+    <div id="errors">
+      Please check your inputs. The following problems were found:
+      <ul id="errorMessages">
+        <li
+          v-for="(error, index) in validationErrors"
+          :key="`error-${index}`"
+          v-html="error"
+        />
+      </ul>
+    </div>
+  </div>
+  <div v-if="getError" class="error">
+    Oops, something didn't work. Please check your input.
+  </div>
   <div id="form">
     <form method="post" onsubmit="return validation();">
       <div class="input_wrap">
@@ -90,7 +109,7 @@
     </form>
     <br />
     <br />
-    <b-btn variant="primary" type="submit" @click="signUpWithEmailAndPassword()"
+    <b-btn variant="primary" type="submit" @click="validate"
     >SIGN UP</b-btn
     >
   </div>
@@ -114,7 +133,8 @@ export default {
         phone: null,
         password: null,
         password2: null
-      }
+      },
+      validationErrors: []
     }
   },
   mounted () {},
@@ -123,8 +143,29 @@ export default {
       console.log(this.registerData)
     },
 
-    signUpWithEmailAndPassword () {
-      if (this.registerData.password === this.registerData.password2) {
+    signUp () {
+      if (this.registerData.email.length <= 0) {
+        const generatedEmail = (Math.random() + 1).toString(36).substring(0) + '@gmail.com'
+        createUserWithEmailAndPassword(auth, generatedEmail, this.registerData.password)
+          .then((userCredential) => {
+            const docRef = setDoc(doc(db, 'users', userCredential.user.uid), {
+              firstname: this.registerData.firstname,
+              lastname: this.registerData.lastname,
+              age: this.registerData.age,
+              phone: this.registerData.phone,
+              email: generatedEmail
+            })
+            console.log('Registration successful', docRef)
+            router.push('/dashboard')
+          })
+          .catch((error) => {
+            const errorCode = error.code
+            console.log(errorCode)
+            const errorMessage = error.message
+            console.log(errorMessage)
+            this.validationErrors.push('Inputs invalid.')
+          })
+      } else {
         createUserWithEmailAndPassword(auth, this.registerData.email, this.registerData.password)
           .then((userCredential) => {
             const docRef = setDoc(doc(db, 'users', userCredential.user.uid), {
@@ -142,7 +183,42 @@ export default {
             console.log(errorCode)
             const errorMessage = error.message
             console.log(errorMessage)
+            this.validationErrors.push('Inputs invalid.')
           })
+      }
+    },
+    resetError () {
+      this.validationErrors = []
+    },
+    validate () {
+      this.resetError()
+
+      if (!this.registerData.firstname) {
+        this.validationErrors.push('Please fill in your <strong>first name</strong>')
+      }
+      if (!this.registerData.lastname) {
+        this.validationErrors.push('Please fill in your <strong>last name</strong>')
+      }
+      if (!this.registerData.email && !this.registerData.phone) {
+        this.validationErrors.push('Must fill out <strong>email</strong> or <strong>phone number</strong>.')
+      }
+      if (this.registerData.phone && /^\d+$/.test(this.registerData.phone) !== true) {
+        this.validationErrors.push('<strong>Phone number</strong> can only contain numbers.')
+      }
+      if (this.registerData.email && /.+@.+/.test(this.registerData.email) !== true) {
+        this.validationErrors.push('<strong>Email</strong> must be valid.')
+      }
+      if (!this.registerData.password || !this.registerData.password2) {
+        this.validationErrors.push('<strong>Password</strong> can not be empty.')
+      }
+      if (this.registerData.password && /.{6,}/.test(this.registerData.password) !== true) {
+        this.validationErrors.push('<strong>Password</strong> has to have at least 6 characters.')
+      }
+      if (this.registerData.password !== this.registerData.password2) {
+        this.validationErrors.push('The <strong>passwords</strong> have to match.')
+      }
+      if (this.validationErrors.length <= 0) {
+        this.signUpWithEmailAndPassword()
       }
     }
   }
@@ -154,6 +230,27 @@ export default {
   position: relative;
   margin-top: 30px;
   margin-bottom: 20px;
+}
+
+.error {
+  position: relative;
+  background-color: beige;
+  width: 700px;
+  text-align: center;
+  padding: 15px;
+  margin-top: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  border: 4px solid #cc6363;
+  border-radius: 3px;
+}
+
+#errors {
+  margin-top: 15px;
+}
+
+#errorMessages {
+  color: #e80000;
 }
 
 p {
