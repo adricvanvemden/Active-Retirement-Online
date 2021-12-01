@@ -1,119 +1,120 @@
 <template>
-<div class="signUp">
-  <div id="logo">
-    <img
-      src="../assets/active-retirement-connect.png"
-      alt="Logo"
-      width="400px;"
-      height="120px;"
-    />
-  </div>
-  <p>Please fill out the following form to sign up<br>
-  <div id="text2">For the email adress and phone number, only one is required.</div>
-  <div
-    v-if="validationErrors.length"
-    class="error"
-  >
-    <b-btn variant="primary" @click="resetError()" class="delete">Close</b-btn>
-    <div id="errors">
-      Please check your inputs. The following problems were found:
-      <ul id="errorMessages">
-        <li
-          v-for="(error, index) in validationErrors"
-          :key="`error-${index}`"
-          v-html="error"
-        />
-      </ul>
+  <div class="signUp">
+    <div id="logo">
+      <img
+        src="../assets/active-retirement-connect.png"
+        alt="Logo"
+        width="400px;"
+        height="120px;"
+      />
+    </div>
+    <p>Please fill out the following form to sign up<br>
+    <div id="text2">For the email adress and phone number, only one is required.</div>
+    <div
+      v-if="validationErrors.length"
+      class="error"
+    >
+      <b-btn variant="primary" @click="resetError()" class="delete">Close</b-btn>
+      <div id="errors">
+        Please check your inputs. The following problems were found:
+        <ul id="errorMessages">
+          <li
+            v-for="(error, index) in validationErrors"
+            :key="`error-${index}`"
+            v-html="error"
+          />
+        </ul>
+      </div>
+    </div>
+    <div v-if="getError" class="error">
+      Oops, something didn't work. Please check your input.
+    </div>
+    <div id="form">
+      <form method="post" onsubmit="return validation();">
+        <div class="input_wrap">
+          <div class="input_field">
+            <input
+              type="text"
+              class="input"
+              id="input_firstname"
+              placeholder="First name"
+              v-model="registerData.firstname"
+            />
+          </div>
+        </div>
+        <div class="input_wrap">
+          <div class="input_field">
+            <input
+              type="text"
+              class="input"
+              id="input_lastname"
+              placeholder="Last name"
+              v-model="registerData.lastname"
+            />
+          </div>
+        </div>
+        <div class="input_wrap">
+          <div class="input_field">
+            <select id="age">
+              <option value="60+">Age: 60+</option>
+              <option value="70+">Age: 70+</option>
+              <option value="80+">Age: 80+</option>
+            </select>
+          </div>
+        </div>
+        <div class="input_wrap">
+          <div class="input_field">
+            <input
+              type="text"
+              class="input"
+              id="input_text"
+              placeholder="email"
+              v-model="registerData.email"
+            />
+          </div>
+        </div>
+        <div class="input_wrap">
+          <div class="input_field">
+            <input
+              type="text"
+              class="input"
+              id="input_phone"
+              placeholder="Phone number"
+              v-model="registerData.phone"
+            />
+          </div>
+        </div>
+        <div class="input_wrap">
+          <div class="input_field">
+            <input
+              type="password"
+              class="input"
+              id="input_password"
+              placeholder="Password"
+              v-model="registerData.password"
+            />
+          </div>
+        </div>
+        <div class="input_wrap">
+          <div class="input_field">
+            <input
+              type="password"
+              class="input"
+              id="input_repeat"
+              placeholder="Confirm Password"
+              v-model="registerData.password2"
+            />
+          </div>
+        </div>
+      </form>
+      <br/>
+      <br/>
+      <b-btn variant="primary" type="submit" @click="validate"
+      >SIGN UP
+      </b-btn
+      >
     </div>
   </div>
-  <div v-if="getError" class="error">
-    Oops, something didn't work. Please check your input.
-  </div>
-  <div id="form">
-    <form method="post" onsubmit="return validation();">
-      <div class="input_wrap">
-        <div class="input_field">
-          <input
-            type="text"
-            class="input"
-            id="input_firstname"
-            placeholder="First name"
-            v-model="registerData.firstname"
-          />
-        </div>
-      </div>
-      <div class="input_wrap">
-        <div class="input_field">
-          <input
-            type="text"
-            class="input"
-            id="input_lastname"
-            placeholder="Last name"
-            v-model="registerData.lastname"
-          />
-        </div>
-      </div>
-      <div class="input_wrap">
-        <div class="input_field">
-          <select id="age">
-            <option value="60+">Age: 60+</option>
-            <option value="70+">Age: 70+</option>
-            <option value="80+">Age: 80+</option>
-          </select>
-        </div>
-      </div>
-      <div class="input_wrap">
-        <div class="input_field">
-          <input
-            type="text"
-            class="input"
-            id="input_text"
-            placeholder="email"
-            v-model="registerData.email"
-          />
-        </div>
-      </div>
-      <div class="input_wrap">
-        <div class="input_field">
-          <input
-            type="text"
-            class="input"
-            id="input_phone"
-            placeholder="Phone number"
-            v-model="registerData.phone"
-          />
-        </div>
-      </div>
-      <div class="input_wrap">
-        <div class="input_field">
-          <input
-            type="password"
-            class="input"
-            id="input_password"
-            placeholder="Password"
-            v-model="registerData.password"
-          />
-        </div>
-      </div>
-      <div class="input_wrap">
-        <div class="input_field">
-          <input
-            type="password"
-            class="input"
-            id="input_repeat"
-            placeholder="Confirm Password"
-            v-model="registerData.password2"
-          />
-        </div>
-      </div>
-    </form>
-    <br />
-    <br />
-    <b-btn variant="primary" type="submit" @click="validate"
-    >SIGN UP</b-btn
-    >
-  </div>
-</div>
 </template>
 
 <script>
@@ -134,10 +135,12 @@ export default {
         password: null,
         password2: null
       },
-      validationErrors: []
+      validationErrors: [],
+      queriedEmail: null
     }
   },
-  mounted () {},
+  mounted () {
+  },
   methods: {
     print () {
       console.log(this.registerData)
@@ -191,6 +194,7 @@ export default {
       this.validationErrors = []
     },
     validate () {
+      this.getUserEmail()
       this.resetError()
 
       if (!this.registerData.firstname) {
@@ -217,8 +221,11 @@ export default {
       if (this.registerData.password !== this.registerData.password2) {
         this.validationErrors.push('The <strong>passwords</strong> have to match.')
       }
+      if (this.queriedEmail() !== null) {
+        this.validationErrors.push('<strong>Email</strong> already taken.')
+      }
       if (this.validationErrors.length <= 0) {
-        this.signUpWithEmailAndPassword()
+        this.signUp()
       }
     },
     async getUserEmail () {
@@ -226,8 +233,10 @@ export default {
       const q = query(userRef, where('email', '==', this.registerData.email))
       const querySnapshot = await getDocs(q)
       querySnapshot.forEach((doc) => {
-
-        console.log(this.queriedPokemonByName)
+        if (doc.exists()) {
+          this.queriedEmail = doc.data().email
+          console.log(this.queriedEmail)
+        }
       })
     }
 
