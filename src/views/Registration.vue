@@ -26,9 +26,6 @@
         </ul>
       </div>
     </div>
-    <div v-if="getError" class="error">
-      Oops, something didn't work. Please check your input.
-    </div>
     <div id="form">
       <form method="post" onsubmit="return validation();">
         <div class="input_wrap">
@@ -130,13 +127,13 @@ export default {
         firstname: null,
         lastname: null,
         age: null,
-        email: null,
+        eMail: null,
         phone: null,
         password: null,
         password2: null
       },
       validationErrors: [],
-      queriedEmail: null
+      queriedEmail: ''
     }
   },
   mounted () {
@@ -156,7 +153,7 @@ export default {
               lastname: this.registerData.lastname,
               age: this.registerData.age,
               phone: this.registerData.phone,
-              email: generatedEmail
+              eMail: generatedEmail
             })
             console.log('Registration successful', docRef)
             router.push('/dashboard')
@@ -176,7 +173,7 @@ export default {
               lastname: this.registerData.lastname,
               age: this.registerData.age,
               phone: this.registerData.phone,
-              email: this.registerData.email
+              eMail: this.registerData.email
             })
             console.log('Registration successful', docRef)
             router.push('/dashboard')
@@ -197,6 +194,9 @@ export default {
       this.getUserEmail()
       this.resetError()
 
+      if (this.queriedEmail.length > 0) {
+        this.validationErrors.push('<strong>Email</strong> already taken.')
+      }
       if (!this.registerData.firstname) {
         this.validationErrors.push('Please fill in your <strong>first name</strong>')
       }
@@ -221,21 +221,17 @@ export default {
       if (this.registerData.password !== this.registerData.password2) {
         this.validationErrors.push('The <strong>passwords</strong> have to match.')
       }
-      if (this.queriedEmail() !== null) {
-        this.validationErrors.push('<strong>Email</strong> already taken.')
-      }
       if (this.validationErrors.length <= 0) {
         this.signUp()
       }
     },
     async getUserEmail () {
       const userRef = collection(db, 'users')
-      const q = query(userRef, where('email', '==', this.registerData.email))
+      const q = query(userRef, where('eMail', '==', this.registerData.email))
       const querySnapshot = await getDocs(q)
       querySnapshot.forEach((doc) => {
         if (doc.exists()) {
-          this.queriedEmail = doc.data().email
-          console.log(this.queriedEmail)
+          this.queriedEmail = doc.data().eMail
         }
       })
     }
