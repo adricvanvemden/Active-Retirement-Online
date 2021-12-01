@@ -143,7 +143,7 @@ export default {
       console.log('isUserRegistered ? : ', this.isRegistered)
     },
     onGoToEditEvent (eventID) {
-      this.$router.push('/admin/events/edit/' + eventID)
+      this.$router.push('/events/edit/' + eventID)
     },
     async cancelEvent (eventId) {
       const eventRef = doc(db, 'events', eventId)
