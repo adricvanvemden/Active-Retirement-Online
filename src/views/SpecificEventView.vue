@@ -35,11 +35,22 @@
       class="actions-wrapper"
       :class="{ cancelled: event.eventCanceled }"
     >
+      {{/* Checkbox input */}}
       <input
+        v-if="action.selected === 'checkbox' && event.actions.length !== 0"
         :type="action.selected"
         name="action"
-        v-model="actionsSelected[index]"
+        v-model="actionsCheckbox[index]"
         :value="action"
+        :disabled="event.eventCanceled"
+      />
+      {{/* Radio input */}}
+      <input
+        v-if="action.selected === 'radio' && event.actions.length !== 0"
+        :type="action.selected"
+        name="action"
+        v-model="actionsRadio"
+        :value="action.value"
         :disabled="event.eventCanceled"
       />
       {{ action.value }}
@@ -113,7 +124,8 @@ export default {
       event: { date: { seconds: '' } },
       user: '',
       isRegistered: false,
-      actionsSelected: []
+      actionsRadio: '',
+      actionsCheckbox: []
     }
   },
 
@@ -134,13 +146,11 @@ export default {
     },
     getUser () {
       this.user = this.$store.state.user
-      console.log('User : ', this.user)
     },
     isUserRegistered () {
       if (this.event.participants.some(e => e.userId === this.user.id)) {
         this.isRegistered = true
       }
-      console.log('isUserRegistered ? : ', this.isRegistered)
     },
     onGoToEditEvent (eventID) {
       this.$router.push('/events/edit/' + eventID)
@@ -152,20 +162,28 @@ export default {
         cancelReason: this.cancellationReason
       })
     },
-    async registerForEvent (eventId) {
-      console.log('actionsSelected : ', this.actionsSelected)
-      const actionsSelectedString = []
-      for (let i = 0; i < this.actionsSelected.length; i++) {
-        if (this.actionsSelected[i] !== false && this.actionsSelected[i] !== undefined) {
-          actionsSelectedString.push(this.event.actions[i].value)
+    getArrayOfActions () {
+      const actionsSelected = []
+      // Checkbox
+      if (this.actionsCheckbox.length > 0) {
+        for (let i = 0; i < this.actionsCheckbox.length; i++) {
+          if (this.actionsCheckbox[i] !== false && this.actionsCheckbox[i] !== undefined) {
+            actionsSelected.push(this.event.actions[i].value)
+          }
         }
       }
-      console.log('actionsSelectedString : ', actionsSelectedString)
+      // Radio
+      if (this.actionsRadio !== '') {
+        actionsSelected.push(this.actionsRadio)
+      }
+      return actionsSelected
+    },
+    async registerForEvent (eventId) {
+      const actionsSelected = this.getArrayOfActions()
       const userToRegister = {
         userId: this.user.id,
-        actions: actionsSelectedString
+        actions: actionsSelected
       }
-      console.log('userToRegister : ', userToRegister)
       if (!this.event.participants.some(e => e.userId === this.user.id)) {
         this.event.participants.push(userToRegister)
         const eventRef = doc(db, 'events', eventId)
