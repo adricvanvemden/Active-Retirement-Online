@@ -9,11 +9,10 @@
       />
     </div>
 
-    <div
-      v-if="validationErrors.length"
-      class="error"
-    >
-      <b-btn variant="primary" @click="resetError()" class="delete">Close</b-btn>
+    <div v-if="validationErrors.length" class="error">
+      <b-btn variant="primary" @click="resetError()" class="delete"
+        >Close</b-btn
+      >
       <div id="errors">
         Please check your inputs. The following problems were found:
         <ul id="errorMessages">
@@ -56,20 +55,21 @@
       </form>
       <br />
       <br />
-      <b-btn variant="primary" type="submit" @click="validate"
-        >SIGN IN</b-btn
-      >
+      <b-btn variant="primary" type="submit" @click="validate">SIGN IN</b-btn>
       <br />
       <p id="p1">Don't have an account, yet?</p>
       <br />
-      <b-btn variant="primary" type="submit" @click="buttonClicked">SIGN UP</b-btn>
+      <b-btn variant="primary" type="submit" @click="buttonClicked"
+        >SIGN UP</b-btn
+      >
     </div>
   </div>
 </template>
 
 <script>
-import { auth } from '../firebase'
+import { db, auth } from '../firebase'
 import { signInWithEmailAndPassword } from 'firebase/auth'
+import { doc, getDoc } from 'firebase/firestore'
 import router from '@/router'
 
 export default {
@@ -93,14 +93,16 @@ export default {
         .then((userCredential) => {
           const user = userCredential.user
           console.log(user)
-          router.push('/dashboard')
+          this.getUser(user.uid)
         })
         .catch((error) => {
           const errorCode = error.code
           console.log(errorCode)
           const errorMessage = error.message
           console.log(errorMessage)
-          this.validationErrors.push('<strong>Email</strong> or <strong>password</strong> is invalid.')
+          this.validationErrors.push(
+            '<strong>Email</strong> or <strong>password</strong> is invalid.'
+          )
         })
     },
     buttonClicked () {
@@ -110,21 +112,30 @@ export default {
       this.validationErrors = []
     },
 
+    async getUser (userId) {
+      const docRef = doc(db, 'users', userId)
+      const docSnap = await getDoc(docRef)
+      if (docSnap.exists()) {
+        const userObj = docSnap.data()
+        userObj.id = docSnap.id
+        this.$store.dispatch('setUser', userObj)
+        router.push('/dashboard')
+      } else {
+        console.log('No such User!')
+      }
+    },
+
     validate () {
       this.resetError()
 
       if (!this.loginData.email) {
-        this.validationErrors.push(
-          "<strong>Email</strong> can't be empty."
-        )
+        this.validationErrors.push("<strong>Email</strong> can't be empty.")
       }
       if (/.+@.+/.test(this.loginData.email) !== true) {
         this.validationErrors.push('<strong>Email</strong> must be valid.')
       }
       if (!this.loginData.password) {
-        this.validationErrors.push(
-          "<strong>Password</strong> can't be empty."
-        )
+        this.validationErrors.push("<strong>Password</strong> can't be empty.")
       }
       if (this.validationErrors.length <= 0) {
         this.signInWithEmail()
