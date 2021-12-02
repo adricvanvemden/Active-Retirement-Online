@@ -100,7 +100,7 @@
       >
       <b-form-textarea
         id="cancel-input"
-        v-model="event.cancellationReason"
+        v-model="event.cancelReason"
         rows="3"
         required
       ></b-form-textarea>
@@ -170,7 +170,7 @@ export default {
       const eventRef = doc(db, 'events', eventId)
       await updateDoc(eventRef, {
         eventCanceled: true,
-        cancelReason: this.cancellationReason
+        cancelReason: this.event.cancelReason
       })
     },
     getArrayOfActions () {
