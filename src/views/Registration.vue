@@ -106,7 +106,7 @@
       </form>
       <br/>
       <br/>
-      <b-btn variant="primary" type="submit" @click="validate"
+      <b-btn variant="primary" type="submit" @click="getUserEmail"
       >SIGN UP
       </b-btn
       >
@@ -191,9 +191,6 @@ export default {
       this.validationErrors = []
     },
     validate () {
-      this.getUserEmail()
-      this.resetError()
-
       if (this.queriedEmail.length > 0) {
         this.validationErrors.push('<strong>Email</strong> already taken.')
       }
@@ -226,6 +223,8 @@ export default {
       }
     },
     async getUserEmail () {
+      this.resetError()
+      this.queriedEmail = ''
       const userRef = collection(db, 'users')
       const q = query(userRef, where('eMail', '==', this.registerData.email))
       const querySnapshot = await getDocs(q)
@@ -234,6 +233,7 @@ export default {
           this.queriedEmail = doc.data().eMail
         }
       })
+      this.validate()
     }
 
   }
@@ -346,7 +346,7 @@ p {
     right: 0;
     background-image: url("../assets/background.jpg");
     background-size: cover;
-    height: 150%;
+    height: 175%;
     opacity: 0.25;
   }
 }
