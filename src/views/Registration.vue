@@ -66,7 +66,7 @@
               class="input"
               id="input_text"
               placeholder="email"
-              v-model="registerData.email"
+              v-model="registerData.eMail"
             />
           </div>
         </div>
@@ -133,7 +133,8 @@ export default {
         password2: null
       },
       validationErrors: [],
-      queriedEmail: ''
+      queriedEmail: '',
+      queriedPhoneNumber: ''
     }
   },
   mounted () {
@@ -144,7 +145,7 @@ export default {
     },
 
     signUp () {
-      if (this.registerData.email.length <= 0) {
+      if (this.registerData.eMail.length <= 0) {
         const generatedEmail = (Math.random() + 1).toString(36).substring(0) + '@gmail.com'
         createUserWithEmailAndPassword(auth, generatedEmail, this.registerData.password)
           .then((userCredential) => {
@@ -165,15 +166,17 @@ export default {
             console.log(errorMessage)
             this.validationErrors.push('Inputs invalid.')
           })
-      } else {
-        createUserWithEmailAndPassword(auth, this.registerData.email, this.registerData.password)
+      }
+
+      if (this.registerData.phone.length <= 0) {
+        createUserWithEmailAndPassword(auth, this.registerData.eMail, this.registerData.password)
           .then((userCredential) => {
             const docRef = setDoc(doc(db, 'users', userCredential.user.uid), {
               firstname: this.registerData.firstname,
               lastname: this.registerData.lastname,
               age: this.registerData.age,
               phone: this.registerData.phone,
-              eMail: this.registerData.email
+              eMail: this.registerData.eMail
             })
             console.log('Registration successful', docRef)
             router.push('/dashboard')
@@ -194,19 +197,22 @@ export default {
       if (this.queriedEmail.length > 0) {
         this.validationErrors.push('<strong>Email</strong> already taken.')
       }
+      if (this.queriedPhoneNumber.length > 0) {
+        this.validationErrors.push('<strong>Phone number</strong> already taken.')
+      }
       if (!this.registerData.firstname) {
         this.validationErrors.push('Please fill in your <strong>first name</strong>')
       }
       if (!this.registerData.lastname) {
         this.validationErrors.push('Please fill in your <strong>last name</strong>')
       }
-      if (!this.registerData.email && !this.registerData.phone) {
+      if (!this.registerData.eMail && !this.registerData.phone) {
         this.validationErrors.push('Must fill out <strong>email</strong> or <strong>phone number</strong>.')
       }
       if (this.registerData.phone && /^\d+$/.test(this.registerData.phone) !== true) {
         this.validationErrors.push('<strong>Phone number</strong> can only contain numbers.')
       }
-      if (this.registerData.email && /.+@.+/.test(this.registerData.email) !== true) {
+      if (this.registerData.eMail && /.+@.+/.test(this.registerData.eMail) !== true) {
         this.validationErrors.push('<strong>Email</strong> must be valid.')
       }
       if (!this.registerData.password || !this.registerData.password2) {
@@ -225,15 +231,30 @@ export default {
     async getUserEmail () {
       this.resetError()
       this.queriedEmail = ''
+      this.queriedPhoneNumber = ''
       const userRef = collection(db, 'users')
-      const q = query(userRef, where('eMail', '==', this.registerData.email))
-      const querySnapshot = await getDocs(q)
-      querySnapshot.forEach((doc) => {
-        if (doc.exists()) {
-          this.queriedEmail = doc.data().eMail
-        }
-      })
-      this.validate()
+      if (this.registerData.phone.length <= 0) {
+        console.log('dummbatz')
+        const q = query(userRef, where('eMail', '==', this.registerData.eMail))
+        const querySnapshot = await getDocs(q)
+        querySnapshot.forEach((doc) => {
+          if (doc.exists()) {
+            this.queriedEmail = doc.data().eMail
+          }
+        })
+        this.validate()
+      }
+      if (this.registerData.eMail.length <= 0) {
+        console.log('hell yeah')
+        const q = query(userRef, where('phone', '==', this.registerData.phone))
+        const querySnapshot = await getDocs(q)
+        querySnapshot.forEach((doc) => {
+          if (doc.exists()) {
+            this.queriedPhoneNumber = doc.data().phone
+          }
+        })
+        this.validate()
+      }
     }
 
   }
