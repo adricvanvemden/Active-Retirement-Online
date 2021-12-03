@@ -32,7 +32,7 @@
               type="email"
               class="input"
               id="input_text"
-              placeholder="email"
+              placeholder="email or phone number"
               v-model="loginData.email"
             />
           </div>
@@ -68,16 +68,18 @@
 </template>
 
 <script>
-import { auth } from '../firebase'
+import { auth, db } from '../firebase'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import router from '@/router'
+import { collection, getDocs, query, where } from 'firebase/firestore'
 
 export default {
   data () {
     return {
       loginData: {
         email: null,
-        password: null
+        password: null,
+        phone: null
       },
       validationErrors: []
     }
@@ -103,6 +105,13 @@ export default {
           this.validationErrors.push('<strong>Email</strong> or <strong>password</strong> is invalid.')
         })
     },
+    async signInWithPhoneNumber () {
+      const q = query(collection(db, 'users'), where('phoneNumber', '==', this.loginData.phone))
+      const querySnapshot = await getDocs(q)
+      querySnapshot.forEach((doc) => {
+        this.loginData.email = doc.data().eMail
+      })
+    },
     buttonClicked () {
       router.push('/registration')
     },
@@ -127,7 +136,11 @@ export default {
         )
       }
       if (this.validationErrors.length <= 0) {
-        this.signInWithEmail()
+        if (/.+@.+/.test(this.loginData.email)) {
+          this.signInWithEmail()
+        } else {
+          this.signInWithPhoneNumber()
+        }
       }
     }
   }
