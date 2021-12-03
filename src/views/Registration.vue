@@ -127,8 +127,8 @@ export default {
         firstname: null,
         lastname: null,
         age: null,
-        eMail: null,
-        phone: null,
+        eMail: '',
+        phone: '',
         password: null,
         password2: null
       },
@@ -234,7 +234,7 @@ export default {
       this.queriedPhoneNumber = ''
       const userRef = collection(db, 'users')
       if (this.registerData.phone.length <= 0) {
-        console.log('dummbatz')
+        console.log('dummbatz', this.registerData.eMail)
         const q = query(userRef, where('eMail', '==', this.registerData.eMail))
         const querySnapshot = await getDocs(q)
         querySnapshot.forEach((doc) => {
@@ -243,8 +243,7 @@ export default {
           }
         })
         this.validate()
-      }
-      if (this.registerData.eMail.length <= 0) {
+      } else if (this.registerData.eMail.length <= 0) {
         console.log('hell yeah')
         const q = query(userRef, where('phone', '==', this.registerData.phone))
         const querySnapshot = await getDocs(q)
@@ -254,6 +253,8 @@ export default {
           }
         })
         this.validate()
+      } else {
+        console.log('else dummkopf')
       }
     }
 
