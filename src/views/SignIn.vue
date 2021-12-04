@@ -8,11 +8,11 @@
         height="120px;"
       />
     </div>
-
-    <div v-if="validationErrors.length" class="error">
-      <b-btn variant="primary" @click="resetError()" class="delete"
-        >Close</b-btn
-      >
+    <div
+      v-if="validationErrors.length"
+      class="error"
+    >
+      <b-btn variant="primary" @click="resetError()" class="delete">Close</b-btn>
       <div id="errors">
         Please check your inputs. The following problems were found:
         <ul id="errorMessages">
@@ -24,10 +24,6 @@
         </ul>
       </div>
     </div>
-    <div v-if="getError" class="error">
-      Oops, something didn't work. Please check your input.
-    </div>
-
     <div id="form">
       <form method="post">
         <div class="input_wrap">
@@ -36,7 +32,7 @@
               type="email"
               class="input"
               id="input_text"
-              placeholder="email"
+              placeholder="email or phone number"
               v-model="loginData.email"
             />
           </div>
@@ -55,8 +51,15 @@
       </form>
       <br />
       <br />
-      <b-btn variant="primary" type="submit" @click="validate">SIGN IN</b-btn>
-      <br />
+      <b-btn variant="primary" type="submit" @click="validate"
+        >SIGN IN</b-btn
+      >
+      <div id="googleFacebook">
+        <img
+          src="../assets/google-facebook.png"
+          alt="Buttons"
+        />
+      </div>
       <p id="p1">Don't have an account, yet?</p>
       <br />
       <b-btn variant="primary" type="submit" @click="buttonClicked"
@@ -67,17 +70,19 @@
 </template>
 
 <script>
-import { db, auth } from '../firebase'
+import { auth, db } from '../firebase'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { doc, getDoc } from 'firebase/firestore'
 import router from '@/router'
+import { collection, getDocs, query, where } from 'firebase/firestore'
 
 export default {
   data () {
     return {
       loginData: {
         email: null,
-        password: null
+        password: null,
+        phone: null
       },
       validationErrors: []
     }
@@ -104,6 +109,13 @@ export default {
             '<strong>Email</strong> or <strong>password</strong> is invalid.'
           )
         })
+    },
+    async signInWithPhoneNumber () {
+      const q = query(collection(db, 'users'), where('phoneNumber', '==', this.loginData.phone))
+      const querySnapshot = await getDocs(q)
+      querySnapshot.forEach((doc) => {
+        this.loginData.email = doc.data().eMail
+      })
     },
     buttonClicked () {
       router.push('/registration')
@@ -138,7 +150,11 @@ export default {
         this.validationErrors.push("<strong>Password</strong> can't be empty.")
       }
       if (this.validationErrors.length <= 0) {
-        this.signInWithEmail()
+        if (/.+@.+/.test(this.loginData.email)) {
+          this.signInWithEmail()
+        } else {
+          this.signInWithPhoneNumber()
+        }
       }
     }
   }
@@ -204,13 +220,12 @@ export default {
 #form .input_wrap input {
   padding: 10px;
   width: 100%;
-  border: 1px solid lightgrey;
   font-size: 16px;
   border-radius: 3px;
 }
 
 #form .input_wrap .input {
-  background: #e5e5e5;
+  background: #d9edf6;
   padding-right: 35px;
   border-style: solid;
   border-width: 4px;
@@ -219,6 +234,12 @@ export default {
 
 #form .input_wrap .input_field {
   position: relative;
+}
+
+#googleFacebook {
+  position: relative;
+  margin-top: 40px;
+  text-align: center;
 }
 
 #p1 {

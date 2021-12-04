@@ -8,9 +8,23 @@
         height="120px;"
       />
     </div>
-    <p>Please fill out the following form to sign up<br /></p>
-    <div id="text2">
-      For the email adress and phone number, only one is required.
+    <p>Please fill out the following form to sign up<br>
+    <div id="text2">For the email adress and phone number, only one is required.</div>
+    <div
+      v-if="validationErrors.length"
+      class="error"
+    >
+      <b-btn variant="primary" @click="resetError()" class="delete">Close</b-btn>
+      <div id="errors">
+        Please check your inputs. The following problems were found:
+        <ul id="errorMessages">
+          <li
+            v-for="(error, index) in validationErrors"
+            :key="`error-${index}`"
+            v-html="error"
+          />
+        </ul>
+      </div>
     </div>
     <div id="form">
       <form method="post" onsubmit="return validation();">
@@ -38,6 +52,7 @@
         </div>
         <div class="input_wrap">
           <div class="input_field">
+
             <select id="age">
               <option value="60+">Age: 60+</option>
               <option value="70+">Age: 70+</option>
@@ -52,7 +67,7 @@
               class="input"
               id="input_text"
               placeholder="email"
-              v-model="registerData.email"
+              v-model="registerData.eMail"
             />
           </div>
         </div>
@@ -90,13 +105,11 @@
           </div>
         </div>
       </form>
-      <br />
-      <br />
-      <b-btn
-        variant="primary"
-        type="submit"
-        @click="signUpWithEmailAndPassword()"
-        >SIGN UP</b-btn
+      <br/>
+      <br/>
+      <b-btn variant="primary" type="submit" @click="getUserEmail"
+      >SIGN UP
+      </b-btn
       >
     </div>
   </div>
@@ -104,7 +117,7 @@
 
 <script>
 import { auth, db } from '@/firebase'
-import { doc, setDoc } from 'firebase/firestore'
+import { collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 import router from '@/router'
 
@@ -115,34 +128,34 @@ export default {
         firstname: null,
         lastname: null,
         age: null,
-        email: null,
-        phone: null,
+        eMail: '',
+        phone: '',
         password: null,
         password2: null
-      }
+      },
+      validationErrors: [],
+      queriedEmail: '',
+      queriedPhoneNumber: ''
     }
   },
-  mounted () {},
+  mounted () {
+  },
   methods: {
     print () {
       console.log(this.registerData)
     },
 
-    signUpWithEmailAndPassword () {
-      if (this.registerData.password === this.registerData.password2) {
-        createUserWithEmailAndPassword(
-          auth,
-          this.registerData.email,
-          this.registerData.password
-        )
+    signUp () {
+      if (this.registerData.eMail.length <= 0) {
+        const generatedEmail = (Math.random() + 1).toString(36).substring(0) + '@gmail.com'
+        createUserWithEmailAndPassword(auth, generatedEmail, this.registerData.password)
           .then((userCredential) => {
             const docRef = setDoc(doc(db, 'users', userCredential.user.uid), {
-              firstName: this.registerData.firstname,
-              lastName: this.registerData.lastname,
-              ageGroup: this.registerData.age,
-              phoneNumber: this.registerData.phone,
-              eMail: this.registerData.email,
-              userRole: 'user'
+              firstname: this.registerData.firstname,
+              lastname: this.registerData.lastname,
+              age: this.registerData.age,
+              phone: this.registerData.phone,
+              eMail: generatedEmail
             })
             console.log('Registration successful', docRef)
             router.push('/dashboard')
@@ -152,9 +165,100 @@ export default {
             console.log(errorCode)
             const errorMessage = error.message
             console.log(errorMessage)
+            this.validationErrors.push('Inputs invalid.')
           })
       }
+
+      if (this.registerData.phone.length <= 0) {
+        createUserWithEmailAndPassword(auth, this.registerData.eMail, this.registerData.password)
+          .then((userCredential) => {
+            const docRef = setDoc(doc(db, 'users', userCredential.user.uid), {
+              firstname: this.registerData.firstname,
+              lastname: this.registerData.lastname,
+              age: this.registerData.age,
+              phone: this.registerData.phone,
+              eMail: this.registerData.eMail
+            })
+            console.log('Registration successful', docRef)
+            router.push('/dashboard')
+          })
+          .catch((error) => {
+            const errorCode = error.code
+            console.log(errorCode)
+            const errorMessage = error.message
+            console.log(errorMessage)
+            this.validationErrors.push('Inputs invalid.')
+          })
+      }
+    },
+    resetError () {
+      this.validationErrors = []
+    },
+    validate () {
+      if (this.queriedEmail.length > 0) {
+        this.validationErrors.push('<strong>Email</strong> already taken.')
+      }
+      if (this.queriedPhoneNumber.length > 0) {
+        this.validationErrors.push('<strong>Phone number</strong> already taken.')
+      }
+      if (!this.registerData.firstname) {
+        this.validationErrors.push('Please fill in your <strong>first name</strong>')
+      }
+      if (!this.registerData.lastname) {
+        this.validationErrors.push('Please fill in your <strong>last name</strong>')
+      }
+      if (!this.registerData.eMail && !this.registerData.phone) {
+        this.validationErrors.push('Must fill out <strong>email</strong> or <strong>phone number</strong>.')
+      }
+      if (this.registerData.phone && /^\d+$/.test(this.registerData.phone) !== true) {
+        this.validationErrors.push('<strong>Phone number</strong> can only contain numbers.')
+      }
+      if (this.registerData.eMail && /.+@.+/.test(this.registerData.eMail) !== true) {
+        this.validationErrors.push('<strong>Email</strong> must be valid.')
+      }
+      if (!this.registerData.password || !this.registerData.password2) {
+        this.validationErrors.push('<strong>Password</strong> can not be empty.')
+      }
+      if (this.registerData.password && /.{6,}/.test(this.registerData.password) !== true) {
+        this.validationErrors.push('<strong>Password</strong> has to have at least 6 characters.')
+      }
+      if (this.registerData.password !== this.registerData.password2) {
+        this.validationErrors.push('The <strong>passwords</strong> have to match.')
+      }
+      if (this.validationErrors.length <= 0) {
+        this.signUp()
+      }
+    },
+    async getUserEmail () {
+      this.resetError()
+      this.queriedEmail = ''
+      this.queriedPhoneNumber = ''
+      const userRef = collection(db, 'users')
+      if (this.registerData.phone.length <= 0) {
+        console.log('dummbatz', this.registerData.eMail)
+        const q = query(userRef, where('eMail', '==', this.registerData.eMail))
+        const querySnapshot = await getDocs(q)
+        querySnapshot.forEach((doc) => {
+          if (doc.exists()) {
+            this.queriedEmail = doc.data().eMail
+          }
+        })
+        this.validate()
+      } else if (this.registerData.eMail.length <= 0) {
+        console.log('hell yeah')
+        const q = query(userRef, where('phone', '==', this.registerData.phone))
+        const querySnapshot = await getDocs(q)
+        querySnapshot.forEach((doc) => {
+          if (doc.exists()) {
+            this.queriedPhoneNumber = doc.data().phone
+          }
+        })
+        this.validate()
+      } else {
+        console.log('else dummkopf')
+      }
     }
+
   }
 }
 </script>
@@ -164,6 +268,27 @@ export default {
   position: relative;
   margin-top: 30px;
   margin-bottom: 20px;
+}
+
+.error {
+  position: relative;
+  background-color: beige;
+  width: 700px;
+  text-align: center;
+  padding: 15px;
+  margin-top: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  border: 4px solid #cc6363;
+  border-radius: 3px;
+}
+
+#errors {
+  margin-top: 15px;
+}
+
+#errorMessages {
+  color: #e80000;
 }
 
 p {
@@ -209,13 +334,12 @@ p {
 #form .input_wrap input {
   padding: 10px;
   width: 100%;
-  border: 1px solid lightgrey;
   font-size: 16px;
   border-radius: 3px;
 }
 
 #form .input_wrap .input {
-  background: #e5e5e5;
+  background: #d9edf6;
   padding-right: 35px;
   border-style: solid;
   border-width: 4px;
@@ -227,8 +351,8 @@ p {
 }
 
 #age {
-  background: #e5e5e5;
-  padding: 10px;
+  background: #d9edf6;
+  padding: 12px;
   width: 100%;
   border: 4px solid;
   font-size: 16px;
@@ -245,7 +369,7 @@ p {
     right: 0;
     background-image: url("../assets/background.jpg");
     background-size: cover;
-    height: 150%;
+    height: 175%;
     opacity: 0.25;
   }
 }
