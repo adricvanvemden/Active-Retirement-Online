@@ -62,7 +62,9 @@
       </div>
       <p id="p1">Don't have an account, yet?</p>
       <br />
-      <b-btn variant="primary" type="submit" @click="buttonClicked">SIGN UP</b-btn>
+      <b-btn variant="primary" type="submit" @click="buttonClicked"
+        >SIGN UP</b-btn
+      >
     </div>
   </div>
 </template>
@@ -70,6 +72,7 @@
 <script>
 import { auth, db } from '../firebase'
 import { signInWithEmailAndPassword } from 'firebase/auth'
+import { doc, getDoc } from 'firebase/firestore'
 import router from '@/router'
 import { collection, getDocs, query, where } from 'firebase/firestore'
 
@@ -95,14 +98,16 @@ export default {
         .then((userCredential) => {
           const user = userCredential.user
           console.log(user)
-          router.push('/dashboard')
+          this.getUser(user.uid)
         })
         .catch((error) => {
           const errorCode = error.code
           console.log(errorCode)
           const errorMessage = error.message
           console.log(errorMessage)
-          this.validationErrors.push('<strong>Email</strong> or <strong>password</strong> is invalid.')
+          this.validationErrors.push(
+            '<strong>Email</strong> or <strong>password</strong> is invalid.'
+          )
         })
     },
     async signInWithPhoneNumber () {
@@ -119,21 +124,30 @@ export default {
       this.validationErrors = []
     },
 
+    async getUser (userId) {
+      const docRef = doc(db, 'users', userId)
+      const docSnap = await getDoc(docRef)
+      if (docSnap.exists()) {
+        const userObj = docSnap.data()
+        userObj.id = docSnap.id
+        this.$store.dispatch('setUser', userObj)
+        router.push('/dashboard')
+      } else {
+        console.log('No such User!')
+      }
+    },
+
     validate () {
       this.resetError()
 
       if (!this.loginData.email) {
-        this.validationErrors.push(
-          "<strong>Email</strong> can't be empty."
-        )
+        this.validationErrors.push("<strong>Email</strong> can't be empty.")
       }
       if (/.+@.+/.test(this.loginData.email) !== true) {
         this.validationErrors.push('<strong>Email</strong> must be valid.')
       }
       if (!this.loginData.password) {
-        this.validationErrors.push(
-          "<strong>Password</strong> can't be empty."
-        )
+        this.validationErrors.push("<strong>Password</strong> can't be empty.")
       }
       if (this.validationErrors.length <= 0) {
         if (/.+@.+/.test(this.loginData.email)) {

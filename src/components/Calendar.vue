@@ -132,13 +132,13 @@ export default {
     }
   },
   watch: {
-    fullDate () {
+    fullDate (val) {
       this.events = []
       this.setCalendar()
     }
   },
 
-  mounted () {
+  created () {
     this.setCurrentDate()
   },
 
@@ -293,14 +293,16 @@ export default {
 
         this.upcomingEvent()
       } catch {
-        this.$root.makeToast(
-          'error',
-          'danger',
-          'Something went wrong!',
-          'Try again, if the problem keeps happening contact an admin',
-          false,
-          5000
-        )
+        if (this.$store.state.user !== undefined) {
+          this.$root.makeToast(
+            'error',
+            'danger',
+            'Something went wrong!',
+            'Try again, if the problem keeps happening contact an admin',
+            false,
+            5000
+          )
+        }
       }
     }
   }

@@ -36,9 +36,6 @@ export default {
     },
     onGoToEvent (eventID) {
       this.$router.push('/events/' + eventID)
-    },
-    onGoToEditEvent (eventID) {
-      this.$router.push('/admin/events/edit/' + eventID)
     }
   }
 }

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <EventsByType :type="type" isAdmin />
+    <EventsByType :type="type" />
   </div>
 </template>
 

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <EventAdmin btn-text="SAVE CHANGES" edit event-id="iXtvOI3GzhlmxF39asbJ" />
+    <EventAdmin btn-text="SAVE CHANGES" edit />
   </div>
 </template>
 

@@ -2,10 +2,11 @@
   <div>
     <div class="header">
       <h1>
-        Hello "firstname", look at al these <b>{{ type }}</b> related events!
+        Hello {{ $store.state.user.firstName }}, look at all these
+        <b>{{ type }}</b> related events!
       </h1>
     </div>
-    <div v-if="isAdmin" class="createEvent">
+    <div v-if="$store.state.user.userRole === 'admin'" class="createEvent">
       <router-link :to="{ name: 'create_event' }">
         <b-button variant="primary"> CREATE EVENT </b-button>
       </router-link>
@@ -33,8 +34,7 @@ export default {
     SingleEvent
   },
   props: {
-    type: String,
-    isAdmin: Boolean
+    type: String
   },
   computed: {},
   data () {
