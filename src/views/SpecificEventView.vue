@@ -1,6 +1,8 @@
 <template>
   <div>
-    <b-btn variant="primary" @click="$router.go(-1)" squared>BACK</b-btn>
+    <b-btn class="back-button" variant="primary" @click="$router.go(-1)" squared
+      >BACK</b-btn
+    >
     <div v-if="event.eventCanceled" class="event-cancelled">
       <b> EVENT CANCELLED! </b>
       <br />
@@ -56,7 +58,9 @@
       {{ action.value }}
     </div>
     <div class="buttons-wrapper">
-      <b-btn variant="primary" size="lg"
+      <b-btn
+        variant="primary"
+        size="lg"
         v-if="this.user.userRole === 'user'"
         squared
         :disabled="event.eventCanceled || this.isRegistered"
@@ -71,24 +75,37 @@
         ok-title="Confirm"
         cancel-variant="danger"
       >
-      <div class="modal-confirm-register-text">
-        <strong>Name of event: </strong>{{ event.eventName }}
-        <br>
-        <strong>Location: </strong>{{ event.location }}
-        <br>
-        <strong>Date: </strong>{{ formatToDate(event.date.seconds) }}
-        <br>
-        <strong>Time : </strong>{{ event.startTime }} - {{ event.endTime }}
-        <br><br>
-        <b>Are you sure you want to register to this event?</b>
+        <div class="modal-confirm-register-text">
+          <strong>Name of event: </strong>{{ event.eventName }}
+          <br />
+          <strong>Location: </strong>{{ event.location }}
+          <br />
+          <strong>Date: </strong>{{ formatToDate(event.date.seconds) }}
+          <br />
+          <strong>Time : </strong>{{ event.startTime }} - {{ event.endTime }}
+          <br /><br />
+          <b>Are you sure you want to register to this event?</b>
+        </div>
+      </b-modal>
+      <div class="buttons-wrapper-event">
+        <b-btn
+          variant="danger"
+          size="lg"
+          v-if="this.user.userRole === 'admin'"
+          squared
+          v-b-modal.modal-cancel-event
+          >CANCEL EVENT
+        </b-btn>
+        <b-btn
+          variant="primary"
+          size="lg"
+          v-if="this.user.userRole === 'admin'"
+          squared
+          @click="onGoToEditEvent(eventID)"
+        >
+          EDIT EVENT
+        </b-btn>
       </div>
-    </b-modal>
-      <b-btn variant="danger" size="lg"
-        v-if="this.user.userRole === 'admin'"
-        squared
-        v-b-modal.modal-cancel-event
-        >CANCEL EVENT
-      </b-btn>
 
       <b-modal
         id="modal-cancel-event"
@@ -98,19 +115,13 @@
         @ok="cancelEvent(eventID)"
         cancel-variant="danger"
       >
-      <b-form-textarea
-        id="cancel-input"
-        v-model="event.cancelReason"
-        rows="3"
-        required
-      ></b-form-textarea>
-    </b-modal>
-
-      <b-btn variant="primary" size="lg"
-        v-if="this.user.userRole === 'admin'"
-        squared
-        @click="onGoToEditEvent(eventID)"
-      >EDIT EVENT</b-btn>
+        <b-form-textarea
+          id="cancel-input"
+          v-model="event.cancelReason"
+          rows="3"
+          required
+        ></b-form-textarea>
+      </b-modal>
     </div>
   </div>
 </template>
@@ -159,7 +170,7 @@ export default {
       console.log(this.user)
     },
     isUserRegistered () {
-      if (this.event.participants.some(e => e.userId === this.user.id)) {
+      if (this.event.participants.some((e) => e.userId === this.user.id)) {
         this.isRegistered = true
       }
     },
@@ -178,7 +189,10 @@ export default {
       // Checkbox
       if (this.actionsCheckbox.length > 0) {
         for (let i = 0; i < this.actionsCheckbox.length; i++) {
-          if (this.actionsCheckbox[i] !== false && this.actionsCheckbox[i] !== undefined) {
+          if (
+            this.actionsCheckbox[i] !== false &&
+            this.actionsCheckbox[i] !== undefined
+          ) {
             actionsSelected.push(this.event.actions[i].value)
           }
         }
@@ -195,7 +209,7 @@ export default {
         userId: this.user.id,
         actions: actionsSelected
       }
-      if (!this.event.participants.some(e => e.userId === this.user.id)) {
+      if (!this.event.participants.some((e) => e.userId === this.user.id)) {
         this.event.participants.push(userToRegister)
         const eventRef = doc(db, 'events', eventId)
         await updateDoc(eventRef, {
@@ -210,11 +224,6 @@ export default {
 </script>
 
 <style lang="scss">
-.btn {
-  display: flex;
-  margin-left: 50px;
-  padding: 5px 20px 5px 20px;
-}
 .cancelled {
   text-decoration: line-through;
 }
@@ -266,8 +275,21 @@ export default {
   justify-content: flex-end;
   margin-right: 100px;
 }
+
+.buttons-wrapper-event {
+  display: flex;
+
+  button {
+    margin-right: 20px;
+  }
+}
 .modal-confirm-register-text {
   font-weight: 600;
   font-size: 22px;
+}
+
+.back-button {
+  display: flex;
+  margin-left: 30px;
 }
 </style>

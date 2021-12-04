@@ -174,6 +174,7 @@ export default {
     },
 
     isToday (date) {
+      if (this.isOutsideMonth(date)) return
       return (
         moment(this.currentDate).format('YYYY-MM-DD') ===
         moment(date).format('YYYY-MM-DD')
@@ -288,11 +289,15 @@ export default {
             actions: doc.data().actions,
             type: doc.data().type
           }
-          this.events.push(this.monthlyEvent)
+          for (const participant of this.monthlyEvent.participants) {
+            if (participant.userId === this.$store.state.user.id) {
+              this.events.push(this.monthlyEvent)
+            }
+          }
         })
 
         this.upcomingEvent()
-      } catch {
+      } catch (e) {
         if (this.$store.state.user !== undefined) {
           this.$root.makeToast(
             'error',
@@ -316,7 +321,8 @@ export default {
   margin-right: auto;
 }
 .calendar-border {
-  border: 1px solid #b8b8b8;
+  border: 1px solid #6d6c6c;
+  background-color: rgb(233, 233, 233);
 }
 .grid-week-days {
   display: grid;
@@ -324,13 +330,15 @@ export default {
   grid-template-rows: 40px;
   justify-items: left;
   font-size: 28px;
+  background-color: rgba(151, 151, 151, 0.575);
+  font-weight: 600;
 }
 
 .grid-week {
   display: grid;
   grid-template-columns: repeat(7, 250px);
   grid-template-rows: 125px;
-  border-top: 1px solid #b8b8b8;
+  border-top: 1px solid #6d6c6c;
   justify-items: left;
   font-size: 20px;
   overflow: hidden;
@@ -375,11 +383,13 @@ export default {
   width: 250px;
   color: #204293;
   display: flex;
+  font-weight: 600;
 }
 
 .past {
-  background-color: #e5e5e5;
+  background-color: #4e4e4e;
   width: 100%;
+  color: white;
 }
 
 .outside-month {
@@ -389,6 +399,7 @@ export default {
 .cell {
   .date {
     width: 10px;
+    font-weight: 600;
   }
 }
 
@@ -408,11 +419,11 @@ export default {
     background-color: #0184ff;
   }
 
-  &.trips {
+  &.trip {
     background-color: #fde400;
   }
 
-  &.games {
+  &.game {
     background-color: #ff0202;
   }
 

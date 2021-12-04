@@ -5,20 +5,22 @@
         Hello {{ $store.state.user.firstName }}, look at all these
         <b>{{ type }}</b> related events!
       </h1>
+      <b-btn
+        class="back-button"
+        variant="primary"
+        @click="$router.go(-1)"
+        squared
+        >BACK</b-btn
+      >
     </div>
-    <div v-if="$store.state.user.userRole === 'admin'" class="createEvent">
+    <div v-if="$store.state.user.userRole === 'admin'" class="create-event">
       <router-link :to="{ name: 'create_event' }">
         <b-button variant="primary"> CREATE EVENT </b-button>
       </router-link>
     </div>
     <div class="infoBox">
       <div class="eventInfo" v-for="event in events" :key="event.id">
-        <SingleEvent
-          :event="event"
-          btn-text="Register for event"
-          date
-          isAdmin
-        />
+        <SingleEvent :event="event" :btn-text="btnText" date />
       </div>
     </div>
   </div>
@@ -36,7 +38,12 @@ export default {
   props: {
     type: String
   },
-  computed: {},
+  computed: {
+    btnText () {
+      if (this.$store.state.user.userRole === 'admin') return 'Edit event'
+      return 'Register for event'
+    }
+  },
   data () {
     return {
       user: [],
@@ -69,7 +76,19 @@ export default {
           actions: doc.data().actions,
           type: doc.data().type
         }
-        this.events.push(this.event)
+        if (
+          this.event.deadlineRegistration.seconds >=
+          new Date().getTime() / 1000
+        ) {
+          if (
+            this.$store.state.user.userRole === 'admin' ||
+            this.event.participatingCommunities.includes(
+              this.$store.state.user.community
+            )
+          ) {
+            this.events.push(this.event)
+          }
+        }
       })
     }
   }

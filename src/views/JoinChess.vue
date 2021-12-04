@@ -2,7 +2,8 @@
   <div class="chess">
     <div class="header">
       <h1>
-        Hey "username", you are on the CHESS game page.<br />
+        Hey {{ $store.state.user.firstName }}, you are on the CHESS game
+        page.<br />
         Here you can find instructions on how to play Chess online.
       </h1>
     </div>
@@ -24,29 +25,20 @@
       </p>
     </div>
     <br />
-    <button
-      class="btn"
-      onclick=" window.open('https://cardgames.io/chess/,'_blank')"
+    <b-btn
+      variant="primary"
+      class="game-button"
+      onclick=" window.open('https://cardgames.io/chess/','_blank')"
     >
       PLAY
-    </button>
+    </b-btn>
   </div>
 </template>
 
-<style lang="scss">
-.btn {
-  position: relative;
-  border: none;
-  border-radius: 0;
-  color: white;
-  padding: 20px 50px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 20px;
-  font-weight: bold;
-  background: #204293;
-  margin-bottom: 80px;
+<style lang="scss" scoped>
+.game-button {
+  font-size: 48px;
+  padding: 10px 20px 10px 20px;
 }
 .description {
   text-align: left;

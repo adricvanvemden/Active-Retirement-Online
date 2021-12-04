@@ -54,7 +54,7 @@
       </div>
 
       <div class="grid-user-right">
-        <label for="adress">Adress:</label>
+        <label for="adress">Address:</label>
         <input
           id="adress"
           :placeholder="user.address"
@@ -147,15 +147,29 @@ export default {
     }
   },
   beforeMount () {
-    this.userId = this.$route.path.slice(5)
+    if (this.isAdmin) {
+      this.userId = this.$route.path.slice(5)
+    } else {
+      this.userId = this.$store.state.user.id
+    }
     this.getUserInformation(this.userId)
     this.getAllCommunities()
+  },
+
+  computed: {
+    isAdmin () {
+      return this.$store.state.user.userRole === 'admin'
+    }
   },
 
   methods: {
     onChange () {
       this.disabled = false
-      this.disabledCommunity = false
+      if (this.isAdmin) {
+        this.disabledCommunity = false
+      } else {
+        this.disabledCommunity = true
+      }
       this.updateUser = {
         firstName: this.user.firstName,
         lastName: this.user.lastName,
