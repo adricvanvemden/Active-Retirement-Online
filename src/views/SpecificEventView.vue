@@ -56,7 +56,10 @@
       {{ action.value }}
     </div>
     <div class="buttons-wrapper">
-      <b-btn variant="primary" size="lg" squared :disabled="event.eventCanceled || this.isRegistered"
+      <b-btn variant="primary" size="lg"
+        v-if="this.user.userRole === 'user'"
+        squared
+        :disabled="event.eventCanceled || this.isRegistered"
         v-b-modal.modal-confirm-register
         >Register for event</b-btn
       >
@@ -80,7 +83,10 @@
         <b>Are you sure you want to register to this event?</b>
       </div>
     </b-modal>
-      <b-btn variant="danger" size="lg" squared v-b-modal.modal-cancel-event
+      <b-btn variant="danger" size="lg"
+        v-if="this.user.userRole === 'admin'"
+        squared
+        v-b-modal.modal-cancel-event
         >CANCEL EVENT
       </b-btn>
 
@@ -94,13 +100,17 @@
       >
       <b-form-textarea
         id="cancel-input"
-        v-model="event.cancellationReason"
+        v-model="event.cancelReason"
         rows="3"
         required
       ></b-form-textarea>
     </b-modal>
 
-      <b-btn variant="primary" size="lg" squared @click="onGoToEditEvent(eventID)">EDIT EVENT</b-btn>
+      <b-btn variant="primary" size="lg"
+        v-if="this.user.userRole === 'admin'"
+        squared
+        @click="onGoToEditEvent(eventID)"
+      >EDIT EVENT</b-btn>
     </div>
   </div>
 </template>
@@ -146,6 +156,7 @@ export default {
     },
     getUser () {
       this.user = this.$store.state.user
+      console.log(this.user)
     },
     isUserRegistered () {
       if (this.event.participants.some(e => e.userId === this.user.id)) {
@@ -159,7 +170,7 @@ export default {
       const eventRef = doc(db, 'events', eventId)
       await updateDoc(eventRef, {
         eventCanceled: true,
-        cancelReason: this.cancellationReason
+        cancelReason: this.event.cancelReason
       })
     },
     getArrayOfActions () {
