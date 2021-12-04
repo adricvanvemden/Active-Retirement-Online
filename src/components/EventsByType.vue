@@ -76,8 +76,6 @@ export default {
           actions: doc.data().actions,
           type: doc.data().type
         }
-        console.log(this.event)
-        console.log(this.$store.state.user)
         if (
           this.event.deadlineRegistration.seconds >=
           new Date().getTime() / 1000
