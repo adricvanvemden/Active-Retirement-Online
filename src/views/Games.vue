@@ -8,17 +8,15 @@
       </h1>
     </div>
     <div class="games-wrapper">
-      <a onclick="location.href='https://www.247bridge.com/';">
+      <router-link :to="{ name: 'bridge' }">
         <img src="../assets/bridge.png" />Bridge
-      </a>
-
-      <a onclick="location.href='https://cardgames.io/reversi/';">
+      </router-link>
+      <router-link :to="{ name: 'reversi' }">
         <img src="../assets/reversi.png" />Reversi
-      </a>
-
-      <a onclick="location.href='https://cardgames.io/chess/';">
+      </router-link>
+      <router-link :to="{ name: 'chess' }">
         <img src="../assets/chess.png" />Chess
-      </a>
+      </router-link>
     </div>
   </div>
 </template>
@@ -49,7 +47,7 @@
     font-size: 64px;
     font-weight: 600;
     padding-right: 100px;
-    background: #f3f4f5;
+    background: lightblue;
 
     &:hover {
       color: black;
