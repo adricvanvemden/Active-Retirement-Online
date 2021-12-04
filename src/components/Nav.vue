@@ -12,16 +12,28 @@
     />
     <div id="right-side">
       <router-link to="/myAccount">My Account</router-link>
-      <router-link to="/" exact>SIGN OUT</router-link>
+      <a @click="signOutFromApp()" exact>SIGN OUT</a>
     </div>
   </div>
 </template>
 <script>
+import { auth } from '../firebase'
+import { signOut } from 'firebase/auth'
 export default {
   name: 'Nav',
   methods: {
     onImg () {
       this.$router.push('/dashboard')
+    },
+
+    async signOutFromApp () {
+      await signOut(auth)
+        .then(() => {
+          this.$router.push('/')
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     }
   }
 }
@@ -53,6 +65,8 @@ export default {
       }
       &:hover {
         background-color: #a01d24;
+        cursor: pointer;
+        user-select: none;
       }
     }
   }

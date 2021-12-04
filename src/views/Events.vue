@@ -2,8 +2,8 @@
   <div id="events overview">
     <div class="header">
       <h1>
-        Hello "username", click on one of these buttons to view all the specific
-        events.
+        Hello {{ $store.state.user.firstName }}, click on one of these buttons
+        to view all the specific events.
       </h1>
     </div>
     <div class="events-wrapper">

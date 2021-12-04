@@ -2,7 +2,8 @@
   <div class="games">
     <div class="header">
       <h1>
-        Hey "username", here you can find all the games we offer.<br />
+        Hey {{ $store.state.user.firstName }}, here you can find all the games
+        we offer.<br />
         Click on a game to see more information.
       </h1>
     </div>
