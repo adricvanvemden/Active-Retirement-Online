@@ -11,6 +11,7 @@
       @click="onImg()"
     />
     <div id="right-side">
+      <input placeholder="Search" class="searchbar" />
       <router-link to="/myAccount">My Account</router-link>
       <a @click="signOutFromApp()" exact>SIGN OUT</a>
     </div>
@@ -50,6 +51,7 @@ export default {
     width: 100%;
     display: flex;
     justify-content: space-around;
+    align-items: center;
     background-color: #f3f4f5;
     border-bottom: 1px solid gray;
     height: 75px;
@@ -76,5 +78,9 @@ export default {
 .logo {
   width: 400px;
   height: 100px;
+}
+
+.searchbar {
+  height: 40px;
 }
 </style>
