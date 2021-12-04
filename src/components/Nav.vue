@@ -27,6 +27,7 @@ export default {
     },
 
     async signOutFromApp () {
+      this.$root.hideToast('upcomingEvent')
       await signOut(auth)
         .then(() => {
           this.$router.push('/')

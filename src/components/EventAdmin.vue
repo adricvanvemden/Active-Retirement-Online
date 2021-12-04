@@ -509,6 +509,7 @@ export default {
 }
 
 .container-grid {
+  margin-top: 30px;
   display: grid;
   grid-template-columns: repeat(4, 300px);
   column-gap: 10px;

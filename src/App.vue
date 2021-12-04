@@ -39,9 +39,7 @@ export default {
     }
   },
   computed: {},
-  mounted () {
-    this.$root.hideToast('upcomingEvent')
-  },
+  mounted () {},
   methods: {
     onImg () {
       this.$router.push('/')

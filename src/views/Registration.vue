@@ -150,10 +150,6 @@ export default {
   },
   mounted () {},
   methods: {
-    print () {
-      console.log(this.registerData)
-    },
-
     signUp () {
       if (this.registerData.eMail.length <= 0) {
         const generatedEmail =
@@ -278,7 +274,6 @@ export default {
       this.queriedPhoneNumber = ''
       const userRef = collection(db, 'users')
       if (this.registerData.phone.length <= 0) {
-        console.log('dummbatz', this.registerData.eMail)
         const q = query(userRef, where('eMail', '==', this.registerData.eMail))
         const querySnapshot = await getDocs(q)
         querySnapshot.forEach((doc) => {
@@ -288,7 +283,6 @@ export default {
         })
         this.validate()
       } else if (this.registerData.eMail.length <= 0) {
-        console.log('hell yeah')
         const q = query(userRef, where('phone', '==', this.registerData.phone))
         const querySnapshot = await getDocs(q)
         querySnapshot.forEach((doc) => {
@@ -298,7 +292,6 @@ export default {
         })
         this.validate()
       } else {
-        console.log('else dummkopf')
       }
     }
   }
