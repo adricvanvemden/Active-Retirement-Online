@@ -2,7 +2,8 @@
   <div class="bridge">
     <div class="header">
       <h1>
-        Hey "username", you are on the BRIDGE game page.<br />
+        Hey {{ $store.state.user.firstName }}, you are on the BRIDGE game
+        page.<br />
         Here you can find instructions on how to play Bridge online.
       </h1>
     </div>
@@ -18,30 +19,20 @@
       </p>
     </div>
     <br /><br /><br />
-    <button
-      class="btn"
-      @click="location.href = 'https://www.247bridge.com/'"
-      target="_blank"
+    <b-btn
+      variant="primary"
+      class="game-button"
+      onclick=" window.open('https://www.247bridge.com/','_blank')"
     >
       PLAY
-    </button>
+    </b-btn>
   </div>
 </template>
 
-<style lang="scss">
-.btn {
-  position: relative;
-  border: none;
-  border-radius: 0;
-  color: white;
-  padding: 20px 50px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 20px;
-  font-weight: bold;
-  background: #204293;
-  margin-bottom: 80px;
+<style lang="scss" scoped>
+.game-button {
+  font-size: 48px;
+  padding: 10px 20px 10px 20px;
 }
 .description {
   text-align: left;

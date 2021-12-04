@@ -27,8 +27,7 @@ export default {
     dot: Boolean,
     btnText: String,
     date: Boolean,
-    cancelled: Boolean,
-    isAdmin: Boolean
+    cancelled: Boolean
   },
   methods: {
     formatDate (date) {
@@ -97,11 +96,11 @@ export default {
       background-color: #0184ff;
     }
 
-    &.trips {
+    &.trip {
       background-color: #fde400;
     }
 
-    &.games {
+    &.game {
       background-color: #ff0202;
     }
 
