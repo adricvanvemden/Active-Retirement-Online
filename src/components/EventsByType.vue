@@ -5,6 +5,13 @@
         Hello {{ $store.state.user.firstName }}, look at all these
         <b>{{ type }}</b> related events!
       </h1>
+      <b-btn
+        class="back-button"
+        variant="primary"
+        @click="$router.go(-1)"
+        squared
+        >BACK</b-btn
+      >
     </div>
     <div v-if="$store.state.user.userRole === 'admin'" class="create-event">
       <router-link :to="{ name: 'create_event' }">

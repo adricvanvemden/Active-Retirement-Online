@@ -289,7 +289,6 @@ export default {
             actions: doc.data().actions,
             type: doc.data().type
           }
-          console.log(this.monthlyEvent)
           for (const participant of this.monthlyEvent.participants) {
             if (participant.userId === this.$store.state.user.id) {
               this.events.push(this.monthlyEvent)
@@ -299,7 +298,6 @@ export default {
 
         this.upcomingEvent()
       } catch (e) {
-        console.log(e)
         if (this.$store.state.user !== undefined) {
           this.$root.makeToast(
             'error',

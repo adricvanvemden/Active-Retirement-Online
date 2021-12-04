@@ -1,9 +1,10 @@
 <template>
   <div id="nav">
     <div id="left-side">
-      <router-link to="/dashboard">Calendar</router-link>
+      <router-link to="/dashboard" v-show="!isAdmin">Calendar</router-link>
+      <router-link to="/users" v-show="isAdmin">Users</router-link>
       <router-link to="/events">Events</router-link>
-      <router-link to="/games">Games</router-link>
+      <router-link to="/games" v-show="!isAdmin">Games</router-link>
     </div>
     <img
       class="logo"
@@ -22,9 +23,18 @@ import { auth } from '../firebase'
 import { signOut } from 'firebase/auth'
 export default {
   name: 'Nav',
+  computed: {
+    isAdmin () {
+      return this.$store.state.user.userRole === 'admin'
+    }
+  },
   methods: {
     onImg () {
-      this.$router.push('/dashboard')
+      if (this.isAdmin && this.$route.path !== '/users') {
+        this.$router.push('/users')
+      } else if (!this.isAdmin && this.$route.path !== '/dashboard') {
+        this.$router.push('/dashboard')
+      }
     },
 
     async signOutFromApp () {
