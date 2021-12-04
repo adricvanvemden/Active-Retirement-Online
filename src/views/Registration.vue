@@ -8,13 +8,14 @@
         height="120px;"
       />
     </div>
-    <p>Please fill out the following form to sign up<br>
-    <div id="text2">For the email adress and phone number, only one is required.</div>
-    <div
-      v-if="validationErrors.length"
-      class="error"
-    >
-      <b-btn variant="primary" @click="resetError()" class="delete">Close</b-btn>
+    <p>Please fill out the following form to sign up<br /></p>
+    <div id="text2">
+      For the email adress and phone number, only one is required.
+    </div>
+    <div v-if="validationErrors.length" class="error">
+      <b-btn variant="primary" @click="resetError()" class="delete"
+        >Close</b-btn
+      >
       <div id="errors">
         Please check your inputs. The following problems were found:
         <ul id="errorMessages">
@@ -52,7 +53,6 @@
         </div>
         <div class="input_wrap">
           <div class="input_field">
-
             <select id="age">
               <option value="60+">Age: 60+</option>
               <option value="70+">Age: 70+</option>
@@ -105,19 +105,29 @@
           </div>
         </div>
       </form>
-      <br/>
-      <br/>
+      <br />
+      <br />
       <b-btn variant="primary" type="submit" @click="getUserEmail"
-      >SIGN UP
-      </b-btn
-      >
+        >SIGN UP
+      </b-btn>
+      <div id="googleFacebook">
+        <button class="social facebook"><b-icon-facebook />SIGN UP</button>
+        <button class="social google"><b-icon-google />SIGN UP</button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { auth, db } from '@/firebase'
-import { collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore'
+import {
+  collection,
+  doc,
+  getDocs,
+  query,
+  setDoc,
+  where
+} from 'firebase/firestore'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 import router from '@/router'
 
@@ -138,8 +148,7 @@ export default {
       queriedPhoneNumber: ''
     }
   },
-  mounted () {
-  },
+  mounted () {},
   methods: {
     print () {
       console.log(this.registerData)
@@ -147,8 +156,13 @@ export default {
 
     signUp () {
       if (this.registerData.eMail.length <= 0) {
-        const generatedEmail = (Math.random() + 1).toString(36).substring(0) + '@gmail.com'
-        createUserWithEmailAndPassword(auth, generatedEmail, this.registerData.password)
+        const generatedEmail =
+          (Math.random() + 1).toString(36).substring(0) + '@gmail.com'
+        createUserWithEmailAndPassword(
+          auth,
+          generatedEmail,
+          this.registerData.password
+        )
           .then((userCredential) => {
             const docRef = setDoc(doc(db, 'users', userCredential.user.uid), {
               firstname: this.registerData.firstname,
@@ -170,7 +184,11 @@ export default {
       }
 
       if (this.registerData.phone.length <= 0) {
-        createUserWithEmailAndPassword(auth, this.registerData.eMail, this.registerData.password)
+        createUserWithEmailAndPassword(
+          auth,
+          this.registerData.eMail,
+          this.registerData.password
+        )
           .then((userCredential) => {
             const docRef = setDoc(doc(db, 'users', userCredential.user.uid), {
               firstname: this.registerData.firstname,
@@ -199,31 +217,56 @@ export default {
         this.validationErrors.push('<strong>Email</strong> already taken.')
       }
       if (this.queriedPhoneNumber.length > 0) {
-        this.validationErrors.push('<strong>Phone number</strong> already taken.')
+        this.validationErrors.push(
+          '<strong>Phone number</strong> already taken.'
+        )
       }
       if (!this.registerData.firstname) {
-        this.validationErrors.push('Please fill in your <strong>first name</strong>')
+        this.validationErrors.push(
+          'Please fill in your <strong>first name</strong>'
+        )
       }
       if (!this.registerData.lastname) {
-        this.validationErrors.push('Please fill in your <strong>last name</strong>')
+        this.validationErrors.push(
+          'Please fill in your <strong>last name</strong>'
+        )
       }
       if (!this.registerData.eMail && !this.registerData.phone) {
-        this.validationErrors.push('Must fill out <strong>email</strong> or <strong>phone number</strong>.')
+        this.validationErrors.push(
+          'Must fill out <strong>email</strong> or <strong>phone number</strong>.'
+        )
       }
-      if (this.registerData.phone && /^\d+$/.test(this.registerData.phone) !== true) {
-        this.validationErrors.push('<strong>Phone number</strong> can only contain numbers.')
+      if (
+        this.registerData.phone &&
+        /^\d+$/.test(this.registerData.phone) !== true
+      ) {
+        this.validationErrors.push(
+          '<strong>Phone number</strong> can only contain numbers.'
+        )
       }
-      if (this.registerData.eMail && /.+@.+/.test(this.registerData.eMail) !== true) {
+      if (
+        this.registerData.eMail &&
+        /.+@.+/.test(this.registerData.eMail) !== true
+      ) {
         this.validationErrors.push('<strong>Email</strong> must be valid.')
       }
       if (!this.registerData.password || !this.registerData.password2) {
-        this.validationErrors.push('<strong>Password</strong> can not be empty.')
+        this.validationErrors.push(
+          '<strong>Password</strong> can not be empty.'
+        )
       }
-      if (this.registerData.password && /.{6,}/.test(this.registerData.password) !== true) {
-        this.validationErrors.push('<strong>Password</strong> has to have at least 6 characters.')
+      if (
+        this.registerData.password &&
+        /.{6,}/.test(this.registerData.password) !== true
+      ) {
+        this.validationErrors.push(
+          '<strong>Password</strong> has to have at least 6 characters.'
+        )
       }
       if (this.registerData.password !== this.registerData.password2) {
-        this.validationErrors.push('The <strong>passwords</strong> have to match.')
+        this.validationErrors.push(
+          'The <strong>passwords</strong> have to match.'
+        )
       }
       if (this.validationErrors.length <= 0) {
         this.signUp()
@@ -258,7 +301,6 @@ export default {
         console.log('else dummkopf')
       }
     }
-
   }
 }
 </script>
@@ -369,7 +411,7 @@ p {
     right: 0;
     background-image: url("../assets/background.jpg");
     background-size: cover;
-    height: 175%;
+    height: 150%;
     opacity: 0.25;
   }
 }

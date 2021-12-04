@@ -52,7 +52,8 @@
       <br />
       <b-btn variant="primary" type="submit" @click="validate">SIGN IN</b-btn>
       <div id="googleFacebook">
-        <img src="../assets/google-facebook.png" alt="Buttons" />
+        <button class="social facebook"><b-icon-facebook />SIGN IN</button>
+        <button class="social google"><b-icon-google />SIGN IN</button>
       </div>
       <p id="p1">Don't have an account, yet?</p>
       <br />
@@ -243,6 +244,34 @@ export default {
   position: relative;
   margin-top: 40px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.social {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  font-size: 24px;
+  height: 60px;
+  font-weight: 500;
+  border: none;
+
+  &.facebook {
+    background-color: #3b5998;
+    margin-bottom: 20px;
+    color: white;
+    &:hover {
+      background-color: #293b64;
+    }
+  }
+
+  &.google {
+    background-color: white;
+    &:hover {
+      background-color: gainsboro;
+    }
+  }
 }
 
 #p1 {
@@ -262,7 +291,7 @@ export default {
     right: 0;
     background-image: url("../assets/background.jpg");
     background-size: cover;
-    height: 150%;
+    height: 110%;
     opacity: 0.25;
   }
 }
