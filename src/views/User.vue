@@ -54,7 +54,7 @@
       </div>
 
       <div class="grid-user-right">
-        <label for="adress">Adress:</label>
+        <label for="adress">Address:</label>
         <input
           id="adress"
           :placeholder="user.address"

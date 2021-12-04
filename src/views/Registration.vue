@@ -53,7 +53,7 @@
         </div>
         <div class="input_wrap">
           <div class="input_field">
-            <select id="age">
+            <select id="age" v-model="registerData.age">
               <option value="60+">Age: 60+</option>
               <option value="70+">Age: 70+</option>
               <option value="80+">Age: 80+</option>
@@ -161,11 +161,15 @@ export default {
         )
           .then((userCredential) => {
             const docRef = setDoc(doc(db, 'users', userCredential.user.uid), {
-              firstname: this.registerData.firstname,
-              lastname: this.registerData.lastname,
-              age: this.registerData.age,
-              phone: this.registerData.phone,
-              eMail: generatedEmail
+              firstName: this.registerData.firstname,
+              lastName: this.registerData.lastname,
+              ageGroup: this.registerData.age,
+              phoneNumber: this.registerData.phone,
+              eMail: generatedEmail,
+              address: '',
+              hobbies: '',
+              community: 'Unassigned',
+              userRole: 'user'
             })
             console.log('Registration successful', docRef)
             router.push('/dashboard')
@@ -187,11 +191,15 @@ export default {
         )
           .then((userCredential) => {
             const docRef = setDoc(doc(db, 'users', userCredential.user.uid), {
-              firstname: this.registerData.firstname,
-              lastname: this.registerData.lastname,
-              age: this.registerData.age,
-              phone: this.registerData.phone,
-              eMail: this.registerData.eMail
+              firstName: this.registerData.firstname,
+              lastName: this.registerData.lastname,
+              ageGroup: this.registerData.age,
+              phoneNumber: this.registerData.phone,
+              eMail: this.registerData.eMail,
+              address: '',
+              hobbies: '',
+              community: 'Unassigned',
+              userRole: 'user'
             })
             console.log('Registration successful', docRef)
             router.push('/dashboard')
