@@ -8,19 +8,19 @@
     </div>
     <div class="events-wrapper">
       <router-link :to="{ name: 'food_events' }">
-        <img class="icon" src="../assets/food.png" />FOOD
+        <b-icon-egg-fried class="icon" />FOOD
       </router-link>
 
       <router-link :to="{ name: 'trip_events' }">
-        <img class="icon" src="../assets/trips.png" />TRIPS
+        <b-icon-signpost-2-fill class="icon" />TRIPS
       </router-link>
 
       <router-link :to="{ name: 'game_events' }">
-        <img class="icon" src="../assets/cards.png" />GAMES
+        <b-icon-dice-5-fill class="icon" />GAMES
       </router-link>
 
       <router-link :to="{ name: 'webinar_events' }">
-        <img class="icon" src="../assets/webinar.png" />WEBINAR
+        <b-icon-camera-video-fill class="icon" />WEBINAR
       </router-link>
     </div>
   </div>
