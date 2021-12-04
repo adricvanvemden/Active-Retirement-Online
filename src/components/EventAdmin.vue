@@ -354,7 +354,7 @@ export default {
           }
           this.communities.options.push({
             text: this.community.name,
-            value: this.community.id
+            value: this.community.name
           })
         })
       } catch {
