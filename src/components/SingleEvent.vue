@@ -27,7 +27,8 @@ export default {
     dot: Boolean,
     btnText: String,
     date: Boolean,
-    cancelled: Boolean
+    cancelled: Boolean,
+    isAdmin: Boolean
   },
   methods: {
     formatDate (date) {

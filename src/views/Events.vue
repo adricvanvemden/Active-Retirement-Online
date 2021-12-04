@@ -2,8 +2,8 @@
   <div id="events overview">
     <div class="header">
       <h1>
-        Hello "username", click on one of these buttons to view all the specific
-        events.
+        Hello {{ $store.state.user.firstName }}, click on one of these buttons
+        to view all the specific events.
       </h1>
     </div>
     <div class="events-wrapper">
@@ -33,15 +33,6 @@ export default {
 </script>
 
 <style lang="scss">
-a {
-  color: black;
-  text-decoration: none;
-  &:hover {
-    color: black;
-    background: #d3d3d3;
-  }
-}
-
 .icon {
   height: 100px;
   width: 100px;
@@ -63,6 +54,8 @@ a {
     grid-template-columns: 150px 350px;
     align-items: center;
     justify-items: left;
+    color: black;
+    text-decoration: none;
 
     border: 3px solid #d3d3d3;
     border-radius: 18px;
@@ -70,7 +63,12 @@ a {
     font-size: 64px;
     font-weight: 600;
     padding-right: 100px;
-    background: #f3f4f5;
+    background: lightblue;
+
+    &:hover {
+      color: black;
+      background: #d3d3d3;
+    }
   }
 }
 

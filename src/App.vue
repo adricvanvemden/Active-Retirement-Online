@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <Nav v-if="this.$route.path !== '/'" />
+    <Nav
+      v-if="this.$route.path !== '/' && this.$route.path !== '/registration'"
+    />
     <router-view />
   </div>
 </template>
@@ -199,6 +201,7 @@ export default {
       const docSnap = await getDoc(docRef)
       if (docSnap.exists()) {
         console.log('Document data:', docSnap.data())
+        this.$store.dispatch('setUser', docSnap.data())
       } else {
         console.log('No such User!')
       }
@@ -303,11 +306,10 @@ export default {
 
 <style lang="scss">
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: Montserrat, serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
 }
 
 #nav {
@@ -317,7 +319,6 @@ export default {
     margin-right: 40px;
     border: none;
     text-align: center;
-    float: center;
     width: auto;
   }
 }
