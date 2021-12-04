@@ -85,7 +85,7 @@ const routes = [
     name: 'chess',
     component: () => import(/* webpackChunkName: "games" */ '../views/JoinChess.vue')
   },
- {
+  {
     path: '/events/edit/:eventId',
     name: 'edit_event',
     component: () => import(/* webpackChunkName: "events-admin" */ '../views/EditEvent.vue'),

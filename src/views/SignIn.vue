@@ -8,11 +8,10 @@
         height="120px;"
       />
     </div>
-    <div
-      v-if="validationErrors.length"
-      class="error"
-    >
-      <b-btn variant="primary" @click="resetError()" class="delete">Close</b-btn>
+    <div v-if="validationErrors.length" class="error">
+      <b-btn variant="primary" @click="resetError()" class="delete"
+        >Close</b-btn
+      >
       <div id="errors">
         Please check your inputs. The following problems were found:
         <ul id="errorMessages">
@@ -51,14 +50,9 @@
       </form>
       <br />
       <br />
-      <b-btn variant="primary" type="submit" @click="validate"
-        >SIGN IN</b-btn
-      >
+      <b-btn variant="primary" type="submit" @click="validate">SIGN IN</b-btn>
       <div id="googleFacebook">
-        <img
-          src="../assets/google-facebook.png"
-          alt="Buttons"
-        />
+        <img src="../assets/google-facebook.png" alt="Buttons" />
       </div>
       <p id="p1">Don't have an account, yet?</p>
       <br />
@@ -72,9 +66,15 @@
 <script>
 import { auth, db } from '../firebase'
 import { signInWithEmailAndPassword } from 'firebase/auth'
-import { doc, getDoc } from 'firebase/firestore'
 import router from '@/router'
-import { collection, getDocs, query, where } from 'firebase/firestore'
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  doc,
+  getDoc
+} from 'firebase/firestore'
 
 export default {
   data () {
@@ -111,7 +111,10 @@ export default {
         })
     },
     async signInWithPhoneNumber () {
-      const q = query(collection(db, 'users'), where('phoneNumber', '==', this.loginData.phone))
+      const q = query(
+        collection(db, 'users'),
+        where('phoneNumber', '==', this.loginData.phone)
+      )
       const querySnapshot = await getDocs(q)
       querySnapshot.forEach((doc) => {
         this.loginData.email = doc.data().eMail
