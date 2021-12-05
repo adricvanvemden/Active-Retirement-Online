@@ -25,7 +25,10 @@ export default {
   name: 'Nav',
   computed: {
     isAdmin () {
-      return this.$store.state.user.userRole === 'admin'
+      if (this.$store.state.user) {
+        return this.$store.state.user.userRole === 'admin'
+      }
+      return false
     }
   },
   methods: {
@@ -43,9 +46,7 @@ export default {
         .then(() => {
           this.$router.push('/')
         })
-        .catch((error) => {
-          console.log(error)
-        })
+        .catch(() => {})
     }
   }
 }

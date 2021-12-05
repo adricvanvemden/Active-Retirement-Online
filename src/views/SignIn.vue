@@ -28,7 +28,6 @@
         <div class="input_wrap">
           <div class="input_field">
             <input
-              type="email"
               class="input"
               id="input_text"
               placeholder="email or phone number"
@@ -44,6 +43,7 @@
               id="input_password"
               placeholder="password"
               v-model="loginData.password"
+              @keyup.enter="validate"
             />
           </div>
         </div>
@@ -72,9 +72,9 @@ import {
   collection,
   getDocs,
   query,
-  where,
   doc,
-  getDoc
+  getDoc,
+  where
 } from 'firebase/firestore'
 
 export default {
@@ -90,36 +90,33 @@ export default {
   },
   mounted () {},
   methods: {
-    signInWithEmail () {
-      signInWithEmailAndPassword(
-        auth,
-        this.loginData.email,
-        this.loginData.password
-      )
+    signInWithEmail (emailParam) {
+      const email = emailParam === undefined ? this.loginData.email : emailParam
+      signInWithEmailAndPassword(auth, email, this.loginData.password)
         .then((userCredential) => {
           const user = userCredential.user
-          console.log(user)
           this.getUser(user.uid)
         })
-        .catch((error) => {
-          const errorCode = error.code
-          console.log(errorCode)
-          const errorMessage = error.message
-          console.log(errorMessage)
+        .catch(() => {
           this.validationErrors.push(
-            '<strong>Email</strong> or <strong>password</strong> is invalid.'
+            '<strong>Email / Phone number</strong> or <strong>password</strong> is invalid.'
           )
         })
     },
     async signInWithPhoneNumber () {
       const q = query(
         collection(db, 'users'),
-        where('phoneNumber', '==', this.loginData.phone)
+        where('phoneNumber', '==', this.loginData.email)
       )
       const querySnapshot = await getDocs(q)
       querySnapshot.forEach((doc) => {
-        this.loginData.email = doc.data().eMail
+        this.signInWithEmail(doc.data().eMail)
       })
+      if (querySnapshot.empty) {
+        this.validationErrors.push(
+          '<strong>Email / Phone number </strong> or <strong>password</strong> is invalid.'
+        )
+      }
     },
     buttonClicked () {
       router.push('/registration')
@@ -135,7 +132,11 @@ export default {
         const userObj = docSnap.data()
         userObj.id = docSnap.id
         this.$store.dispatch('setUser', userObj)
-        router.push('/dashboard')
+        if (userObj.userRole === 'admin') {
+          router.push('/users')
+        } else {
+          router.push('/dashboard')
+        }
       } else {
         console.log('No such User!')
       }
@@ -145,9 +146,23 @@ export default {
       this.resetError()
 
       if (!this.loginData.email) {
-        this.validationErrors.push("<strong>Email</strong> can't be empty.")
+        this.validationErrors.push(
+          "<strong>Email or Phone number</strong> can't be empty."
+        )
       }
-      if (/.+@.+/.test(this.loginData.email) !== true) {
+      if (
+        /^[0-9]+$/.test(this.loginData.email.charAt(0)) ||
+        this.loginData.email.charAt(0) === '+'
+      ) {
+        if (
+          /^\+[0-9]\d{1,14}$/.test(this.loginData.email) !== true &&
+          /^[0-9]\d{1,14}$/.test(this.loginData.email) !== true
+        ) {
+          this.validationErrors.push(
+            '<strong>Phone number</strong> must be valid.'
+          )
+        }
+      } else if (/.+@.+/.test(this.loginData.email) !== true) {
         this.validationErrors.push('<strong>Email</strong> must be valid.')
       }
       if (!this.loginData.password) {
