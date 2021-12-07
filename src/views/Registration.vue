@@ -151,67 +151,50 @@ export default {
   mounted () {},
   methods: {
     signUp () {
-      if (this.registerData.eMail.length <= 0) {
-        const generatedEmail =
+      let emailAddress = this.registerData.eMail
+      if (emailAddress.length <= 0) {
+        emailAddress =
           (Math.random() + 1).toString(36).substring(0) + '@gmail.com'
-        createUserWithEmailAndPassword(
-          auth,
-          generatedEmail,
-          this.registerData.password
-        )
-          .then((userCredential) => {
-            const docRef = setDoc(doc(db, 'users', userCredential.user.uid), {
-              firstName: this.registerData.firstname,
-              lastName: this.registerData.lastname,
-              ageGroup: this.registerData.age,
-              phoneNumber: this.registerData.phone,
-              eMail: generatedEmail,
-              address: '',
-              hobbies: '',
-              community: 'Unassigned',
-              userRole: 'user'
-            })
-            console.log('Registration successful', docRef)
-            router.push('/dashboard')
-          })
-          .catch((error) => {
-            const errorCode = error.code
-            console.log(errorCode)
-            const errorMessage = error.message
-            console.log(errorMessage)
-            this.validationErrors.push('Inputs invalid.')
-          })
       }
 
-      if (this.registerData.phone.length <= 0) {
-        createUserWithEmailAndPassword(
-          auth,
-          this.registerData.eMail,
-          this.registerData.password
-        )
-          .then((userCredential) => {
-            const docRef = setDoc(doc(db, 'users', userCredential.user.uid), {
-              firstName: this.registerData.firstname,
-              lastName: this.registerData.lastname,
-              ageGroup: this.registerData.age,
-              phoneNumber: this.registerData.phone,
-              eMail: this.registerData.eMail,
-              address: '',
-              hobbies: '',
-              community: 'Unassigned',
-              userRole: 'user'
-            })
-            console.log('Registration successful', docRef)
-            router.push('/dashboard')
+      createUserWithEmailAndPassword(
+        auth,
+        emailAddress,
+        this.registerData.password
+      )
+        .then((userCredential) => {
+          setDoc(doc(db, 'users', userCredential.user.uid), {
+            firstName: this.registerData.firstname,
+            lastName: this.registerData.lastname,
+            ageGroup: this.registerData.age,
+            phoneNumber: this.registerData.phone,
+            eMail: emailAddress,
+            address: '',
+            hobbies: '',
+            community: 'Unassigned',
+            userRole: 'user'
           })
-          .catch((error) => {
-            const errorCode = error.code
-            console.log(errorCode)
-            const errorMessage = error.message
-            console.log(errorMessage)
-            this.validationErrors.push('Inputs invalid.')
-          })
-      }
+          this.$root.makeToast(
+            'success-create-account',
+            'success',
+            'Success!',
+            'Your account has been created, you can sign in now.',
+            false,
+            5000
+          )
+          router.push('/')
+        })
+        .catch(() => {
+          this.$root.makeToast(
+            'error-create-account',
+            'danger',
+            'Error!',
+            'Something went wrong. Your account has not been created.',
+            false,
+            5000
+          )
+          this.validationErrors.push('Inputs invalid.')
+        })
     },
     resetError () {
       this.validationErrors = []
@@ -281,7 +264,7 @@ export default {
       this.queriedEmail = ''
       this.queriedPhoneNumber = ''
       const userRef = collection(db, 'users')
-      if (this.registerData.phone.length <= 0) {
+      if (this.registerData.eMail.length > 0) {
         const q = query(userRef, where('eMail', '==', this.registerData.eMail))
         const querySnapshot = await getDocs(q)
         querySnapshot.forEach((doc) => {
@@ -289,18 +272,21 @@ export default {
             this.queriedEmail = doc.data().eMail
           }
         })
-        this.validate()
-      } else if (this.registerData.eMail.length <= 0) {
-        const q = query(userRef, where('phone', '==', this.registerData.phone))
+      }
+      if (this.registerData.phone.length > 0) {
+        const q = query(
+          userRef,
+          where('phoneNumber', '==', this.registerData.phone)
+        )
         const querySnapshot = await getDocs(q)
         querySnapshot.forEach((doc) => {
           if (doc.exists()) {
-            this.queriedPhoneNumber = doc.data().phone
+            this.queriedPhoneNumber = doc.data().phoneNumber
           }
         })
-        this.validate()
       } else {
       }
+      this.validate()
     }
   }
 }
