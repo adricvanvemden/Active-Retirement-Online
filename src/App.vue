@@ -321,4 +321,17 @@ export default {
     width: auto;
   }
 }
+
+input {
+  background-color: #d9edf6;
+  border-style: solid;
+  border-width: 2px;
+  border-color: rgb(82, 82, 82);
+}
+select {
+  background-color: #d9edf6;
+  border-style: solid;
+  border-width: 2px;
+  border-color: rgb(82, 82, 82);
+}
 </style>
