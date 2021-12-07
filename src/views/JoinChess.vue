@@ -1,11 +1,8 @@
 <template>
   <div class="chess">
     <div class="header">
-      <h1>
-        Hey {{ $store.state.user.firstName }}, you are on the CHESS game
-        page.<br />
-        Here you can find instructions on how to play Chess online.
-      </h1>
+      Hey {{ $store.state.user.firstName }}, you are on the CHESS game page.<br />
+      Here you can find instructions on how to play Chess online.
     </div>
     <div class="description">
       <p>
@@ -27,7 +24,7 @@
     <br />
     <b-btn
       variant="primary"
-      class="game-button"
+      class="game-button mb-3"
       onclick=" window.open('https://cardgames.io/chess/','_blank')"
     >
       PLAY

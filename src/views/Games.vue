@@ -1,11 +1,9 @@
 <template>
   <div class="games">
     <div class="header">
-      <h1>
-        Hey {{ $store.state.user.firstName }}, here you can find all the games
-        we offer.<br />
-        Click on a game to see more information.
-      </h1>
+      Hey {{ $store.state.user.firstName }}, here you can find all the games we
+      offer.<br />
+      Click on a game to see more information.
     </div>
     <div class="games-wrapper">
       <router-link :to="{ name: 'bridge' }">
@@ -35,7 +33,7 @@
     height: 180px;
     width: 100%;
     display: grid;
-    grid-template-columns: 150px 350px;
+    grid-template-columns: 150px 250px;
     align-items: center;
     justify-items: center;
     color: black;
@@ -65,11 +63,16 @@
     padding: 20px 20px 0 20px;
   }
   .games-wrapper {
-    grid-template-columns: 500px;
+    grid-template-columns: 400px 400px;
+
+    a {
+      height: 150px;
+      font-size: 50px;
+    }
   }
 }
 
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 850px) {
   .header {
     padding: 20px 20px 0 20px;
   }

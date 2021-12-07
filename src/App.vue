@@ -328,10 +328,21 @@ input {
   border-width: 2px;
   border-color: rgb(82, 82, 82);
 }
+
 select {
   background-color: #d9edf6;
   border-style: solid;
   border-width: 2px;
   border-color: rgb(82, 82, 82);
+}
+
+.header {
+  font-size: 32px;
+}
+
+@media screen and (max-width: 850px) {
+  .header {
+    font-size: 24px;
+  }
 }
 </style>

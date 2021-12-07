@@ -1,11 +1,8 @@
 <template>
   <div class="bridge">
     <div class="header">
-      <h1>
-        Hey {{ $store.state.user.firstName }}, you are on the BRIDGE game
-        page.<br />
-        Here you can find instructions on how to play Bridge online.
-      </h1>
+      Hey {{ $store.state.user.firstName }}, you are on the BRIDGE game page.<br />
+      Here you can find instructions on how to play Bridge online.
     </div>
     <div class="description">
       <p>
@@ -21,7 +18,7 @@
     <br /><br /><br />
     <b-btn
       variant="primary"
-      class="game-button"
+      class="game-button mb-3"
       onclick=" window.open('https://www.247bridge.com/','_blank')"
     >
       PLAY

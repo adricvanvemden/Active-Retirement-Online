@@ -46,7 +46,7 @@ export default {
   },
   methods: {
     onRow (record) {
-      this.$router.push(`/user/${record.id}`)
+      this.$router.push(`/users/${record.id}`)
     },
     async getAllUsers () {
       const q = query(collection(db, 'users'))

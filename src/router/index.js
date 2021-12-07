@@ -103,7 +103,7 @@ const routes = [
     meta: { requiresAuth: true, requiresAdmin: true }
   },
   {
-    path: '/user/:userId',
+    path: '/users/:userId',
     name: 'user',
     component: () => import(/* webpackChunkName: "user" */ '../views/User.vue'),
     meta: { requiresAuth: true }

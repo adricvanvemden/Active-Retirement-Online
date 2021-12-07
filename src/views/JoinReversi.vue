@@ -2,11 +2,9 @@
 <template>
   <div class="reversi">
     <div class="header">
-      <h1>
-        Hey {{ $store.state.user.firstName }}, you are on the REVERSI game
-        page.<br />
-        Here you can find instructions on how to play Reversi online.
-      </h1>
+      Hey {{ $store.state.user.firstName }}, you are on the REVERSI game
+      page.<br />
+      Here you can find instructions on how to play Reversi online.
     </div>
     <div class="description">
       <p>
@@ -25,7 +23,7 @@
     <br /><br /><br />
     <b-btn
       variant="primary"
-      class="game-button"
+      class="game-button mb-3"
       onclick=" window.open('https://cardgames.io/reversi/','_blank')"
     >
       PLAY

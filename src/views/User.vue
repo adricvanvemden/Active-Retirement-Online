@@ -8,7 +8,7 @@
     >
       BACK
     </b-btn>
-    <div class="d-flex mt-5">
+    <div class="user-columns-wrapper">
       <div class="grid-user-left">
         <label for="firstName">First name:</label>
         <input
@@ -148,7 +148,7 @@ export default {
   },
   beforeMount () {
     if (this.isAdmin) {
-      this.userId = this.$route.path.slice(5)
+      this.userId = this.$route.path.slice(6)
     } else {
       this.userId = this.$store.state.user.id
     }
@@ -307,5 +307,20 @@ export default {
   height: 20px;
   text-align: right;
   font-size: 28px;
+}
+
+.user-columns-wrapper {
+  display: flex;
+  margin-top: 30px;
+}
+
+@media only screen and (max-width: 1445px) {
+  .user-columns-wrapper {
+    flex-direction: column;
+    height: 450px;
+  }
+  .grid-user-right {
+    margin-top: 10px;
+  }
 }
 </style>

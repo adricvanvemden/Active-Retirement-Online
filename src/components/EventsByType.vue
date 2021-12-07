@@ -1,10 +1,9 @@
 <template>
   <div>
     <div class="header">
-      <h1>
-        Hello {{ $store.state.user.firstName }}, look at all these
-        <b>{{ type }}</b> related events!
-      </h1>
+      Hello {{ $store.state.user.firstName }}, look at all these
+      <b>{{ type }}</b> related events!
+
       <b-btn
         class="back-button"
         variant="primary"

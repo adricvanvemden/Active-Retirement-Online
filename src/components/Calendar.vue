@@ -7,7 +7,7 @@
     </div>
     <div class="calendar-border">
       <div class="grid-week-days">
-        <div v-for="weekDay in weekDays" :key="weekDay">
+        <div v-for="weekDay in weekDays" :key="weekDay" class="week-day">
           {{ weekDay }}
         </div>
       </div>
@@ -316,9 +316,10 @@ export default {
 
 <style lang="scss">
 .calendar {
-  width: 1750px;
+  width: 90vw;
   margin-left: auto;
   margin-right: auto;
+  min-width: 1000px;
 }
 .calendar-border {
   border: 1px solid #6d6c6c;
@@ -326,7 +327,7 @@ export default {
 }
 .grid-week-days {
   display: grid;
-  grid-template-columns: repeat(7, 250px);
+  grid-template-columns: repeat(7, 13vw);
   grid-template-rows: 40px;
   justify-items: left;
   font-size: 28px;
@@ -336,7 +337,7 @@ export default {
 
 .grid-week {
   display: grid;
-  grid-template-columns: repeat(7, 250px);
+  grid-template-columns: repeat(7, 13vw);
   grid-template-rows: 125px;
   border-top: 1px solid #6d6c6c;
   justify-items: left;
@@ -347,7 +348,7 @@ export default {
 .event {
   display: flex;
   align-items: center;
-  max-width: 240px;
+  max-width: 11vw;
   font-size: 18px;
   cursor: pointer;
 }
@@ -380,7 +381,7 @@ export default {
 
 .today {
   border-top: 3px solid #204293;
-  width: 250px;
+  width: 13vw;
   color: #204293;
   display: flex;
   font-weight: 600;
@@ -440,5 +441,24 @@ export default {
 
 .modal-footer {
   justify-content: center;
+}
+
+@media only screen and (max-width: 1120px) {
+  .grid-week-days {
+    grid-template-columns: repeat(7, 144px);
+    font-size: 24px;
+  }
+
+  .grid-week {
+    grid-template-columns: repeat(7, 144px);
+  }
+
+  .today {
+    width: 144px;
+  }
+
+  .event {
+    max-width: 140px;
+  }
 }
 </style>

@@ -1,10 +1,8 @@
 <template>
   <div id="events overview">
     <div class="header">
-      <h1>
-        Hello {{ $store.state.user.firstName }}, click on one of these buttons
-        to view all the specific events.
-      </h1>
+      Hello {{ $store.state.user.firstName }}, click on one of these buttons to
+      view all the specific events.
     </div>
     <div class="events-wrapper">
       <router-link :to="{ name: 'food_events' }">
@@ -77,7 +75,12 @@ export default {
     padding: 20px 20px 0 20px;
   }
   .events-wrapper {
-    grid-template-columns: 500px;
+    grid-template-columns: 400px 400px;
+
+    a {
+      height: 150px;
+      font-size: 50px;
+    }
   }
 }
 

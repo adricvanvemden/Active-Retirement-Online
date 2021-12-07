@@ -94,4 +94,24 @@ export default {
 .searchbar {
   height: 40px;
 }
+
+@media only screen and (max-width: 1510px) {
+  .searchbar {
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 920px) {
+  .logo {
+    width: 250px;
+    height: 90px;
+  }
+
+  #nav {
+    #left-side,
+    #right-side {
+      font-size: 16px;
+    }
+  }
+}
 </style>
